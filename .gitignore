@@ -1,3 +1,12 @@
+# Ignore virtual environments
+venv/
+env/
+
+# Ignore Python/Django Bytocode files and directories
+*.pyc
+__pycache__/
+db.sqlite3
+
 .gradle
 **/build/
 !src/**/build/
