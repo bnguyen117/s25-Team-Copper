@@ -9,4 +9,4 @@ Team Copper - Spring 2025
 - jryanm - Joshua Martin - jmart137@odu.edu
 - sdali001 - Smit Dalia - sdali001@odu.edu
 - bnguyen117 - Brian Nguyen - bnguy004@odu.edu
-- imonse001 - Indi Monsen - imonse001@odu.edu
+- imonse001 - Indi Monson - imonse001@odu.edu
