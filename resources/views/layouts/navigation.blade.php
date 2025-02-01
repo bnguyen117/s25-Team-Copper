@@ -71,7 +71,7 @@
     </div>
 
     <!-- Slide-Out Menu for Mobile -->
-    <div x-cloak :class="open ? 'translate-x-0' : 'translate-x-full'" class="fixed top-0 right-0 h-full w-60 bg-white text-black shadow-lg duration-300 z-20">
+    <div x-cloak :class="open ? 'translate-x-0' : 'translate-x-full'" class="fixed top-0 right-0 h-full w-60 bg-white dark:bg-gray-800 text-black shadow-lg duration-300 z-20">
 
         <!-- User Information Section -->
         <div class=" pl-4 my-3 shadow-sm">
