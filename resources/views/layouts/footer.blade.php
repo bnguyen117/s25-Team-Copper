@@ -1,5 +1,5 @@
-
-<footer class="bg-white py-5 fixed bottom-0 left-0 right-0 z-10">
+<footer class="bg-white border-t border-gray-400 py-5 fixed bottom-0 left-0 right-0 z-10">
+    <!-- Flex container to center Icons hroizontally -->
     <div class="flex justify-center gap-14">
 
         <!-- Finanace Section Link -->
