@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WhatIfController;
+use App\Http\Controllers\FinanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +20,9 @@ Route::middleware('auth')->group(function () {
 
     # What-If Routes
     Route::get('/whatif', [WhatIfController::class, 'index'])->name('whatif');
+
+    #Finance Routes
+    Route::get('/finance', [FinanceController::class, 'index'])->name('finance');
 
 });
 
