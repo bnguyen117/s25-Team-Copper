@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WhatIfController;
 use App\Http\Controllers\FinanceController;
@@ -21,13 +22,19 @@ Route::middleware('auth')->group(function () {
 
     # What-If Routes
     Route::get('/whatif', [WhatIfController::class, 'index'])->name('whatif');
+    //
 
     #Finance Routes
     Route::get('/finance', [FinanceController::class, 'index'])->name('finance');
+    //
 
     # Reward Routes
     Route::get('/rewards', [RewardsController::class, 'index'])->name('rewards');
+    //
 
+    # Community Routes
+    Route::get('/community', [CommunityController::class, 'index'])->name('community');
+    //
 });
 
 require __DIR__.'/auth.php';
