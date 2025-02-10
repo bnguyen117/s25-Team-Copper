@@ -33,7 +33,10 @@ class WhatIfForm extends Component implements HasForms
     {
         return $form
             ->schema([
-                TextInput::make('Monthly Income')->type('number')->required(),
+                TextInput::make('Monthly Income')
+                ->type('number')
+                ->required()
+                ->placeholder('Note! This form is not yet functional.'),
                 TextInput::make('Monthly Expenses')->type('number')->required(),
                 Select::make('Debt')
                 ->options([

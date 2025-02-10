@@ -1,4 +1,3 @@
-
 <!-- Extend app.blade.php Page layout -->
 <x-app-layout>
 
@@ -10,14 +9,8 @@
     </x-slot>
 
     <!-- Main content container holding the Filament form -->
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="text-center p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("🔨 Construction Zone 🔨") }}
-                </div>
-            </div>
-        </div>
+    <div class="pt-8 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
+        @livewire('debt-form')
     </div>
 
 </x-app-layout>

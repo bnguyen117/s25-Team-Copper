@@ -45,4 +45,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Set a one to many relationship
+     * 
+     * Where one user can have many debts.
+     */
+    public function debts()
+    {
+        return $this->hasMany(Debt::class);
+    }
 }
