@@ -1,4 +1,4 @@
-<footer class="bg-white dark:bg-gray-800 border-t border-gray-400 py-5 fixed bottom-0 left-0 right-0 z-10">
+<footer class="footer">
     <!-- Flex container to center Icons hroizontally -->
     <div class="flex justify-center gap-14">
 

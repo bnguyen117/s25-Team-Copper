@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 left-0 right-0 z-20">
+<nav x-data="{ open: false }" class="navigation">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -71,7 +71,7 @@
     </div>
 
     <!-- Slide-Out Menu for Mobile -->
-    <div x-cloak :class="open ? 'translate-x-0' : 'translate-x-full'" class="fixed top-0 right-0 h-full w-60 bg-white dark:bg-gray-800 text-black shadow-lg duration-300 z-20">
+    <div x-cloak :class="open ? 'translate-x-0' : 'translate-x-full'" class="slide-out-menu">
 
         <!-- User Information Section -->
         <div class=" pl-4 my-3 shadow-sm">

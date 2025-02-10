@@ -2,13 +2,14 @@
  
 namespace App\Livewire;
  
-use App\Models\Post;
+use App\Models\Debt; 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
  
@@ -25,25 +26,23 @@ class WhatIfForm extends Component implements HasForms
     }
     
     /**
-     * Defines the form's field structure
-     * 
+     * Defines the form's field structure.
      * Add, remove, or modify form fields as needed in the form's schema.
      */
     public function form(Form $form): Form
     {
+        // An array that stores {debt_name, id} pairs of the current user's debts.
+        $currentUserDebts = $this->getCurrentUserDebts();
+
         return $form
             ->schema([
                 TextInput::make('Monthly Income')
                 ->type('number')
                 ->required()
-                ->placeholder('Note! This form is not yet functional.'),
+                ->placeholder('This form is not fully functional'),
                 TextInput::make('Monthly Expenses')->type('number')->required(),
                 Select::make('Debt')
-                ->options([
-                    'Debt1' => 'Student Loan',
-                    'Debt2' => 'Credit Card',
-                    'Debt3' => 'Car',
-                ])
+                ->options($currentUserDebts)
                 ->required(),
                 Select::make('Financial Goal')
                 ->options([
@@ -69,7 +68,6 @@ class WhatIfForm extends Component implements HasForms
     
     /**
      * Outputs the form's current state
-     * 
      * This method is for testing purposes, and simply dumps the form's state to the screen.
      */
     public function analyze(): void
@@ -82,6 +80,19 @@ class WhatIfForm extends Component implements HasForms
      */
     public function clearForm(): void{
         $this->form->fill();
+    }
+
+    /**
+     * Gets the current authenicated user's debts
+     * Filters them down to just {debt_name, id} pairs
+     * Returns these {debt_name, id} pairs as an array.
+     */
+    private function getCurrentUserDebts(): array{
+        // get and store the debts where thier user_id matches the ID (primary key) of the currently authenicated user.
+        $userDebts = Debt::where('user_id', Auth::id())->get();
+
+        // Pluck only the debt_name and id fields from $userDebts and return them.
+        return $userDebts->pluck('debt_name', 'id')->toArray();
     }
     
     /**
