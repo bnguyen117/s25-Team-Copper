@@ -10,7 +10,7 @@
 
     <!-- Main content container holding the Filament form -->
     <div class="pt-8 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
-        @livewire('debt-form')
+        @livewire('user-debt-table')
     </div>
 
 </x-app-layout>

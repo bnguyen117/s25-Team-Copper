@@ -7,12 +7,43 @@
     @apply bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 sticky top-0 left-0 right-0 z-20;
 }
 
+/* Mobile slide-out menu */
 .slide-out-menu {
     @apply fixed top-0 right-0 h-full w-60 bg-white dark:bg-gray-800 text-black shadow-lg duration-300 z-20;
 }
 
 .footer {
     @apply bg-white dark:bg-gray-800 border-t border-gray-400 py-5 fixed bottom-0 left-0 right-0 z-10;
+}
+
+
+/* Filament Styling */
+.fi-btn{
+    @apply shadow-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-700;
+}
+
+.fi-link {
+    @apply text-black dark:text-white;
+}
+
+.fi-modal-icon{
+    @apply text-red-600;
+}
+
+.fi-color-danger{
+    @apply text-red-500;
+}
+
+.fi-badge{
+    @apply text-black dark:text-white;
+}
+
+.fi-btn-icon {
+    @apply text-gray-400 dark:text-white;
+}
+
+.fi-btn-label {
+    @apply text-black dark:text-white;
 }
 
 [x-cloak] { display: none !important; }
