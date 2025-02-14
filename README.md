@@ -1,5 +1,6 @@
-# s25-Team-Copper
-Team Copper - Spring 2025
+# CreditTrax
+## Team Copper - Spring 2025
+//## s25-Team-Copper
 
 # Members:  
 
