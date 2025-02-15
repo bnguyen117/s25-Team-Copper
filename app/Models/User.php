@@ -19,7 +19,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'display_name',
         'email',
+        'birthdate',
+        'avatar',
         'password',
     ];
 
@@ -64,5 +67,25 @@ class User extends Authenticatable
     public function financialGoals()
     {
         return $this->hasMany(FinancialGoal::class);
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_members');
+    }
+
+    public function sentFriendRequests()
+    {
+        return $this->hasMany(FriendRequest::class, 'sender_id');
+    }
+
+    public function receivedFriendRequests()
+    {
+        return $this->hasMany(FriendRequest::class, 'receiver_id');
+    }
+
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id');
     }
 }
