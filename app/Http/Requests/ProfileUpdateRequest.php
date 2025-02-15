@@ -17,7 +17,6 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'display_name' => ['required', 'string', 'max:255'], // New: Display Name Validation
             'email' => [
                 'required',
                 'string',
@@ -26,8 +25,6 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
-            'birthdate' => ['required', 'date', 'before_or_equal:' . now()->subYears(13)->format('Y-m-d')], // New: Birthdate (Must be at least 13 years old)
-            'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'], // New: Avatar File Validation
         ];
     }
 }
