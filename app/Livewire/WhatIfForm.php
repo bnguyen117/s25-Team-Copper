@@ -2,7 +2,8 @@
  
 namespace App\Livewire;
  
-use App\Models\Debt; 
+use App\Models\Debt;
+use App\Models\FinancialGoal;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -16,9 +17,16 @@ use Livewire\Component;
 class WhatIfForm extends Component implements HasForms
 {
     use InteractsWithForms;
+
+    public $monthly_income;
+    public $monthly_expenses;
+    public $debt_name;
+    public $financial_goal;
+    public $what_if_analysis_algorithm;
+    public $ai_suggestion;
+
     
-    public ?array $data = [];
-    
+
     public function mount(): void
     {
         // Initialize the form with an empty state.
@@ -27,43 +35,36 @@ class WhatIfForm extends Component implements HasForms
     
     /**
      * Defines the form's field structure.
-     * Add, remove, or modify form fields as needed in the form's schema.
      */
     public function form(Form $form): Form
     {
-        // An array that stores {debt_name, id} pairs of the current user's debts.
-        $currentUserDebts = $this->getCurrentUserDebts();
-
         return $form
             ->schema([
-                TextInput::make('Monthly Income')
+                TextInput::make('monthly_income')
                 ->type('number')
-                ->required()
-                ->placeholder('This form is not fully functional'),
-                TextInput::make('Monthly Expenses')->type('number')->required(),
-                Select::make('Debt')
-                ->options($currentUserDebts)
                 ->required(),
-                Select::make('Financial Goal')
-                ->options([
-                    'Goal1' => 'Save for a new car',
-                    'Goal2' => '$10,000 in savings',
-                    'Goal3' => 'Purchase ring',
-                ])
+                TextInput::make('monthly_expenses')
+                ->type('number')
                 ->required(),
-                Select::make('What-If Analysis Algorithm')
+                Select::make('debt_name')
+                ->options(fn () => $this->getCurrentUserDebts())
+                ->required(),
+                Select::make('financial_goal')
+                ->options(fn () => $this->getCurrentUserGoals())
+                ->required(),
+                Select::make('what_if_analysis_algorithm')
                 ->options([
                     'Algo1' => 'What if my interest rate changes?',
                     'Algo2' => 'What if I increase my monthly payment?',
                     'Algo3' => 'What if I decrease my income?',
                 ])
                 ->required(),
-                Toggle::make('Ai Suggestion?')
+                Toggle::make('ai_suggestion')
                 ->onColor('gray')
                 ->offIcon('heroicon-m-arrow-right')
                 ->onIcon('heroicon-m-bolt'),
                 // ...
-            ])->statePath('data');
+                ]);
     }
     
     /**
@@ -76,30 +77,37 @@ class WhatIfForm extends Component implements HasForms
     }
 
     /**
-     * Resets the form.
-     */
-    public function clearForm(): void{
-        $this->form->fill();
-    }
-
-    /**
-     * Gets the current authenicated user's debts
-     * Filters them down to just {debt_name, id} pairs
-     * Returns these {debt_name, id} pairs as an array.
-     */
-    private function getCurrentUserDebts(): array{
-        // get and store the debts where thier user_id matches the ID (primary key) of the currently authenicated user.
-        $userDebts = Debt::where('user_id', Auth::id())->get();
-
-        // Pluck only the debt_name and id fields from $userDebts and return them.
-        return $userDebts->pluck('debt_name', 'id')->toArray();
-    }
-    
-    /**
      * Renders the component's view.
      */
     public function render(): View
     {
         return view('livewire.what-if-form');
+    }
+
+    /**
+     * Gets the current authenicated user's debts.
+     */
+    private function getCurrentUserDebts(): array
+    {
+        return Debt::where('user_id', Auth::id())   // Get debts from the currently authenicated user
+                    ->pluck('debt_name', 'id')      // Eactract debt_name as value, id as key
+                    ->toArray();                    // Convert to an array
+    }
+
+    /**
+     * Gets the current authenicated user's goals
+     */
+    private function getCurrentUserGoals(): array
+    {
+        return FinancialGoal::where('user_id', Auth::id())  // Get debts from the currently authenicated user
+                            ->pluck('goal_name', 'id')      // Eactract goal_name as value, id as key
+                            ->toArray();                    // Convert to an array
+    }
+
+    /**
+     * Resets the form.
+     */
+    private function clearForm(): void{
+        $this->form->fill();
     }
 }

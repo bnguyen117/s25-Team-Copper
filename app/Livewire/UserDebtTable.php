@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 // Tables
-use Filament\Tables;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Columns\Layout\Split;
@@ -40,6 +39,7 @@ class UserDebtTable extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
+            // Filter Debts to only those belonging to the current user.
             ->query(Debt::where('user_id', Auth::id()))
             ->heading('Debts')
             ->columns($this->getDebtTableColumns())
@@ -47,25 +47,30 @@ class UserDebtTable extends Component implements HasForms, HasTable
             ->filters([
                 //
             ])
-            ->headerActions([ // Actions that are placed in-line with the table's header .
-                CreateAction::Make('Create Debt')
+            // Actions that are placed in-line with the table's header.
+            ->headerActions([
+                // Create new Debts with the current user's id.
+                CreateAction::make()
                     ->button()
                     ->slideOver()
-                    ->form($this->getDebtFormFields())
+                    ->form($this->getFormFields())
+                    // Ensure the new debt is assigned to the currently authenicated user before saving.
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = Auth::id();
                         return $data;
                     }),
             ])
-            ->actions([ // Actions that are placed in-line with each row in the table.
-                EditAction::make('edit')
+            ->actions([
+                // Edit button for updating a record.
+                EditAction::make()
                     ->button()
                     ->slideOver()
-                    ->form($this->getDebtFormFields()),
-                DeleteAction::make('Delete')
+                    ->form($this->getFormFields()),
+                // Delete button for deleting a record.
+                DeleteAction::make()
                     ->button()
             ])
-            ->bulkActions([ // Actions that affect multiple selected rows in the table.
+            ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('delete')
                         ->requiresConfirmation()
@@ -74,7 +79,9 @@ class UserDebtTable extends Component implements HasForms, HasTable
             ]);
     }
 
-    // Defines and returns the columns of the Debt table.
+    /**
+     * Defines and returns the table's columns as an array.
+     */
     private function getDebtTableColumns(): array 
     {
         return
@@ -84,7 +91,9 @@ class UserDebtTable extends Component implements HasForms, HasTable
             ->size('md')
             ->weight(FontWeight::Bold),
 
+            // Group additional columns in a collapsible panel.
             Panel::make([
+                // Ensure columns align horizontally on large screens and above.
                 Split::make([
                     TextColumn::make('amount')
                         ->numeric()
@@ -92,41 +101,49 @@ class UserDebtTable extends Component implements HasForms, HasTable
                         ->money('usd')
                         ->sortable()
                         ->weight(FontWeight::Medium),
+
                     TextColumn::make('interest_rate')
                         ->numeric()
                         ->description('Interest Rate', position: 'above')
                         ->suffix('%')
                         ->sortable()
                         ->weight(FontWeight::Medium),
+
                     TextColumn::make('minimum_payment')
                         ->numeric()
                         ->description('Minimum Payment', position: 'above')
                         ->money('usd')
                         ->sortable()
                         ->weight(FontWeight::Medium),
+
                     TextColumn::make('due_date')
                         ->date()
                         ->description('Due Date', position: 'above')
                         ->sortable()
                         ->weight(FontWeight::Medium),
+
                 ])->from('lg'),
             ])->collapsible(),
         ];
     }
 
-    // Defines and returns the form fields for creating and editing debts.
-    private function getDebtFormFields(): array
+    /**
+     * Defines and returns the form fields for creating and editing debts.
+     */
+    private function getFormFields(): array
     {
-        return 
+        return
         [
             TextInput::make('debt_name')
                 ->required(),
+
             TextInput::make('amount')
                 ->required()
                 ->numeric()
                 ->minValue(0)
                 ->maxValue(99999999.99)
                 ->prefix('$'),
+
             TextInput::make('interest_rate')
                 ->required()
                 ->numeric()
@@ -134,17 +151,23 @@ class UserDebtTable extends Component implements HasForms, HasTable
                 ->minValue(0)
                 ->maxValue(99.99)
                 ->rule('decimal:2'),
+
             TextInput::make('minimum_payment')
                 ->numeric()
                 ->prefix('$')
                 ->minValue(0)
                 ->maxValue('99999999.99'),
+
             TextInput::make('description')
                 ->columnSpanFull(),
+                
             DatePicker::make('due_date'),
         ];
     }
 
+    /**
+     * Returns and renders the table's view.
+     */
     public function render(): View
     {
         return view('livewire.user-debt-table');

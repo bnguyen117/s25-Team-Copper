@@ -55,4 +55,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Debt::class);
     }
+
+    /**
+     * Set a one to many relationship
+     * 
+     * Where one user can have many Financial Goals.
+     */
+    public function financialGoals()
+    {
+        return $this->hasMany(FinancialGoal::class);
+    }
 }
