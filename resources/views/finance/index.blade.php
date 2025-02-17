@@ -12,6 +12,11 @@
     <div class="mt-16 mb-16 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
         @livewire('user-debt-table')
     </div>
+     <!-- Budgeting Form Section -->
+     <div class="mt-16 mb-16 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
+        @livewire('budget-form')
+    </div>
+    <!-- User Goals Table Section -->
     <div class="mb-16 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
         @livewire('user-goal-table')
     </div>
