@@ -6,6 +6,8 @@
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Community') }}
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                <a href="{{ route('groups.create') }}" class="text-blue-500 hover:text-blue-700">Create Group</a> 
         </h2>
     </x-slot>
 

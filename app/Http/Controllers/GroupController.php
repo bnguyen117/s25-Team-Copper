@@ -98,4 +98,8 @@ class GroupController extends Controller
 
         return redirect()->route('groups.index')->with('success', 'Group deleted successfully.');
     }
+    public function create()
+    {
+        return view('groups.create'); //leads to the create group form
+    }
 }

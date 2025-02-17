@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/groups', [GroupController::class, 'index'])->name('groups.index'); // View all groups
     Route::post('/groups', [GroupController::class, 'store'])->name('groups.store'); // Create a group
     Route::get('/groups/{group}', [GroupController::class, 'show'])->name('groups.show'); // View specific group
+    Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create'); // create a group 
     Route::post('/groups/{group}/join', [GroupController::class, 'join'])->name('groups.join'); // Join a group
     Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave'); // Leave a group
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy'); // Delete a group
