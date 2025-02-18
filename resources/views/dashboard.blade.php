@@ -7,27 +7,32 @@
 
     <!-- Make smaller boxes for different components to fit into.  Aligns them horizontally-->
     <div class="flow-root mt-12 mx-4">
-        <!-- For the debt/income ratio -->
+        <!-- For the income and budgeting -->
         <div class="float-left w-40 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
             <div class="p-6 text-gray-900 dark:text-gray-100">
-                {{ ("Debt/Income ratio graph here") }}
+                {{ ("Income and Budgeting") }}
             </div>
         </div>
-        <!-- Rewards and Leaderboard -->
+        <!-- Rewards section -->
         <div class="float-right w-40 rounded-lg bg-white dark:bg-gray-800 shadow-sm">
-                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                     <h3 class="text-black-600"> You've new rewards <span class="text-black-500"></span></h3>
-                       <a href="{{ url('http://s25-team-copper.test/rewards') }}" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg block text-center">Rewards</a>
+            <div class="p-6 text-gray-900 dark:text-gray-100">
+                <h3> You got <span class="text-green-500"> [insert num] </span> badges </h3>
+                <a href="{{ url('http://s25-team-copper.test/rewards') }}" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg block text-center">Rewards</a>
             </div>
         </div>
     </div>
 
-        <!-- Your Goal Progress -->
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Your Goal Progress</h3>
-                <a href="{{ url('http://s25-team-copper.test/finance') }}" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg block text-center">Edit Goals</a>
-            </div>
-        </div>
+    <!-- Your Goal Progress -->
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 my-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Your Goal Progress</h3>
+            <a href="{{ url('http://s25-team-copper.test/finance') }}" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg block text-center">Edit Goals</a>
+    </div>
+
+    <!-- Debt stats -->
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 my-4">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100"> Your Debt Stats </h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100"> [Insert graph here] </h3>
+    </div>
 
 
     <div class="py-12">
