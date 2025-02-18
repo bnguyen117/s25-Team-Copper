@@ -34,18 +34,4 @@
         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100"> [Insert graph here] </h3>
     </div>
 
-
-    <div class="py-12">
-        <div class="max-w-8xl mx-auto sm:px-6 lg:px-8 py-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <!-- Required for modal suport {{ ("You're logged in!") }}-->
-                     @livewire('budget-form')
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-
 </x-app-layout>

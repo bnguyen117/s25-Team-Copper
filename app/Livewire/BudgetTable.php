@@ -25,9 +25,6 @@ class BudgetTable extends Component implements HasForms, HasTable
             ->query(Budget::where('user_id', Auth::id()))
             ->heading('Budgets')
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('income')
                     ->numeric()
                     ->sortable(),
@@ -40,14 +37,6 @@ class BudgetTable extends Component implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('remaining_balance')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
