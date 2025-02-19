@@ -19,6 +19,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -43,8 +44,8 @@ Route::middleware('auth')->group(function () {
     // Group Routes
     Route::get('/groups', [GroupController::class, 'index'])->name('groups.index'); // View all groups
     Route::post('/groups', [GroupController::class, 'store'])->name('groups.store'); // Create a group
+    Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create');
     Route::get('/groups/{group}', [GroupController::class, 'show'])->name('groups.show'); // View specific group
-    Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create'); // create a group 
     Route::post('/groups/{group}/join', [GroupController::class, 'join'])->name('groups.join'); // Join a group
     Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave'); // Leave a group
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy'); // Delete a group
@@ -64,7 +65,6 @@ Route::middleware('auth')->group(function () {
 
     // Search for Friends
     Route::get('/friends/search', [FriendRequestController::class, 'search'])->name('friends.search');
-
 });
 
 require __DIR__.'/auth.php';

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\GroupMember;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
@@ -98,8 +99,55 @@ class GroupController extends Controller
 
         return redirect()->route('groups.index')->with('success', 'Group deleted successfully.');
     }
+
+    /**
+     * Show the form for creating a new group.
+     */
     public function create()
     {
         return view('groups.create'); //leads to the create group form
     }
+
+    /**
+     * Edit Group Information
+     */
+    public function edit(Group $group)
+    {
+        if ($group->creator_id !== Auth::id()) {
+            return redirect()->route('groups.index')->with('error', 'You do not have permission to edit this group.');
+        }
+
+        return view('groups.edit', ['group' => $group]);
+    }
+
+    /**
+     * Update Group.
+     */
+    public function update(Request $request, Group $group)
+    {
+        if ($group->creator_id !== Auth::id()) {
+            return redirect()->route('groups.index')->with('error', 'You do not have permission to update this group.');
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'is_private' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Allow image uploads
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('group_images', 'public');
+            $group->image = $imagePath;
+        }
+
+        $group->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'is_private' => $request->is_private ?? false,
+        ]);
+
+        return redirect()->route('groups.index')->with('success', 'Group updated successfully.');
+    }
+        
 }
