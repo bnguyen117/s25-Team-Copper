@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WhatIfController;
@@ -35,6 +36,11 @@ Route::middleware('auth')->group(function () {
     # Community Routes
     Route::get('/community', [CommunityController::class, 'index'])->name('community');
     //
+
+    # Dashboard Routes
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+    //
+
 });
 
 require __DIR__.'/auth.php';
