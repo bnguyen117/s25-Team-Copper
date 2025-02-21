@@ -91,15 +91,6 @@
         </div>
     </div>
 
-    <!-- Livewire Component -->
-    <div class="max-w-4xl mx-auto py-12">
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
-            <div class="text-gray-900 dark:text-gray-100">
-                @livewire('budget-form')
-            </div>
-        </div>
-    </div>
-
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
