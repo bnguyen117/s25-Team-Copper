@@ -65,6 +65,7 @@ class BudgetTable extends Component implements HasForms, HasTable
                     ->form($this->getFormFields())
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = Auth::id();
+                        $data['remaining_balance'] = $data['income'] - $data['expenses'] - $data['savings'];
                         return $data;
                     }),
             ])
@@ -146,12 +147,6 @@ class BudgetTable extends Component implements HasForms, HasTable
                 ->prefix('$'),
 
             TextInput::make('savings')
-                ->required()
-                ->numeric()
-                ->minValue(0)
-                ->prefix('$'),
-
-            TextInput::make('remaining_balance')
                 ->required()
                 ->numeric()
                 ->minValue(0)
