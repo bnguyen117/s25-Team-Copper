@@ -19,7 +19,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'display_name',
         'email',
+        'birthdate',
+        'avatar',
         'password',
     ];
 
@@ -65,14 +68,54 @@ class User extends Authenticatable
     {
         return $this->hasMany(FinancialGoal::class);
     }
-/**
+
+    /**
      * Set a one to many relationship
      * 
-     * Where one user can have many Financial Goals.
+     * Where one user can have many Budgets.
      */
     public function budgets()
     {
         return $this->hasMany(Budget::class);
     }
 
+    /**
+     * Set a one to many relationship
+     * 
+     * Where one user can have many Groups.
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'group_members');
+    }
+
+    /**
+     * Set a one to many relationship
+     * 
+     * Where one user can send many Friend Requests.
+     */
+    public function sentFriendRequests()
+    {
+        return $this->hasMany(FriendRequest::class, 'sender_id');
+    }
+
+    /**
+     * Set a one to many relationship
+     * 
+     * Where one user can receive many Friend Requests.
+     */
+    public function receivedFriendRequests()
+    {
+        return $this->hasMany(FriendRequest::class, 'receiver_id');
+    }
+
+    /**
+     * Set a one to many relationship
+     * 
+     * Where one user can have many Friends!  :)
+     */
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id');
+    }
 }

@@ -23,7 +23,19 @@ class BudgetResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('user_id')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('income')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('expenses')
+                    ->required()
+                    ->numeric(),
+                Forms\Components\TextInput::make('savings')
+                    ->numeric(),
+                Forms\Components\TextInput::make('remaining_balance')
+                    ->numeric(),
             ]);
     }
 
@@ -31,6 +43,22 @@ class BudgetResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('user_id')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('income')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('expenses')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('savings')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('remaining_balance')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
