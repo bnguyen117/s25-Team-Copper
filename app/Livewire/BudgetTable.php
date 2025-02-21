@@ -77,11 +77,7 @@ class BudgetTable extends Component implements HasForms, HasTable
                     ->button(),
             ])
             ->bulkActions([
-                BulkActionGroup::make([
-                    BulkAction::make('delete')
-                        ->requiresConfirmation()
-                        ->action(fn (Collection $records) => $records->each->delete())
-                ]),
+            //
             ]);
     }
 
