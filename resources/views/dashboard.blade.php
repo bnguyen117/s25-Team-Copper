@@ -20,8 +20,8 @@
                     This Month
                 </div>
                 <div class="flex items-center">
-                    <span class="w-3 h-3 bg-gray-300 inline-block rounded-full mr-1"></span>
-                    Remaining Budget
+                    <span class="w-3 h-3 bg-green-300 inline-block rounded-full mr-1"></span>
+                    Available Funds
                 </div>
             </div>
         </div>
@@ -103,18 +103,20 @@
             // Income Chart (Doughnut Chart)
             const ctxIncome = document.getElementById('incomeChart').getContext('2d');
 
-            const income = {{ $income  ?? 5812.37 }}; //Number in green is default if none
-            const budget = {{ $user->budget ?? 8000 }};  // Number in green is default if none
-            const remaining = budget - income;
-            const underBudget = remaining > 0 ? `$${remaining.toLocaleString()} under` : `$${Math.abs(remaining).toLocaleString()} over`;
+            //Following Const being called from the dashboard controller pulling from the debt table
+            const income = {{ $debt2  ?? 0 }}; //debt2 being called from the controller
+            const budget = {{ $user->budget ?? 8000 }}; //Pulling from the User Profile budget
+            const remaining = budget - income; //Formula for the remaining amount
+            const underBudget = remaining >= 0 ? `$${remaining.toLocaleString()} under` : `$${Math.abs(remaining).toLocaleString()} over`; //Making the text green or red if they are over or under budget
+            const chartData = remaining >= 0 ? [income, remaining] : [income, 0]; // If it is negative, the circle will be all red
 
             new Chart(ctxIncome, {
                 type: 'doughnut',
                 data: {
-                    labels: ["This Month", "Remaining Budget"],
+                    labels: ["This Month", "Available Funds"],
                     datasets: [{
-                        data: [income, remaining], 
-                        backgroundColor: ['#FF6384', '#D3D3D3'],
+                        data: chartData, 
+                        backgroundColor: ['#FF4747', '#4CAF50'],
                         borderWidth: 3
                     }]
                 },
@@ -122,7 +124,16 @@
                     cutout: '70%',
                     plugins: {
                         legend: { display: false },
-                        tooltip: { enabled: false }
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    let value = tooltipItem.raw.toLocaleString();
+                                    let label = tooltipItem.label;
+                                    return `${label}: $${value}`;
+                                }
+                            }
+                        }
                     }
                 },
                 plugins: [{
@@ -138,18 +149,18 @@
                         ctx.textBaseline = "middle";
                         ctx.textAlign = "center";
 
-                        let text1 = `$${income.toLocaleString()}`;
+                        let text1 = `$${remaining.toLocaleString()}`;
                         ctx.fillStyle = "#ffffff";
                         ctx.fillText(text1, width / 2, height / 2 - 15);
 
                         ctx.font = `normal ${(height / 16).toFixed(2)}px sans-serif`;
-                        let text2 = `of $${budget.toLocaleString()}`;
+                        let text2 = `Remaining of $${budget.toLocaleString()}`;
                         ctx.fillStyle = "#cccccc";
                         ctx.fillText(text2, width / 2, height / 2 + 5);
 
                         ctx.font = `normal ${(height / 18).toFixed(2)}px sans-serif`;
                         let text3 =  ' ${underBudget}';
-                        ctx.fillStyle = "#FF4747";
+                        ctx.fillStyle = remaining > 0 ? "#4CAF50" : "#FF4747";
                         ctx.fillText(text3, width / 2, height / 2 + 25);
 
                         ctx.restore();
@@ -159,18 +170,48 @@
 
             // Debt Chart (Bar Chart)
             const ctxDebt = document.getElementById('debtChart').getContext('2d');
+            const debtNames = {!! json_encode($debtChartData->pluck('name')) !!};
+            const debtAmounts = {!! json_encode($debtChartData->pluck('amount')) !!};
+
             new Chart(ctxDebt, {
                 type: 'bar',
                 data: {
-                    labels: ["January", "February", "March", "April", "May"],
+                    labels: debtNames,
                     datasets: [{
                         label: 'Debt Amount ($)',
-                        data: [1000, 1200, 900, 1100, 950],
+                        data: debtAmounts,
                         backgroundColor: '#ff6384',
                     }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            onClick: function(e) {
+                                // Disable clicking on legend items
+                                e.stopPropagation();
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Amount ($)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Debt Name'
+                            }
+                        }
+                    }
                 }
             });
         });
     </script>
-
+    
 </x-app-layout>
