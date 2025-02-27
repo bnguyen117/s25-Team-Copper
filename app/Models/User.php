@@ -22,6 +22,7 @@ class User extends Authenticatable
         'display_name',
         'email',
         'birthdate',
+        'budget',
         'avatar',
         'password',
     ];

@@ -23,10 +23,6 @@
                     <span class="w-3 h-3 bg-gray-300 inline-block rounded-full mr-1"></span>
                     Remaining Budget
                 </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 bg-orange-400 inline-block rounded-full mr-1"></span>
-                    Last Month
-                </div>
             </div>
         </div>
         
@@ -107,19 +103,18 @@
             // Income Chart (Doughnut Chart)
             const ctxIncome = document.getElementById('incomeChart').getContext('2d');
 
-            const income = {{ $income ?? 5812.37 }};
-            const budget = {{ $budget ?? 8000 }};
-            const lastMonth = {{ $lastMonth ?? 6000 }};
+            const income = {{ $income  ?? 5812.37 }}; //Number in green is default if none
+            const budget = {{ $user->budget ?? 8000 }};  // Number in green is default if none
             const remaining = budget - income;
             const underBudget = remaining > 0 ? `$${remaining.toLocaleString()} under` : `$${Math.abs(remaining).toLocaleString()} over`;
 
             new Chart(ctxIncome, {
                 type: 'doughnut',
                 data: {
-                    labels: ["This Month", "Remaining Budget", "Last Month"],
+                    labels: ["This Month", "Remaining Budget"],
                     datasets: [{
-                        data: [income, remaining, lastMonth], 
-                        backgroundColor: ['#FF6384', '#D3D3D3', '#FFA500'],
+                        data: [income, remaining], 
+                        backgroundColor: ['#FF6384', '#D3D3D3'],
                         borderWidth: 3
                     }]
                 },
