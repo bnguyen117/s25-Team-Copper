@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Debt;
+use App\Models\FinancialGoal;
+
 
 class DashboardController extends Controller
 {
@@ -34,12 +36,25 @@ class DashboardController extends Controller
             ];
         });
 
+        // Retrieve the latest active financial goal
+        $financeGoal = FinancialGoal::where('user_id', $user->id)
+            ->where('status', 'active')
+            ->latest()
+            ->first();
+
+        $goalName = $financeGoal ? $financeGoal->goal_name : 'No Goal Set';
+        $targetAmount = $financeGoal ? $financeGoal->target_amount : 1; // Prevent division by zero
+        $currentAmount = $financeGoal ? $financeGoal->current_amount : 0;
+        $goalProgress = $targetAmount > 0 ? round(($currentAmount / $targetAmount) * 100) : 0;
+
         return view('dashboard', [
             'user' => $user,
             'debts' => $debts,
             'debt' => $totalDebt, // Pass the total debt to the view
             'debt2' => $totalMinimumPayments,
             'debtChartData' => $debtChartData,
+            'goalName' => $goalName,
+            'goalProgress' => $goalProgress,
         ]);
     }
 }
