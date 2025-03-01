@@ -15,6 +15,7 @@ class Debt extends Model
         'minimum_payment',
         'description',
         'due_date',
+        'category',
     ];
 
     /**

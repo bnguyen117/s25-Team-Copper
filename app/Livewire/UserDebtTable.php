@@ -26,6 +26,8 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+
 
 // Filament Support
 use Filament\Support\Enums\FontWeight;
@@ -151,6 +153,20 @@ class UserDebtTable extends Component implements HasForms, HasTable
                 ->minValue(0)
                 ->maxValue(99.99)
                 ->rule('decimal:2'),
+
+            Select::make('category') // Dropdown Added Here
+                ->required()
+                ->label('Category')
+                ->options([
+                    'Credit Card' => 'Credit Card',
+                    'Student Loan' => 'Student Loan',
+                    'Auto Loan' => 'Auto Loan',
+                    'Mortgage' => 'Mortgage',
+                    'Personal Loan' => 'Personal Loan',
+                    'Medical Debt' => 'Medical Debt',
+                    'Other' => 'Other'
+            ])
+            ->default('Other'),
 
             TextInput::make('minimum_payment')
                 ->numeric()
