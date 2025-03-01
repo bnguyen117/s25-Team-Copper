@@ -36,6 +36,11 @@ class DashboardController extends Controller
             ];
         });
 
+        // Retrieve the distinct categories for the logged-in user
+        $categories = Debt::where('user_id', $user->id)
+            ->distinct()
+            ->pluck('category');
+
         // Retrieve the latest active financial goal
         $financeGoal = FinancialGoal::where('user_id', $user->id)
             ->where('status', 'active')
@@ -55,6 +60,7 @@ class DashboardController extends Controller
             'debtChartData' => $debtChartData,
             'goalName' => $goalName,
             'goalProgress' => $goalProgress,
+            'categories' => $categories,
         ]);
     }
 }

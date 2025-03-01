@@ -26,10 +26,10 @@
                 </div>
             </div>
             
-            <!-- New Donut Chart -->
+            <!-- Debt Breakdown Chart -->
             <div class="w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 border-b pb-2">Debt Breakdown</h3>
-                <canvas id="debtBreakdownChart" class="mx-auto mt-4"></canvas>
+                <canvas id="debtBreakdownChart" class="w-[200px] h-[200px] mx-auto p-4" width="210" height="210"></canvas>
             </div>
         </div>
 
@@ -132,7 +132,7 @@
                                 label: function(tooltipItem) {
                                     let value = tooltipItem.raw.toLocaleString();
                                     let label = tooltipItem.label;
-                                    return `${label}: $${value}`;
+                                    return `${label}: ${value}`;
                                 }
                             }
                         }
@@ -169,7 +169,7 @@
                     }
                 }]
             });
-
+            
             // Debt Chart (Bar Chart)
             const ctxDebt = document.getElementById('debtChart').getContext('2d');
             const debtNames = {!! json_encode($debtChartData->pluck('name')) !!};
@@ -214,6 +214,61 @@
                 }
             });
         });
+        // Debt Breakdown Chart (Doughnut Chart with Interactive Legend)
+const ctxDebtBreakdown = document.getElementById('debtBreakdownChart').getContext('2d');
+
+// Fetching debt data from the backend
+const categories = {!! json_encode($categories) !!};
+const debtData = {!! json_encode($debtChartData->pluck('amount', 'name')) !!};
+const debtAmounts = {!! json_encode($debtChartData->pluck('amount')) !!};
+const totalDebt = debtAmounts.reduce((acc, debt) => acc + debt, 0);
+const debtPercentages = debtAmounts.map(debtAmounts => (debtAmounts / totalDebt * 100).toFixed(2));
+
+
+const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
+    type: 'doughnut',
+    data: {
+        labels: categories,
+        datasets: [{
+            data: debtAmounts,
+            backgroundColor:  ['#FF4747', '#36A2EB', '#FF7043', '#9C27B0', '#FFEB3B', '#8BC34A', '#FFC107'],
+            borderWidth: 3
+        }]
+    },
+    options: {
+        cutout: '70%',
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                        font:{
+                            size: 14,}
+                },
+                onClick: (e, legendItem, legend) => {
+                    const index = legendItem.index;
+                    const chart = legend.chart;
+                    chart.toggleDataVisibility(index);
+                    chart.update();
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (tooltipItem) {
+                        let value = tooltipItem.raw.toLocaleString();
+                        let label = tooltipItem.label;
+                        let percentage = debtPercentages[tooltipItem.dataIndex];
+                        return `${label}: $${value} (${percentage}%)`;
+                    }
+                }
+            }
+        }
+    }
+});
     </script>
     
 </x-app-layout>
