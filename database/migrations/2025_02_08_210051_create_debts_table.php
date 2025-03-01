@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('debt_name');
             $table->decimal('amount', 10, 2);
             $table->decimal('interest_rate', 4, 2);
-            $table->enum('category', ['Credit Card', 'Student Loan', 'Auto Loan', 'Mortgage', 'Personal Loan', 'Medical Debt', 'Other'])->default('Other');
             $table->decimal('minimum_payment', 10, 2)->nullable();
             $table->text('description')->nullable();
             $table->date('due_date')->nullable();
