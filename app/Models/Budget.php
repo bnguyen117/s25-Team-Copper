@@ -10,8 +10,10 @@ class Budget extends Model
     protected $fillable = [
         'user_id',
         'income',
-        'expenses',
-        'savings',
+        'rent_payment',
+        'car_payment',
+        'recommended_savings',
+        'addtl_savings',
         'remaining_balance',
     ];
 
@@ -26,5 +28,7 @@ class Budget extends Model
     }
 
     // If you want to ensure that created_at and updated_at timestamps are managed by Eloquent, leave them enabled (default is true)
-    public $timestamps = true;
+
+    // Do we really need timestamps here?
+    // public $timestamps = true;
 }

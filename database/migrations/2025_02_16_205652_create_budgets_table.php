@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // to associate the budget with a user
             $table->decimal('income', 10, 2);
-            $table->decimal('expenses', 10, 2);
-            $table->decimal('savings', 10, 2)->nullable();
-            $table->decimal('remaining_balance', 10, 2)->nullable();
+            $table->decimal('rent_payment', 10, 2);
+            $table->decimal('car_payment', 10, 2)->default(0);
+            $table->decimal('reccomended_savings', 10, 2)->default(0);
+            $table->decimal('addtl_savings', 10, 2)->default(0);
+            $table->decimal('remaining_balance', 10, 2)->default(0);
             $table->timestamps();
         });
     }

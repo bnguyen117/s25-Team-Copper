@@ -40,20 +40,18 @@ class BudgetTable extends Component implements HasForms, HasTable
         return $table
             ->query(Budget::where('user_id', Auth::id()))
             ->heading('Budgets')
-            ->paginated(false)
+            ->paginated(true)
             ->columns([
                 Tables\Columns\TextColumn::make('income')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('expenses')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
+                Tables\Columns\TextColumn::make('rent_payment')
+                    ->numeric(),
+                Tables\Columns\TextColumn::make('car_payment')
+                    ->numeric(),
                 Tables\Columns\TextColumn::make('savings')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
                 Tables\Columns\TextColumn::make('remaining_balance')
-                    ->numeric()
-                    ->sortable(),
+                    ->numeric(),
             ])
             ->filters([
                 //
@@ -65,7 +63,6 @@ class BudgetTable extends Component implements HasForms, HasTable
                     ->form($this->getFormFields())
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = Auth::id();
-                        $data['remaining_balance'] = $data['income'] - $data['expenses'] - $data['savings'];
                         return $data;
                     }),
             ])
@@ -99,24 +96,16 @@ class BudgetTable extends Component implements HasForms, HasTable
                         ->sortable()
                         ->weight(FontWeight::Medium),
 
-                    TextColumn::make('expenses')
+                    TextColumn::make('rent_payment')
                         ->numeric()
-                        ->description('Monthly Expenses', position: 'above')
+                        ->description('Monthly Rent', position: 'above')
                         ->money('usd')
                         ->sortable()
                         ->weight(FontWeight::Medium),
 
-                    TextColumn::make('savings')
+                    TextColumn::make('car_payment')
                         ->numeric()
-                        ->description('Monthly Savings', position: 'above')
-                        ->money('usd')
-                        ->sortable()
-                        ->weight(FontWeight::Medium),
-
-                    // Note: Will not be user-entered after testing
-                    TextColumn::make('remaining_balance')
-                        ->numeric()
-                        ->description('Remaining Balance', position: 'above')
+                        ->description('Monthly Car Payment', position: 'above')
                         ->money('usd')
                         ->sortable()
                         ->weight(FontWeight::Medium),
@@ -140,13 +129,13 @@ class BudgetTable extends Component implements HasForms, HasTable
                 ->minValue(0)
                 ->prefix('$'),
 
-            TextInput::make('expenses')
+            TextInput::make('rent_payment')
                 ->required()
                 ->numeric()
                 ->minValue(0)
                 ->prefix('$'),
 
-            TextInput::make('savings')
+            TextInput::make('car_payment')
                 ->required()
                 ->numeric()
                 ->minValue(0)
