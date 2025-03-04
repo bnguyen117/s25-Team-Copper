@@ -58,11 +58,6 @@ class WhatIfForm extends Component implements HasForms
                     'Algo2' => 'What if I increase my monthly payment?',
                     'Algo3' => 'What if I decrease my income?',
                 ])
-                ->required(),
-                Toggle::make('ai_suggestion')
-                ->onColor('gray')
-                ->offIcon('heroicon-m-arrow-right')
-                ->onIcon('heroicon-m-bolt'),
                 // ...
                 ]);
     }
