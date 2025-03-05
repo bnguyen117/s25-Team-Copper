@@ -36,7 +36,7 @@ class WhatIfAnalysisService
                 'month' => $currentMonth,
                 'balance' => max(0, $remainingBalance),
                 'interest_paid' => $monthlyInterest,
-                'principle_paid' => $monthlyPrincipal,
+                'principal_paid' => $monthlyPrincipal,
             ];
 
             if ($remainingBalance <= 0) {                                           // Break immediatley if debt is paid off
