@@ -76,7 +76,6 @@ class WhatIfForm extends Component implements HasForms
                 ->options([
                     'algo1' => 'What if my interest rate changes?',
                     'algo2' => 'What if I change my monthly payment?',
-                    'algo3' => 'What if I decrease my income?',
                 ])
                 -> reactive()                                                   // Allows the selected algo to control visibility of other fields                      
                 -> required(),
