@@ -1,4 +1,5 @@
 
+<!-- The What-If Analysis Form with Built in Result Card -->
 <div class="max-w-4xl mx-auto py-8">
     <!-- Container for the What-If Analysis form -->
      <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-xl rounded-xl p-6 mb-8">
@@ -19,7 +20,7 @@
                 type="submit" 
                 class="px-6 py-2 bg-blue-600 text-white rounded-lg
                  hover:bg-blue-700 transition-colors duration-200">
-                    Generate Your Report
+                    Generate Report
                 </button>
 
                 <!-- Button to clear the form using the clearForm() method -->
@@ -35,7 +36,7 @@
         </form>
      </div>
 
-    <!-- Displays results card if there is a result -->
+    <!-- Display results card under the form -->
     @if($result)
         <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-xl rounded-xl p-6">
 
@@ -47,14 +48,8 @@
             
             <!-- Else if result holds a report, display it -->
             @else
-                <!-- Include the algorithm-specific report header and summary grid -->
-                @include('livewire.what-if-reports.'.$result['what_if_algorithm'])
-
-                <!-- Include the timeline table -->
-                @include('livewire.what-if-tables.timeline-table')
-
-                <!-- Chart import with `chartData` set as `$result -->
-                @livewire(\App\Filament\Widgets\DebtRepaymentChart::class, ['chartData' => $result])
+                <!-- Display the report -->
+                @include('livewire.what-if.partials.report-display')
             @endif
         </div>
     @endif

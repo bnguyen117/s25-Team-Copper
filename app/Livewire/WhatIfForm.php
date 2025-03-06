@@ -3,6 +3,7 @@
 namespace App\Livewire;
  
 use App\Services\WhatIfAnalysisService;
+use App\Models\WhatIfReport;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -29,7 +30,7 @@ class WhatIfForm extends Component implements HasForms
     public $financial_goal;
 
     // Chosen WhatIf Algorithm
-    public $what_if_algorithm;
+    public $algorithm;
 
     // New interest rate input for algo 1
     public $new_interest_rate;
@@ -72,10 +73,10 @@ class WhatIfForm extends Component implements HasForms
                 ->options(fn () => $this->getCurrentUserGoals())                // Reference the getCurrentUserGoals method
                 ->required(),
 
-                Select::make('what_if_algorithm')                               // A list of what what-if algorithms
+                Select::make('algorithm')                                       // A list of what what-if algorithms
                 ->options([
-                    'algo1' => 'What if my interest rate changes?',
-                    'algo2' => 'What if I change my monthly payment?',
+                    'interest-rate' => 'What if my interest rate changes?',
+                    'payment-change' => 'What if I change my monthly payment?',
                 ])
                 -> reactive()                                                   // Allows the selected algo to control visibility of other fields                      
                 -> required(),
@@ -86,15 +87,15 @@ class WhatIfForm extends Component implements HasForms
                 TextInput::make('new_interest_rate')
                 ->type('number')
                 ->label('New Interest Rate (%)')
-                ->visible(fn ($get) => $get('what_if_algorithm') === 'algo1')   // Only visible if algo1 is selected
-                ->required(fn ($get) => $get('what_if_algorithm') === 'algo1')  // Only required if algo1 is selected
+                ->visible(fn ($get) => $get('algorithm') === 'interest-rate')   // Only visible if algo1 is selected
+                ->required(fn ($get) => $get('algorithm') === 'interest-rate')  // Only required if algo1 is selected
                 ->minValue(0)
                 ->maxValue(100),
 
                 TextInput::make('new_monthly_payment')
                 ->type('number')
-                ->visible(fn ($get) => $get('what_if_algorithm') === 'algo2')   // Only visible if algo2 is selected
-                ->required(fn ($get) => $get('what_if_algorithm') === 'algo2')  // Only required if algo2 is selected
+                ->visible(fn ($get) => $get('algorithm') === 'payment-change')  // Only visible if algo2 is selected
+                ->required(fn ($get) => $get('algorithm') === 'payment-change') // Only required if algo2 is selected
                 ->minValue(0),                                                  
                 ]);
     }
@@ -107,24 +108,41 @@ class WhatIfForm extends Component implements HasForms
         $state = $this->form->getState();                                       // Stores the form's field info into an array
         $service = new WhatIfAnalysisService();                                 // Create a whatIfAnalysisService object
 
-        if ($state['what_if_algorithm'] === 'algo1') {                          // If the chosen algorithm is algo1
+        if ($state['algorithm'] === 'interest-rate') {                          // If the chosen algorithm is algo1
             $this->analysis_result = $service->changeInterestRateScenario(      // Calls algo1 method and stores results
                 $state['debt_name'],                                            
                 $state['new_interest_rate'],                                   
                 $state['monthly_income'],
                 $state['monthly_expenses']
             );
-            $this->analysis_result['what_if_algorithm'] = 'algo1';              // Saves the algorithm chosen within the result
+            $this->analysis_result['algorithm'] = 'interest-rate';              // Saves the algorithm chosen within the result
         } 
         
-        elseif ($state['what_if_algorithm'] === 'algo2') {                      // If the chosen algorithm is algo2
+        elseif ($state['algorithm'] === 'payment-change') {                     // If the chosen algorithm is algo2
             $this->analysis_result = $service->changeMonthlyPaymentScenario(    // Calls algo2 method and stores results
                 $state['debt_name'],                                            
                 $state['new_monthly_payment'],                                   
                 $state['monthly_income'],
                 $state['monthly_expenses']
             );
-            $this->analysis_result['what_if_algorithm'] = 'algo2';              // Saves the algorithm chosen within the result
+            $this->analysis_result['algorithm'] = 'payment-change';             // Saves the algorithm chosen within the result
+        }
+
+        // Save the report to the database if no error occurred.
+        if (!isset($this->analysis_result['error'])) {
+            WhatIfReport::create([
+                'user_id' => Auth::id(),
+                'debt_id' => $state['debt_name'],
+                'algorithm' => $this->analysis_result['algorithm'],
+                'original_amount' => $this->analysis_result['original_amount'],
+                'current_payment' => $this->analysis_result['current_payment'],
+                'minimum_payment' => $this->analysis_result['minimum_payment'] ?? null,
+                'new_interest_rate' => $this->analysis_result['new_interest_rate'] ?? null,
+                'new_payment' => $this->analysis_result['new_payment'] ?? null,
+                'total_months' => $this->analysis_result['total_months'],
+                'total_interest_paid' => $this->analysis_result['total_interest_paid'],
+                'timeline' => $this->analysis_result['timeline'],
+            ]);
         }
     }
 
@@ -133,7 +151,7 @@ class WhatIfForm extends Component implements HasForms
      */
     public function render(): View
     {
-        return view('livewire.what-if-form', ['result' => $this->analysis_result]);// Passes analysis_result as 'result' to the view
+        return view('livewire.what-if.form', ['result' => $this->analysis_result]);// Passes analysis_result as 'result' to the view
     }
 
     /**
