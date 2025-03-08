@@ -174,6 +174,7 @@
             const ctxDebt = document.getElementById('debtChart').getContext('2d');
             const debtNames = {!! json_encode($debtChartData->pluck('name')) !!};
             const debtAmounts = {!! json_encode($debtChartData->pluck('amount')) !!};
+            const palette = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
 
             new Chart(ctxDebt, {
                 type: 'bar',
@@ -182,7 +183,10 @@
                     datasets: [{
                         label: 'Debt Amount ($)',
                         data: debtAmounts,
-                        backgroundColor: '#ff6384',
+                        backgroundColor: debtNames.map((_, i) => palette[i % palette.length]),
+                        borderColor: debtNames.map((_, i) => palette[i % palette.length]),
+                        borderWidth: 1,
+                        borderRadius: 8, // Rounded corners for a smoother look
                     }]
                 },
                 options: {
@@ -217,12 +221,13 @@
         // Debt Breakdown Chart (Doughnut Chart with Interactive Legend)
 const ctxDebtBreakdown = document.getElementById('debtBreakdownChart').getContext('2d');
 
-// Fetching debt data from the backend
+// Aggregated data for the debt breakdown chart
 const categories = {!! json_encode($categories) !!};
-const debtData = {!! json_encode($debtChartData->pluck('amount', 'name')) !!};
-const debtAmounts = {!! json_encode($debtChartData->pluck('amount')) !!};
+const debtAmounts = {!! json_encode($debtAmounts) !!};
+
+// Calculate total debt from the aggregated amounts
 const totalDebt = debtAmounts.reduce((acc, debt) => acc + debt, 0);
-const debtPercentages = debtAmounts.map(debtAmounts => (debtAmounts / totalDebt * 100).toFixed(2));
+const debtPercentages = debtAmounts.map(amount => ((amount / totalDebt) * 100).toFixed(2));
 
 
 const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
