@@ -104,6 +104,13 @@ class UserDebtTable extends Component implements HasForms, HasTable
                         ->sortable()
                         ->weight(FontWeight::Medium),
 
+                    TextColumn::make('monthly_payment')
+                        ->numeric()
+                        ->description('Monthly Payment', position: 'above')
+                        ->money('usd')
+                        ->sortable()
+                        ->weight(FontWeight::Medium),
+
                     TextColumn::make('interest_rate')
                         ->numeric()
                         ->description('Interest Rate', position: 'above')
@@ -141,11 +148,21 @@ class UserDebtTable extends Component implements HasForms, HasTable
         return
         [
             TextInput::make('debt_name')
+                ->placeholder("Your debt's name")
                 ->required(),
 
             TextInput::make('amount')
                 ->required()
                 ->numeric()
+                ->placeholder('Your total debt amount')
+                ->minValue(0)
+                ->maxValue(99999999.99)
+                ->prefix('$'),
+            
+            TextInput::make('monthly_payment')
+                ->numeric()
+                ->required()
+                ->placeholder('Your planned monthly payment')
                 ->minValue(0)
                 ->maxValue(99999999.99)
                 ->prefix('$'),
@@ -153,6 +170,7 @@ class UserDebtTable extends Component implements HasForms, HasTable
             TextInput::make('interest_rate')
                 ->required()
                 ->numeric()
+                ->placeholder('Your annual interest rate')
                 ->suffix('%')
                 ->minValue(0)
                 ->maxValue(99.99)
@@ -175,6 +193,7 @@ class UserDebtTable extends Component implements HasForms, HasTable
             TextInput::make('minimum_payment')
                 ->required()
                 ->numeric()
+                ->placeholder('Your minimum required monthly payment')
                 ->prefix('$')
                 ->minValue(0)
                 ->maxValue('99999999.99'),

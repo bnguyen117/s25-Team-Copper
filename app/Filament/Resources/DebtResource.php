@@ -32,8 +32,16 @@ class DebtResource extends Resource
                     ->minValue(0)
                     ->maxValue(99999999.99)
                     ->prefix('$'),
+                Forms\Components\TextInput::make('monthly_payment')
+                    ->numeric()
+                    ->required()
+                    ->placeholder('Your current monthly payment')
+                    ->minValue(0)
+                    ->maxValue(99999999.99)
+                    ->prefix('$'),
                 Forms\Components\TextInput::make('interest_rate')
                     ->numeric()
+                    ->required()
                     ->minValue(0)
                     ->MaxValue(99.99)
                     ->rule('decimal:2')
@@ -61,6 +69,10 @@ class DebtResource extends Resource
                     ->label('Debt Name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('amount')
+                    ->numeric()
+                    ->sortable()
+                    ->prefix('$'),
+                Tables\Columns\TextColumn::make('monthly_payment')
                     ->numeric()
                     ->sortable()
                     ->prefix('$'),
