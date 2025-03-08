@@ -176,7 +176,7 @@ class UserDebtTable extends Component implements HasForms, HasTable
                 ->maxValue(99.99)
                 ->rule('decimal:2'),
 
-            Select::make('category') // Dropdown Added Here
+            Select::make('category')
                 ->required()
                 ->label('Category')
                 ->options([

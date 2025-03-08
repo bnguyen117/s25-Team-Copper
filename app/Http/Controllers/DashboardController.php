@@ -22,7 +22,7 @@ class DashboardController extends Controller
         $debts = Debt::where('user_id', $user->id)->get();
 
         // Calculate the total sum of minimum payments
-        $totalMinimumPayments = $debts->sum('minimum_payment');
+        $totalMinimumPayments = $debts->sum('monthly_payment');
 
         // Calculate total debt amount
         $totalDebt = $debts->sum('amount');
@@ -32,7 +32,7 @@ class DashboardController extends Controller
             return [
                 'name' => $debt->debt_name,
                 'amount' => $debt->amount,
-                'minimum_payment' => $debt->minimum_payment,
+                'monthly_payment' => $debt->monthly_payment,
             ];
         });
 
