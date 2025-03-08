@@ -173,6 +173,7 @@ class UserDebtTable extends Component implements HasForms, HasTable
             ->default('Other'),
 
             TextInput::make('minimum_payment')
+                ->required()
                 ->numeric()
                 ->prefix('$')
                 ->minValue(0)
