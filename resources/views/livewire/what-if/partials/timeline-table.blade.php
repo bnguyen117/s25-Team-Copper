@@ -19,9 +19,10 @@
 
           <!-- The Header Row of the Table -->
           <thead class="sticky top-0 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-              <tr>
+              <tr class="hidden md:table-row">
                   <th class="px-4 py-2 text-left">Month</th>
-                  <th class="px-4 py-2 text-right">Balance</th>
+                  <th class="px-4 py-2 text-right">Remaining Balance</th>
+                  <th class="px-4 py-2 text-right">Principal Paid</th>
                   <th class="px-4 py-2 text-right">Interest Paid</th>
               </tr>
           </thead>
@@ -29,11 +30,20 @@
           <!-- Iterates over each entry in the timline array -->
           <tbody>
               @foreach($report->timeline as $entry)
-              <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td class="px-4 py-2">{{ $entry['month'] }}</td>
-                  <td class="px-4 py-2 text-right">${{ number_format($entry['balance'], 2) }}</td>
-                  <td class="px-4 py-2 text-right">${{ number_format($entry['interest_paid'], 2) }}</td>
-              </tr>
+              <tr class="md:table-row block md:border-b hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td class="md:table-cell block px-2 py-1 border-t md:border-t-0">
+                    <span class="md:hidden font-semibold">Month: </span>{{ $entry['month'] }}
+                </td>
+                <td class="md:table-cell block px-2 py-1 text-right md:text-right">
+                    <span class="md:hidden font-semibold">Balance: </span>${{ number_format($entry['balance'], 2) }}
+                </td>
+                <td class="md:table-cell block px-2 py-1 text-right md:text-right">
+                    <span class="md:hidden font-semibold">Principal Paid: </span>${{ number_format($entry['principal_paid'], 2) }}
+                </td>
+                <td class="md:table-cell block px-2 py-1 text-right md:text-right">
+                    <span class="md:hidden font-semibold">Interest Paid: </span>${{ number_format($entry['interest_paid'], 2) }}
+                </td>
+            </tr>
               @endforeach
           </tbody>
       </table>
