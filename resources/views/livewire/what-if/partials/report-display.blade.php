@@ -1,5 +1,3 @@
-
-
 <!-- 
     Renders the:
     1. WhatIfReport header and grid summary.
@@ -15,10 +13,8 @@
 
 <!-- Chart displaying repayment trends over time -->
 <div class="mt-4">
-    <div class="chart-wrapper">
         @livewire(\App\Filament\Widgets\DebtRepaymentChart::class, ['chartData' => $report])
         <style>
-            .chart-wrapper canvas { height: 50vh !important; }
+             canvas { height: 50vh !important; }
         </style>
-    </div>
 </div>
