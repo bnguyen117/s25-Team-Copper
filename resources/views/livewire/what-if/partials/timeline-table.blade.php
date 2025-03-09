@@ -1,49 +1,88 @@
-
-<!--
-    A view that holds the design for a timeline table that
-    that displays Remaining balance and interest paid monthly
-    over a debt repayment period.
--->
-
 <!-- Timeline Table -->
 <div class="mb-6">
-
-    <!-- Table Header -->
+    <!-- Header above the table -->
     <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Repayment Timeline</h3>
   
-    <!-- Table wrapper -->
-    <div class="max-h-64 overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700">
+    <!-- Defines the container that will hold the table -->
+    <div class="max-h-72 overflow-y-auto rounded-xl shadow-sm bg-white dark:bg-gray-900">
 
-      <!-- The table -->
-      <table class="w-full text-sm text-gray-700 dark:text-gray-300">
+      <!-- Defines the tables structure within its container -->
+      <table class="w-full text-sm font-medium text-gray-800 dark:text-gray-200">
 
-          <!-- The Header Row of the Table -->
-          <thead class="sticky top-0 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+          <!-- Defines the container for the Header row of the Table that displays the column labels -->
+          <thead class="sticky top-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+
+              <!--Header row that is hidden on devices less than 768px wide -->  
               <tr class="hidden md:table-row">
-                  <th class="px-4 py-2 text-left">Month</th>
-                  <th class="px-4 py-2 text-right">Remaining Balance</th>
-                  <th class="px-4 py-2 text-right">Principal Paid</th>
-                  <th class="px-4 py-2 text-right">Interest Paid</th>
+                  <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Month</th>
+                  <th class="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">Principal Paid</th>
+                  <th class="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">Interest Paid</th>
+                  <th class="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">Remaining Balance</th>
               </tr>
           </thead>
           
-          <!-- Iterates over each entry in the timline array -->
+          <!-- Defines the content rows of the table's body -->
           <tbody>
-              @foreach($report->timeline as $entry)
-              <tr class="md:table-row block md:border-b hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td class="md:table-cell block px-2 py-1 border-t md:border-t-0">
-                    <span class="md:hidden font-semibold">Month: </span>{{ $entry['month'] }}
-                </td>
-                <td class="md:table-cell block px-2 py-1 text-right md:text-right">
-                    <span class="md:hidden font-semibold">Balance: </span>${{ number_format($entry['balance'], 2) }}
-                </td>
-                <td class="md:table-cell block px-2 py-1 text-right md:text-right">
-                    <span class="md:hidden font-semibold">Principal Paid: </span>${{ number_format($entry['principal_paid'], 2) }}
-                </td>
-                <td class="md:table-cell block px-2 py-1 text-right md:text-right">
-                    <span class="md:hidden font-semibold">Interest Paid: </span>${{ number_format($entry['interest_paid'], 2) }}
-                </td>
-            </tr>
+
+            <!-- for every entry in the timeline array within report -->
+            @foreach($report->timeline as $entry)
+
+                <!-- Defines a table row, block on Mobile, row on Desktop -->
+                <tr class="md:table-row block transition-colors hover:bg-gray-50 dark:hover:bg-gray-600">
+
+                  <!-- 
+                        Mobile: Single cell stacking all label-value pairs vertically with labels left and values right.
+                        Desktop: Hidden
+                   -->
+                    <td class="block md:hidden px-3 py-2 border-t border-gray-100 dark:border-gray-800">
+
+                        <!-- 
+                            Mobile layout for all of the data within this single cell.
+                            Hidden on Desktop.
+                        -->
+                        <div class="flex flex-col gap-2">
+
+                            <!-- Month: label to the left, month value to the right -->
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-gray-700 dark:text-gray-300">Month:</span>
+                                <span class="text-gray-900 dark:text-gray-100">{{ $entry['month'] }}</span>
+                            </div>
+
+                            <!-- Principal Paid: label to the left, principal_paid value to the right -->
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-gray-700 dark:text-gray-300">Principal Paid:</span>
+                                <span class="text-gray-900 dark:text-gray-100">${{ number_format($entry['principal_paid'], 2) }}</span>
+                            </div>
+
+                            <!-- Interest Paid: label to the left, interest_paid value to the right -->
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-gray-700 dark:text-gray-300">Interest Paid:</span>
+                                <span class="text-gray-900 dark:text-gray-100">${{ number_format($entry['interest_paid'], 2) }}</span>
+                            </div>
+
+                            <!-- Remaining Balance: label to the left, balance value to the right -->
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-gray-700 dark:text-gray-300">Remaining Balance:</span>
+                                <span class="text-gray-900 dark:text-gray-100">${{ number_format($entry['balance'], 2) }}</span>
+                            </div>
+                            
+                        </div>
+                    </td>
+
+                  <!-- Desktop-only cells -->
+                  <td class="hidden md:table-cell px-4 py-2 text-left text-gray-900 dark:text-gray-100">
+                      {{ $entry['month'] }}
+                  </td>  
+                  <td class="hidden md:table-cell px-4 py-2 text-right text-gray-900 dark:text-gray-100">
+                      ${{ number_format($entry['principal_paid'], 2) }}
+                  </td>
+                  <td class="hidden md:table-cell px-4 py-2 text-right text-gray-900 dark:text-gray-100">
+                      ${{ number_format($entry['interest_paid'], 2) }}
+                  </td>
+                  <td class="hidden md:table-cell px-4 py-2 text-right text-gray-900 dark:text-gray-100">
+                      ${{ number_format($entry['balance'], 2) }}
+                  </td>
+              </tr>
               @endforeach
           </tbody>
       </table>
