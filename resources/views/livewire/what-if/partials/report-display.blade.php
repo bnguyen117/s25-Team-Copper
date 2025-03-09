@@ -15,8 +15,10 @@
 
 <!-- Chart displaying repayment trends over time -->
 <div class="mt-4">
+    <div class="chart-wrapper">
         @livewire(\App\Filament\Widgets\DebtRepaymentChart::class, ['chartData' => $report])
         <style>
-             canvas { height: 50vh; }
+            .chart-wrapper canvas { height: 50vh !important; }
         </style>
+    </div>
 </div>
