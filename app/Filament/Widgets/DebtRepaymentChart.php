@@ -4,15 +4,10 @@ namespace App\Filament\Widgets;
 
 use Filament\Widgets\ChartWidget;
 
-
-/**
- * Renders a line chart showing debt repayment trends over time
- */
 class DebtRepaymentChart extends ChartWidget
 {
-    // Chart's title
     protected static ?string $heading = 'Debt Repayment Timeline';
-
+    
     // Holds the result of the WhatIf Analysis
     public $chartData;
 
@@ -41,7 +36,13 @@ class DebtRepaymentChart extends ChartWidget
                     'label' => 'Interest Paid',                                         // Label displayed inthe legend
                     'data' => array_map(fn ($entry) => $entry['interest_paid'], $timeline), // Monthly Interest values
                     'borderColor' => '#FF9800',                                         // Orange line color
-                    'fill' => false,                                                    // Do not fill under the line
+                    'fill' => false,
+                ],
+                [
+                    'label' => 'Principal Paid',
+                    'data' => array_map(fn ($entry) => $entry['principal_paid'], $timeline),
+                    'borderColor' => '#4CAF50',
+                    'fill' => false,
                 ],
             ],
             'labels' => array_map(fn ($entry) => "Month {$entry['month']}", $timeline), // Monthly labels on the x-axis of the chart
@@ -50,6 +51,43 @@ class DebtRepaymentChart extends ChartWidget
 
     protected function getType(): string
     {
-        return 'line';                                                                  // The chart is of type line
+        return 'line';
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'responsive' => true,
+            'maintainAspectRatio' => false,
+            'plugins' => [
+                'legend' => [
+                    'display' => true,
+                    'position' => 'top',
+                    'labels' => [
+                        'font' => [
+                            'size' => 12,
+                        ],
+                    ],
+                ],
+            ],
+            'scales' => [
+                'x' => [
+                    'ticks' => [
+                        'maxRotation' => 45,
+                        'minRotation' => 45,
+                        'font' => [
+                            'size' => 10,
+                        ],
+                    ],
+                ],
+                'y' => [
+                    'ticks' => [
+                        'font' => [
+                            'size' => 10,
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 }
