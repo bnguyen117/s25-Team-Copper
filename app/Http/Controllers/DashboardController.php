@@ -47,6 +47,11 @@ class DashboardController extends Controller
             ->latest()
             ->first();
 
+        // Group debts by category and sum the amounts
+        $debtByCategory = $debts->groupBy('category')->map(function ($group) {
+        return $group->sum('amount');
+        });
+
         $goalName = $financeGoal ? $financeGoal->goal_name : 'No Goal Set';
         $targetAmount = $financeGoal ? $financeGoal->target_amount : 1; // Prevent division by zero
         $currentAmount = $financeGoal ? $financeGoal->current_amount : 0;
@@ -60,7 +65,8 @@ class DashboardController extends Controller
             'debtChartData' => $debtChartData,
             'goalName' => $goalName,
             'goalProgress' => $goalProgress,
-            'categories' => $categories,
+            'categories' => $debtByCategory->keys(),        // aggregated categories
+            'debtAmounts' => $debtByCategory->values(),       // aggregated sums per category
         ]);
     }
 }
