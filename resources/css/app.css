@@ -46,4 +46,22 @@
     @apply text-black dark:text-white;
 }
 
+.chat-message {
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.chat-message strong {
+    font-weight: bold;
+}
+
+.chat-message ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.chat-message li {
+    margin-bottom: 5px;
+}
+
 [x-cloak] { display: none !important; }

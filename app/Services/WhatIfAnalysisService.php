@@ -7,9 +7,9 @@ use App\Models\Debt;
 class WhatIfAnalysisService
 {
     /**
-     * Algo 1
+     * Algo 1: 'interest-rate'
      */
-    public function changeInterestRateScenario($debtId, $newInterestRate, $monthlyIncome, $monthlyExpenses)
+    public function interestRateChangeScenario($debtId, $newInterestRate, $monthlyIncome, $monthlyExpenses)
     {
         $debtRecord = Debt::findOrFail($debtId);                         
         $remainingBalance = $debtRecord->amount;                                        // Starts at the total debt amount currently

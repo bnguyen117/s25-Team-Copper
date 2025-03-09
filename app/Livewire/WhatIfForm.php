@@ -17,68 +17,48 @@ class WhatIfForm extends Component implements HasForms
 {
     use InteractsWithForms;
 
-    // User's monthly income
-    public $monthly_income;
+    public $monthly_income;         // User's monthly income
+    public $monthly_expenses;       // User's monthly exspenses
+    public $debt_name;              // Selected Debt
+    public $financial_goal;         // Selected Financial Goal
+    public $algorithm;              // User's chosen WhatIf algorithm
+    public $new_interest_rate;      // New interest rate input for 'interest-rate-change' algo
+    public $new_monthly_payment;    // New monthly payment input for 'payment-change' algo
+    public $report;                 // Stores the result of a what-if analysis algorithm.
 
-    // User's monthly exspenses
-    public $monthly_expenses;
 
-    // Selected Debt
-    public $debt_name;
-
-    // Selected Financial Goal
-    public $financial_goal;
-
-    // Chosen WhatIf Algorithm
-    public $algorithm;
-
-    // New interest rate input for algo 1
-    public $new_interest_rate;
-
-    // New monthly payment input for algo 2
-    public $new_monthly_payment;
-
-    // Stores the result of the analysis
-    public $analysis_result;
-
-    /**
-     * Initialize the form with an empty state.
-     */
     public function mount(): void
     {
-        $this->form->fill();
+        $this->clearForm();                                                    // Initialize the form with an empty state.
     }
     
-    /**
-     * Defines the form's field structure.
-     */
-    public function form(Form $form): Form
+    public function form(Form $form): Form                                     // Defines the form's field structure.
     {
         return $form
             ->schema([
 
                 TextInput::make('monthly_income')
-                ->type('number')                                                // Field will hold only numbers
-                ->required(),                                                   // Field is required before submission
+                ->type('number')
+                ->required(),
 
                 TextInput::make('monthly_expenses')
                 ->type('number')
                 ->required(),
 
                 Select::make('debt_name')
-                ->options(fn () => $this->getCurrentUserDebts())                // Reference the getCurrentUserDebts method
+                ->options(fn () => $this->getCurrentUserDebts())                // Returns the getCurrentUserDebts() method.
                 ->required(),
 
                 Select::make('financial_goal')
-                ->options(fn () => $this->getCurrentUserGoals())                // Reference the getCurrentUserGoals method
+                ->options(fn () => $this->getCurrentUserGoals())                // Returns the getCurrentUserGoals() method.
                 ->required(),
 
-                Select::make('algorithm')                                       // A list of what what-if algorithms
+                Select::make('algorithm')                                       // A list of what what-if analysis algorithms.
                 ->options([
-                    'interest-rate' => 'What if my interest rate changes?',
+                    'interest-rate-change' => 'What if my interest rate changes?',
                     'payment-change' => 'What if I change my monthly payment?',
                 ])
-                -> reactive()                                                   // Allows the selected algo to control visibility of other fields                      
+                -> reactive()                                                   // Allows the selected algo to control visibility of other fields.                      
                 -> required(),
 
                 /**
@@ -87,15 +67,15 @@ class WhatIfForm extends Component implements HasForms
                 TextInput::make('new_interest_rate')
                 ->type('number')
                 ->label('New Interest Rate (%)')
-                ->visible(fn ($get) => $get('algorithm') === 'interest-rate')   // Only visible if algo1 is selected
-                ->required(fn ($get) => $get('algorithm') === 'interest-rate')  // Only required if algo1 is selected
+                ->visible(fn ($get) => $get('algorithm') === 'interest-rate-change')   // Only visible if interest-rate-change is selected
+                ->required(fn ($get) => $get('algorithm') === 'interest-rate-change')  // Only required if interest-rate-change is selected
                 ->minValue(0)
                 ->maxValue(100),
 
                 TextInput::make('new_monthly_payment')
                 ->type('number')
-                ->visible(fn ($get) => $get('algorithm') === 'payment-change')  // Only visible if algo2 is selected
-                ->required(fn ($get) => $get('algorithm') === 'payment-change') // Only required if algo2 is selected
+                ->visible(fn ($get) => $get('algorithm') === 'payment-change')  // Only visible if payment-change is selected
+                ->required(fn ($get) => $get('algorithm') === 'payment-change') // Only required if payment-change is selected
                 ->minValue(0),                                                  
                 ]);
     }
@@ -105,53 +85,53 @@ class WhatIfForm extends Component implements HasForms
      */
     public function analyze(): void
     {
-        $state = $this->form->getState();                                       // Stores the form's field info into an array
-        $service = new WhatIfAnalysisService();                                 // Create a whatIfAnalysisService object
+        $state = $this->form->getState();                                 // Stores the form's field information as an array.
+        $service = new WhatIfAnalysisService();                           // Create a 'whatIfAnalysisService' object
 
-        if ($state['algorithm'] === 'interest-rate') {                          // If the chosen algorithm is algo1
-            $this->analysis_result = $service->changeInterestRateScenario(      // Calls algo1 method and stores results
+        if ($state['algorithm'] === 'interest-rate-change') {             // If the chosen algorithm is 'interest-rate-change'
+            $result = $service->interestRateChangeScenario(               // Call the corresponding algo method and store 'result'
                 $state['debt_name'],                                            
                 $state['new_interest_rate'],                                   
                 $state['monthly_income'],
                 $state['monthly_expenses']
             );
-            $this->analysis_result['algorithm'] = 'interest-rate';              // Saves the algorithm chosen within the result
         } 
         
-        elseif ($state['algorithm'] === 'payment-change') {                     // If the chosen algorithm is algo2
-            $this->analysis_result = $service->changeMonthlyPaymentScenario(    // Calls algo2 method and stores results
+        elseif ($state['algorithm'] === 'payment-change') {               // If the chosen algorithm is 'payment-change'
+            $result = $service->changeMonthlyPaymentScenario(             // Call the corresponding algo method and store 'result'
                 $state['debt_name'],                                            
                 $state['new_monthly_payment'],                                   
                 $state['monthly_income'],
                 $state['monthly_expenses']
             );
-            $this->analysis_result['algorithm'] = 'payment-change';             // Saves the algorithm chosen within the result
         }
 
         // Save the report to the database if no error occurred.
-        if (!isset($this->analysis_result['error'])) {
-            WhatIfReport::create([
+        if (isset($result['error'])) {
+            $this->report = $result;                                      // Store the error
+        } else {
+            $this->report = WhatIfReport::create([                        // Save the report to the database and store a copy in $this->report.
                 'user_id' => Auth::id(),
                 'debt_id' => $state['debt_name'],
-                'algorithm' => $this->analysis_result['algorithm'],
-                'original_amount' => $this->analysis_result['original_amount'],
-                'current_payment' => $this->analysis_result['current_payment'],
-                'minimum_payment' => $this->analysis_result['minimum_payment'] ?? null,
-                'new_interest_rate' => $this->analysis_result['new_interest_rate'] ?? null,
-                'new_payment' => $this->analysis_result['new_payment'] ?? null,
-                'total_months' => $this->analysis_result['total_months'],
-                'total_interest_paid' => $this->analysis_result['total_interest_paid'],
-                'timeline' => $this->analysis_result['timeline'],
+                'algorithm' => $state['algorithm'],
+                'original_amount' => $result['original_amount'],
+                'current_payment' => $result['current_payment'],
+                'minimum_payment' => $result['minimum_payment'] ?? null,
+                'new_interest_rate' => $result['new_interest_rate'] ?? null,
+                'new_payment' => $result['new_payment'] ?? null,
+                'total_months' => $result['total_months'],
+                'total_interest_paid' => $result['total_interest_paid'],
+                'timeline' => $result['timeline'],
             ]);
         }
     }
 
     /**
-     * Renders the component's view.
+     * Pass the resulting analysis report as 'report' and render the component's view.
      */
     public function render(): View
     {
-        return view('livewire.what-if.form', ['result' => $this->analysis_result]);// Passes analysis_result as 'result' to the view
+        return view('livewire.what-if.form', ['report' => $this->report]);
     }
 
     /**
@@ -178,7 +158,7 @@ class WhatIfForm extends Component implements HasForms
      * Resets the form and report.
      */
     public function clearForm(): void{
-        $this->form->fill();
-        $this->analysis_result = null;
+        $this->form->fill();                                                  // Clear the form's state.
+        $this->report = null;                                                 // Clear the reports data.
     }
 }

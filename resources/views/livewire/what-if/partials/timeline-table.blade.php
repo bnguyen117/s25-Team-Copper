@@ -1,4 +1,10 @@
 
+<!--
+    A view that holds the design for a timeline table that
+    that displays Remaining balance and interest paid monthly
+    over a debt repayment period.
+-->
+
 <!-- Timeline Table -->
 <div class="mb-6">
 
@@ -22,7 +28,7 @@
           
           <!-- Iterates over each entry in the timline array -->
           <tbody>
-              @foreach($result['timeline'] as $entry)
+              @foreach($report->timeline as $entry)
               <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                   <td class="px-4 py-2">{{ $entry['month'] }}</td>
                   <td class="px-4 py-2 text-right">${{ number_format($entry['balance'], 2) }}</td>

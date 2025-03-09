@@ -23,44 +23,47 @@ class WhatIfReportTable extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            // Restrict the table to show only reports belonging to the current user
+            // Fetch only WhatIfReport records belonging to the currently authenticated user.
             ->query(WhatIfReport::where('user_id', Auth::id()))
-
-            // Sets the table's title
             ->heading('Saved What-If Reports')
-
-            // Loads the columns defined in getReportTableColumn()
             ->columns($this->getReportTableColumns())
             ->paginated(false)
             ->filters([])
 
-            // Defines row specific actions like viewing or deleting a single report
+            // Defines row specific actions like viewing or deleting a single report.
             ->actions([
-                // Adds a `View Report` button to open a slide-over modal with report details
+
+                // An action for viewing individual WhatIfReports.
                 Tables\Actions\Action::make('View Report')
+                    ->button()
                     ->label('View Report')
+                    ->slideOver()
+                    ->modalHeading(fn ($record) => "{$record->debt->debt_name} - " . ucfirst($record->algorithm) . " Report")
+                    ->modalContent(function ($record) {
+                        return view('livewire.what-if.report-modal', ['report' => $record]);
+                    })
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Close'),
+
+                // An action for opening an AI chatbot modal to discuss a WhatIfReport.
+                Tables\Actions\Action::make('chat')
+                    ->label('Chat with AI')
                     ->button()
                     ->slideOver()
-
-                    // Sets the modla header to `Debt Name - Algorithm Name Report for each report
-                    ->modalHeading(fn ($record) => "{$record->debt->debt_name} - " . ucfirst($record->algorithm) . " Report")
-
-                    // Defines the modal content by rendering a view with report data
+                    ->modalHeading(fn ($record) => "AI Advisor for {$record->debt->debt_name} - " . ucfirst($record->algorithm))
                     ->modalContent(function ($record) {
-                        $result = $record->toArray();
-                        $result['debt_name'] = $record->debt->debt_name;
-                        // Pass the report data to the report-modal view for display in the modal
-                        return view('livewire.what-if.report-modal', ['result' => $result]);
+                        return view('livewire.what-if.chat-modal', ['report' => $record]);
                     })
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Close'),
                 
-                // Adds a button to delete individual reports
+
+                // A delete action for deleting individual WhatIFReports.
                 Tables\Actions\DeleteAction::make()
                     ->button()
             ])
 
-            // Enables bulk actions like deleting multiple reports at once
+            // Enables bulk actions like deleting multiple reports at once.
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\BulkAction::make('delete')
@@ -81,8 +84,7 @@ class WhatIfReportTable extends Component implements HasForms, HasTable
                 ->searchable()
                 ->size('md')
                 ->weight(FontWeight::Bold)
-                // Formats the column to display as `Debt Name - Algorithm`
-                ->formatStateUsing(fn ($record) => "{$record->debt->debt_name} - " . ucfirst(str_replace('-', ' ', $record->algorithm))), // Combine debt name and algorithm
+                ->formatStateUsing(fn ($record) => "{$record->debt->debt_name} - " . ucfirst(str_replace('-', ' ', $record->algorithm))),
 
             // A collapsible Panel to hold other columns
             Tables\Columns\Layout\Panel::make([
