@@ -18,13 +18,13 @@ class WhatIfForm extends Component implements HasForms
     use InteractsWithForms;
 
     public $monthly_income;         // User's monthly income
-    public $monthly_expenses;       // User's monthly exspenses
+    public $monthly_expenses;       // User's monthly exspenses (calculated by summing the user's debts)
     public $debt_name;              // Selected Debt
     public $financial_goal;         // Selected Financial Goal
-    public $algorithm;              // User's chosen WhatIf algorithm
+    public $algorithm;              // User's chosen WhatIf scenario algorithm
     public $new_interest_rate;      // New interest rate input for 'interest-rate-change' algo
     public $new_monthly_payment;    // New monthly payment input for 'payment-change' algo
-    public $report;                 // Stores the result of a what-if analysis algorithm.
+    public $report;                 // Stores the information pertaining to a what-if analysis report
 
 
     /**
@@ -119,7 +119,7 @@ class WhatIfForm extends Component implements HasForms
      * 
      *  - Checks if $result returned an error message and stores the message in $this->report.
      *  - Else, save the user's id, relevant state values, and algorithm result to a WhatIfReport record
-     *  - Create a copy of this record in $this-report for use later.
+     *  - Save a copy of this record to $this->report for later use.
      * 
      */
     public function analyze(): void
