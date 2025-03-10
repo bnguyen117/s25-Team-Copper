@@ -15,19 +15,19 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
             <!-- The user's current monthly payment amount -->
-            <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+            <div class="bg-gradient-to-tl from-gray-200 to-gray-50 dark:from-gray-900 dark:to-gray-700 rounded-lg shadow-md  p-4">
                 <p class="text-sm text-gray-600 dark:text-gray-400">Monthly Payment</p>
                 <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">${{ number_format($report->current_payment, 2) }}</p>
             </div>
 
             <!-- The user's current debt amount -->
-            <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+            <div class="bg-gradient-to-tl from-gray-200 to-gray-50 dark:from-gray-900 dark:to-gray-700 rounded-lg shadow-md  p-4">
                 <p class="text-sm text-gray-600 dark:text-gray-400">Debt Amount</p>
                 <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">${{ number_format($report->original_amount, 2) }}</p>
             </div>
 
             <!-- The user's interest rate on the debt -->
-            <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+            <div class="bg-gradient-to-tl from-gray-200 to-gray-50 dark:from-gray-900 dark:to-gray-700 rounded-lg shadow-md  p-4">
                 <p class="text-sm text-gray-600 dark:text-gray-400">Interest Rate</p>
                 <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ number_format($report->debt->interest_rate ?? 0, 2) }}%</p>
             </div>
