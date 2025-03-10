@@ -47,18 +47,23 @@ class WhatIfForm extends Component implements HasForms
 
                 Select::make('debt_name')
                 ->options(fn () => $this->getCurrentUserDebts())                // Returns the getCurrentUserDebts() method.
+                ->placeholder('Select a debt for analysis')
                 ->required(),
 
                 Select::make('financial_goal')
-                ->options(fn () => $this->getCurrentUserGoals()),                // Returns the getCurrentUserGoals() method.
+                ->options(fn () => $this->getCurrentUserGoals())
+                ->nullable()
+                ->placeholder('Select a financial goal (optional)'),                // Returns the getCurrentUserGoals() method.
 
                 Select::make('algorithm')                                       // A list of what what-if analysis algorithms.
                 ->options([
                     'interest-rate-change' => 'What if my interest rate changes?',
                     'payment-change' => 'What if I change my monthly payment?',
                 ])
-                -> reactive()                                                   // Allows the selected algo to control visibility of other fields.                      
-                -> required(),
+                ->reactive()                                                   // Allows the selected algo to control visibility of other fields.                      
+                ->required()
+                ->label('Scenario')
+                ->placeholder('Select a scenario'),
 
                 /**
                  * Algorithm Specific Fields.
@@ -69,7 +74,8 @@ class WhatIfForm extends Component implements HasForms
                 ->visible(fn ($get) => $get('algorithm') === 'interest-rate-change')   // Only visible if interest-rate-change is selected
                 ->required(fn ($get) => $get('algorithm') === 'interest-rate-change')  // Only required if interest-rate-change is selected
                 ->minValue(0)
-                ->maxValue(100),
+                ->maxValue(100)
+                ->placeholder('Input your debt\'s new annual interest rate'),
 
                 TextInput::make('new_monthly_payment')
                 ->type('number')
