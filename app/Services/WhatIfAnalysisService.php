@@ -7,43 +7,57 @@ use App\Models\Debt;
 class WhatIfAnalysisService
 {
     /**
-     * Algo 1: 'interest-rate'
+     * Algo 1: 'interest-rate-change'
      */
     public function interestRateChangeScenario($debtId, $newInterestRate, $monthlyIncome, $monthlyExpenses)
     {
-        $debtRecord = Debt::findOrFail($debtId);                         
-        $remainingBalance = $debtRecord->amount;                                        // Starts at the total debt amount currently
-        $monthlyInterestRate = $newInterestRate / 100 / 12;                             // Convert annual rate to monthly
-        $monthlyPayment = $debtRecord->monthly_payment;                                 // The amount the user plans to pay monthly
-        $timeline = [];                                                                 // Holds the results of each month's calculation
-        $currentMonth = 0;                                                              // Counter variable
+        // Get the debt's record from the database.
+        $debtRecord = Debt::findOrFail($debtId);
+        
+        // Initialize variables for the following calculations.
+        $remainingBalance = $debtRecord->amount;
+        $monthlyInterestRate = $newInterestRate / 100 / 12;         // Convert the new annual interest rate to monthly.
+        $monthlyPayment = $debtRecord->monthly_payment;
+        $timeline = [];                                             // An array to hold the results of each month's calculation.
+        $currentMonth = 0;
 
-        $disposableIncome = $monthlyIncome - $monthlyExpenses;                          // The amount of income left over after expenses
+
+        // Check if this months payment is affordable.
+        $disposableIncome = $monthlyIncome - $monthlyExpenses;
         if ($monthlyPayment > $disposableIncome) {                                      
-            return ['error' => 'Current payment exceeds your disposable income'];       // Not enough disposable income this month
+            return ['error' => 'Current payment exceeds your disposable income'];
         }
 
-        while ($remainingBalance > 0 && $currentMonth < 360) {                          // Continue until debt is paid in full or 30 years.
-            $currentMonth++;                                                            // Increment month on each iteration
-            $monthlyInterest = $remainingBalance * $monthlyInterestRate;                // Dollar amount of this month's interest
-            $monthlyPrincipal = $monthlyPayment - $monthlyInterest;                     // Dollar amount going towards paying down the debt    
+        // Calculate monthly payments until the debt is paid off or 30 years.
+        while ($remainingBalance > 0 && $currentMonth < 360) {                         
+            $currentMonth++;
 
+            // Calculate this months interest and principal amounts.
+            $monthlyInterest = $remainingBalance * $monthlyInterestRate;
+            $monthlyPrincipal = $monthlyPayment - $monthlyInterest;   
+
+            // Check if payment covers interest.
             if ($monthlyPrincipal < 0) {
-                return ['error' => 'Payment too low to cover monthly interest at the new rate']; // Could not afford this month's interest
+                return ['error' => 'Payment too low to cover monthly interest at the new rate'];
             }
 
-            $remainingBalance -= $monthlyPrincipal;                                     // update the debt's remaining balance after this month
-            $timeline[] = [                                                             // Add the results of this month to the timeline
+            // Update the debt's remaining balance
+            $remainingBalance -= $monthlyPrincipal;
+
+            // Record this month's details.
+            $timeline[] = [
                 'month' => $currentMonth,
                 'balance' => max(0, $remainingBalance),
                 'interest_paid' => $monthlyInterest,
                 'principal_paid' => $monthlyPrincipal,
             ];
 
-            if ($remainingBalance <= 0) break;                                          // Break immediatley if debt is paid off
+            // Break immediatley once debt is paid off.
+            if ($remainingBalance <= 0) break;
         }
 
-        return [                                                                        // Return the result array
+        // Return the results.
+        return [
             'debt_name' => $debtRecord->debt_name,
             'original_amount' => $debtRecord->amount,
             'minimum_payment' => $debtRecord->minimum_payment,
@@ -56,48 +70,57 @@ class WhatIfAnalysisService
     }
 
     /**
-     * Algo 2
+     * Algo 2 - 'payment-change'
      */
     public function changeMonthlyPaymentScenario ( $debtId, $newMonthlyPayment, $monthlyIncome, $monthlyExpenses)
     {
+        // Get the debt's record from the database.
         $debtRecord = Debt::findOrFail($debtId);
-        $remainingBalance = $debtRecord->amount;                                    // Starts at the total debt amount currently
-        $monthlyInterestRate = $debtRecord->interest_rate / 100/ 12;                // Convert the annual rate to monthly
-        $timeline = [];                                                             // Holds the results of each month's calculation
-        $currentMonth = 0;                                                          // Counter variable
+        
+        // Initialize variables for the following calculations.
+        $remainingBalance = $debtRecord->amount;
+        $monthlyInterestRate = $debtRecord->interest_rate / 100/ 12;       // Convert the annual rate to monthly
+        $timeline = [];                                                    // An array to hold the results of each month's calculation.
+        $currentMonth = 0;
 
-        // Disposable income check
-        $disposableIncome = $monthlyIncome - $monthlyExpenses;                      // The amount of income left over after expenses
+        // Check if the new payment is affordable.
+        $disposableIncome = $monthlyIncome - $monthlyExpenses;
         if ($newMonthlyPayment > $disposableIncome) {                               
-            return ['error' => 'Monthly payment exceeds your disposable income'];   // Cannot afford the new payment this month
+            return ['error' => 'Monthly payment exceeds your disposable income'];
         }
 
-        // Generate repayment timeline
-        while ($remainingBalance > 0 && $currentMonth < 360) {                      // Continue until debt is paid in full or 30 years.
-            $currentMonth++;                                                        // Increment month on each iteration
-            $monthlyInterest = $remainingBalance * $monthlyInterestRate;            // Dollar amount of this month's interest
-            $monthlyPrincipal = $newMonthlyPayment - $monthlyInterest;              // Dollar amount going towards paying down the debt    
 
-            if ($monthlyPrincipal < 0) {                                            // Could not afford this month's interest
+        // Calculate monthly payments until the debt is paid off or 30 years.
+        while ($remainingBalance > 0 && $currentMonth < 360) {
+            $currentMonth++;
+
+            // Calculate this months interest and principal amounts.
+            $monthlyInterest = $remainingBalance * $monthlyInterestRate;
+            $monthlyPrincipal = $newMonthlyPayment - $monthlyInterest;  
+
+            // Check if payment covers interest.
+            if ($monthlyPrincipal < 0) {
                 return ['error' => 'Payment too low to cover your monthly interest'];
             }
 
-            $remainingBalance -= $monthlyPrincipal;                                 // update the debt's remaining balance after this month
+            // Update the debt's remaining balance
+            $remainingBalance -= $monthlyPrincipal;
 
-            $timeline[] = [                                                         // Add the results of this month to the timeline
+            // Record this month's details.
+            $timeline[] = [
                 'month' => $currentMonth,
                 'balance' => max(0, $remainingBalance),
                 'interest_paid' => $monthlyInterest,
                 'principal_paid' => $monthlyPrincipal,
             ];
 
-            if ($remainingBalance <= 0) {                                           // Break immediatley if debt is paid off
-                break;
-            }
+            // Break immediatley once debt is paid off.
+            if ($remainingBalance <= 0) break;
 
         }
 
-        return [                                                                    // Return the result array
+        // Return the results.
+        return [
             'debt_name' => $debtRecord->debt_name,
             'original_amount' => $debtRecord->amount,
             'minimum_payment' => $debtRecord->minimum_payment,
