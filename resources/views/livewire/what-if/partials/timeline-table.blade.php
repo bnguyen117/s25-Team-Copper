@@ -4,13 +4,13 @@
     <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Repayment Timeline</h3>
   
     <!-- Defines the container that will hold the table -->
-    <div class="max-h-72 overflow-y-auto rounded-xl shadow-sm bg-white dark:bg-gray-900">
+    <div class="max-h-72 overflow-y-auto bg-gradient-to-br from-gray-200 to-gray-100 dark:from-gray-900 dark:to-gray-700 shadow-xl rounded-xl p-4 md:p-0">
 
       <!-- Defines the tables structure within its container -->
       <table class="w-full text-sm font-medium text-gray-800 dark:text-gray-200">
 
           <!-- Defines the container for the Header row of the Table that displays the column labels -->
-          <thead class="sticky top-0 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+          <thead class="sticky top-0 bg-gradient-to-tl from-gray-200 to-gray-50 dark:from-gray-900 dark:to-gray-700 text-gray-900 dark:text-gray-100 shadow-md">
 
               <!--Header row that is hidden on devices less than 768px wide -->  
               <tr class="hidden md:table-row">
@@ -28,13 +28,13 @@
             @foreach($report->timeline as $entry)
 
                 <!-- Defines a table row, block on Mobile, row on Desktop -->
-                <tr class="md:table-row block transition-colors hover:bg-gray-50 dark:hover:bg-gray-600">
+                <tr class="md:table-row block transition-colors hover:bg-gradient-to-r hover:from-gray-100 hover:to-gray-50 dark:hover:from-gray-800 dark:hover:to-gray-700">
 
                   <!-- 
                         Mobile: Single cell stacking all label-value pairs vertically with labels left and values right.
                         Desktop: Hidden
                    -->
-                    <td class="block md:hidden px-3 py-2 border-t border-gray-100 dark:border-gray-800">
+                    <td class="block md:hidden px-3 py-2 bg-gradient-to-tl from-gray-200 to-gray-50 dark:from-gray-900 dark:to-gray-700 rounded-lg shadow-md mb-4">
 
                         <!-- 
                             Mobile layout for all of the data within this single cell.
