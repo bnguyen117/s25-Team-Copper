@@ -50,8 +50,7 @@ class WhatIfForm extends Component implements HasForms
                 ->required(),
 
                 Select::make('financial_goal')
-                ->options(fn () => $this->getCurrentUserGoals())                // Returns the getCurrentUserGoals() method.
-                ->required(),
+                ->options(fn () => $this->getCurrentUserGoals()),                // Returns the getCurrentUserGoals() method.
 
                 Select::make('algorithm')                                       // A list of what what-if analysis algorithms.
                 ->options([
