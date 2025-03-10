@@ -92,6 +92,7 @@ class WhatIfForm extends Component implements HasForms
                 TextInput::make('new_interest_rate')
                 ->type('number')
                 ->label('New Interest Rate (%)')
+                ->suffix('%')
                 ->visible(fn ($get) => $get('algorithm') === 'interest-rate-change')
                 ->required(fn ($get) => $get('algorithm') === 'interest-rate-change')
                 ->minValue(0)
@@ -101,6 +102,7 @@ class WhatIfForm extends Component implements HasForms
                 // Required field for the user to input their debt's new monthly payment.
                 TextInput::make('new_monthly_payment')
                 ->type('number')
+                ->prefix('$')
                 ->visible(fn ($get) => $get('algorithm') === 'payment-change')
                 ->required(fn ($get) => $get('algorithm') === 'payment-change')
                 ->minValue(0)
