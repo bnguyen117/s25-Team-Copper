@@ -5,7 +5,7 @@
 -->
 
 <!-- Main container centering the form and report -->
-<div class="max-w-4xl mx-auto py-8">
+<div class="max-w-4xl mx-auto py-4">
 
     <!-- Section containing the What-If Analysis form-->
      <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 shadow-xl rounded-xl p-6 mb-8">

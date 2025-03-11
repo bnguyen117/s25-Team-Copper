@@ -32,35 +32,40 @@ class WhatIfReportTable extends Component implements HasForms, HasTable
 
             // Defines row specific actions like viewing or deleting a single report.
             ->actions([
+                Tables\Actions\ActionGroup::make([
+                    // An action for viewing individual WhatIfReports.
+                    Tables\Actions\Action::make('View Report')
+                        ->icon('heroicon-o-eye')
+                        ->label('View Report')
+                        ->slideOver()
+                        ->modalHeading(fn ($record) => "{$record->debt->debt_name} - " . ucfirst($record->what_if_scenario) . " Report")
+                        ->modalContent(function ($record) {
+                            return view('livewire.what-if.report-modal', ['report' => $record]);
+                        })
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Close'),
 
-                // An action for viewing individual WhatIfReports.
-                Tables\Actions\Action::make('View Report')
-                    ->button()
-                    ->label('View Report')
-                    ->slideOver()
-                    ->modalHeading(fn ($record) => "{$record->debt->debt_name} - " . ucfirst($record->what_if_scenario) . " Report")
-                    ->modalContent(function ($record) {
-                        return view('livewire.what-if.report-modal', ['report' => $record]);
-                    })
-                    ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Close'),
+                    // An action for opening an AI chatbot modal to discuss a WhatIfReport.
+                    Tables\Actions\Action::make('chat')
+                        ->icon('heroicon-o-chat-bubble-left-right')
+                        ->label('Chat with AI')
+                        ->slideOver()
+                        ->modalHeading(fn ($record) => "AI Advisor for {$record->debt->debt_name} - " . ucfirst($record->what_if_scenario))
+                        ->modalContent(function ($record) {
+                            return view('livewire.what-if.chat-modal', ['report' => $record]);
+                        })
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Close'),
+                    
 
-                // An action for opening an AI chatbot modal to discuss a WhatIfReport.
-                Tables\Actions\Action::make('chat')
-                    ->label('Chat with AI')
-                    ->button()
-                    ->slideOver()
-                    ->modalHeading(fn ($record) => "AI Advisor for {$record->debt->debt_name} - " . ucfirst($record->what_if_scenario))
-                    ->modalContent(function ($record) {
-                        return view('livewire.what-if.chat-modal', ['report' => $record]);
-                    })
-                    ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Close'),
-                
+                    // A delete action for deleting individual WhatIFReports.
+                    Tables\Actions\DeleteAction::make()
+                        ->icon('heroicon-o-trash')
 
-                // A delete action for deleting individual WhatIFReports.
-                Tables\Actions\DeleteAction::make()
-                    ->button()
+                ])
+                ->button()
+                ->label('Actions')
+                ->icon('heroicon-m-ellipsis-vertical')
             ])
 
             // Enables bulk actions like deleting multiple reports at once.
