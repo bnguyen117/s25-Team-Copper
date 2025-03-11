@@ -35,9 +35,9 @@
                 <div class="p-4 border border-gray-600 rounded-md">
                     <p class="text-gray-700">You have no active goals.</p>
                 </div>
-                <button class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                    + Add New Goal
-                </button>
+                <a href="http://s25-team-copper.test/finance" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-center block">
+                + Add or Edit Goals
+                </a>
             </div>
         </div>
     </div>
