@@ -108,17 +108,14 @@
     overflow-wrap: break-word;
 }
 
-.chat-message strong {
-    font-weight: bold;
-}
-
 .chat-message ul {
     list-style-type: disc;
     padding-left: 20px;
 }
 
 .chat-message li {
-    margin-bottom: 5px;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 
 [x-cloak] { display: none !important; }

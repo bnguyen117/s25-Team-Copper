@@ -35,12 +35,15 @@ class WhatIfChatModal extends Component
 
         /**
          * A System prompt that provides context to the chatbot about the report and algorithm.
-         * The system prompt is not shown to the user.
+         * Not shown to the user.
          */
-        $systemPrompt = "You are an AI financial advisor. Here is the user's What-If Report data: $reportSummary. " .
+        $systemPrompt = 
+            "You are an AI financial advisor. Here is the user's What-If Report data:\n\n" .
+            "$reportSummary\n" .
             "This report uses the '{$this->report->what_if_scenario}' algorithm. " .
             "If the algorithm is 'payment-change', 'total_months' and 'total_interest_paid' reflect the 'new_payment' scenario, not the 'current_payment'. " .
-            "Assist the user by providing accurate financial advice based on this data, and clarify assumptions when needed.";
+            "If the algorithm is 'interest-rate-change', 'total_months' and 'total_interest_paid' reflect the 'new_interest_rate' scenario. " .
+            "Assist the user by providing accurate financial advice based on this data. Clarify assumptions when needed, and format monetary values to two decimal places in responses.";
         
         
         // Append the system prompt to the messages array.
@@ -123,18 +126,23 @@ class WhatIfChatModal extends Component
     private function generateReportSummary(): string
     {
         $report = $this->report;
-        $summary = "Debt: {$report->debt->debt_name}, Algorithm: {$report->what_if_scenario}, " .
-            "Original Amount: \${$report->original_debt_amount}, Current Payment: \${$report->current_monthly_debt_payment}, " .
-            "Total Months: {$report->total_months}, Total Interest Paid: \${$report->total_interest_paid}";
+        $summary = 
+            "Debt Name: {$report->debt->debt_name}\n" .
+            "What-If Scenario Algorithm: {$report->what_if_scenario}\n" .
+            "Original Debt Amount: \$" . number_format($report->original_debt_amount, 2) . "\n" .
+            "Current Monthly Debt Payment: \$" . number_format($report->current_monthly_debt_payment, 2) . "\n" .
+            "Total Months Until Full Repayment: {$report->total_months}\n" .
+            "Total Interest Paid: \$" . number_format($report->total_interest_paid, 2) . "\n";
 
         if ($report->minimum_monthly_debt_payment) {
-            $summary .= ", Minimum Payment: \${$report->minimum_monthly_debt_payment}";
+            $summary .= "Minimum Monthly Debt Payment: \$" . number_format($report->minimum_monthly_debt_payment, 2) . "\n";
         }
         if ($report->new_interest_rate) {
-            $summary .= ", New Interest Rate: {$report->new_interest_rate}%";
+            $summary .= "New Interest Rate: " . number_format($report->new_interest_rate, 2) . "%\n";
         }
         if ($report->new_monthly_debt_payment) {
-            $summary .= ", New Payment: \${$report->new_monthly_debt_payment}";
+            $summary .= "New Monthly Debt Payment: \$" . number_format($report->new_monthly_debt_payment, 2) . "\n";
+
         }
 
         return $summary;
@@ -142,37 +150,47 @@ class WhatIfChatModal extends Component
 
     /**
      * Returns the initial message the user sees from the bot.
-     * Customized based on the data within the $report
+     * Customized based on the scenario within $report.
      */
     private function buildInitialMessage(): string
     {
-
-        $message = "Hello! I'm here to help with your financial planning based on your What-If Report " .
+        // Non-scenrio specific introduction.
+        $message =
+            "Hello! I'm here to help with your financial planning based on your What-If Report " .
             "for **{$this->report->debt->debt_name}** using the **{$this->report->what_if_scenario}** scenario. " .
-            "Here’s your report summary:\n\n" .
-            "- **Original Debt Amount**: \${$this->report->original_debt_amount}\n" .
-            "- **Current Payment**: \${$this->report->current_monthly_debt_payment}/month\n";
+            "Here's your report summary:\n\n";
 
-        
-        /** If the scenario is payment-change */
-        if ($this->report->what_if_scenario === 'payment-change' && $this->report->new_monthly_debt_payment) {
-            $message .= "- **New Payment**: \${$this->report->new_monthly_debt_payment}/month\n" .
-                "- **Total Months to Pay Off**: {$this->report->total_months} (with new payment)\n" .
-                "- **Total Interest Paid**: \${$this->report->total_interest_paid} (with new payment)\n";
+        // Extended for payment-change scenarios.
+        if ($this->report->what_if_scenario === 'payment-change') {
+
+            $message .=
+                "**Original Debt Details**\n" .
+                "- **Monthly Payment**: \${$this->report->current_monthly_debt_payment}/month\n" .
+                "- **Debt Amount**: \$" . number_format($this->report->original_debt_amount, 2) . "\n" .
+                "- **Interest Rate**: " . number_format($this->report->debt->interest_rate ?? 0, 2) . "%\n\n" .
+
+                "**New Payment Details**\n" .
+                "- **New Monthly Payment**: \${$this->report->new_monthly_debt_payment}/month\n" .
+                "- **Total Months to Pay Off**: {$this->report->total_months}\n" .
+                "- **Total Interest Paid** \$: " . number_format($this->report->total_interest_paid, 2) . "$\n";
         } 
-        
-        /** else it is interest-rate-change. */
-        else {
-            $message .= "- **Total Months to Pay Off**: {$this->report->total_months} (with current payment)\n" .
-                "- **Total Interest Paid**: \${$this->report->total_interest_paid} (with current payment)\n" .
-                "- **New Interest Rate**: {$this->report->new_interest_rate}%\n";
-        }
 
-        /** Append minimum monthly debt payment if not null */
-        if ($this->report->minimum_monthly_debt_payment) {
-            $message .= "- **Minimum Required Payment**: \${$this->report->minimum_monthly_debt_payment}/month\n";
-        }
+        // Extended for interest-rate-change scenarios.
+        elseif ($this->report->what_if_scenario === 'interest-rate-change') {
 
+            $message .=
+                "**Original Debt Details**\n" .
+                "- **Interest Rate**: " . number_format($this->report->debt->interest_rate ?? 0, 2) . "%\n" .
+                "- **Monthly Payment**: \${$this->report->current_monthly_debt_payment}/month\n" .
+                "- **Debt Amount**: \$" . number_format($this->report->original_debt_amount, 2) . "\n\n" .
+
+                "New Interest Rate Impact Details" .
+                "- **New Interest Rate**: {$this->report->new_interest_rate}%\n" .
+                "- **Total Months to Pay Off**: {$this->report->total_months}\n" .
+                "- **Total Interest Paid** \$: " . number_format($this->report->total_interest_paid, 2) . "\n";
+        }
+       
+        // Ending line.
         $message .= "\nHow can I assist you with this report today?";
 
         return $message;
