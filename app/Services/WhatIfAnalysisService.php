@@ -9,7 +9,7 @@ class WhatIfAnalysisService
     /**
      * Algo 1: 'interest-rate-change'
      */
-    public function interestRateChangeScenario($debtId, $newInterestRate, $monthlyIncome, $monthlyExpenses)
+    public function interestRateChangeScenario($debtId, $newInterestRate, $monthlyIncome, $totalExpenses)
     {
         // Get the debt's record from the database.
         $debtRecord = Debt::findOrFail($debtId);
@@ -23,7 +23,7 @@ class WhatIfAnalysisService
 
 
         // Check if this months payment is affordable.
-        $disposableIncome = $monthlyIncome - $monthlyExpenses;
+        $disposableIncome = $monthlyIncome - $totalExpenses;
         if ($monthlyPayment > $disposableIncome) {                                      
             return ['error' => 'Current payment exceeds your disposable income'];
         }
@@ -59,9 +59,9 @@ class WhatIfAnalysisService
         // Return the results.
         return [
             'debt_name' => $debtRecord->debt_name,
-            'original_amount' => $debtRecord->amount,
-            'minimum_payment' => $debtRecord->minimum_payment,
-            'current_payment' => $monthlyPayment,
+            'original_debt_amount' => $debtRecord->amount,
+            'minimum_monthly_debt_payment' => $debtRecord->minimum_payment,
+            'current_monthly_debt_payment' => $monthlyPayment,
             'new_interest_rate' => $newInterestRate,
             'timeline' => $timeline,
             'total_months' => $currentMonth,
@@ -72,7 +72,7 @@ class WhatIfAnalysisService
     /**
      * Algo 2 - 'payment-change'
      */
-    public function changeMonthlyPaymentScenario ( $debtId, $newMonthlyPayment, $monthlyIncome, $monthlyExpenses)
+    public function changeMonthlyPaymentScenario ( $debtId, $newMonthlyPayment, $monthlyIncome, $totalExpenses)
     {
         // Get the debt's record from the database.
         $debtRecord = Debt::findOrFail($debtId);
@@ -84,7 +84,7 @@ class WhatIfAnalysisService
         $currentMonth = 0;
 
         // Check if the new payment is affordable.
-        $disposableIncome = $monthlyIncome - $monthlyExpenses;
+        $disposableIncome = $monthlyIncome - $totalExpenses;
         if ($newMonthlyPayment > $disposableIncome) {                               
             return ['error' => 'Monthly payment exceeds your disposable income'];
         }
@@ -122,10 +122,10 @@ class WhatIfAnalysisService
         // Return the results.
         return [
             'debt_name' => $debtRecord->debt_name,
-            'original_amount' => $debtRecord->amount,
-            'minimum_payment' => $debtRecord->minimum_payment,
-            'current_payment' => $debtRecord->monthly_payment,
-            'new_payment' => $newMonthlyPayment,
+            'original_debt_amount' => $debtRecord->amount,
+            'minimum_monthly_dept_payment' => $debtRecord->minimum_payment,
+            'current_monthly_debt_payment' => $debtRecord->monthly_payment,
+            'new_monthly_debt_payment' => $newMonthlyPayment,
             'timeline' => $timeline,
             'total_months' => $currentMonth,
             'total_interest_paid' => array_sum(array_column($timeline, 'interest_paid')),

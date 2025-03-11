@@ -38,7 +38,7 @@ class WhatIfChatModal extends Component
          * The system prompt is not shown to the user.
          */
         $systemPrompt = "You are an AI financial advisor. Here is the user's What-If Report data: $reportSummary. " .
-            "This report uses the '{$this->report->algorithm}' algorithm. " .
+            "This report uses the '{$this->report->what_if_scenario}' algorithm. " .
             "If the algorithm is 'payment-change', 'total_months' and 'total_interest_paid' reflect the 'new_payment' scenario, not the 'current_payment'. " .
             "Assist the user by providing accurate financial advice based on this data, and clarify assumptions when needed.";
         
@@ -123,18 +123,18 @@ class WhatIfChatModal extends Component
     private function generateReportSummary(): string
     {
         $report = $this->report;
-        $summary = "Debt: {$report->debt->debt_name}, Algorithm: {$report->algorithm}, " .
-            "Original Amount: \${$report->original_amount}, Current Payment: \${$report->current_payment}, " .
+        $summary = "Debt: {$report->debt->debt_name}, Algorithm: {$report->what_if_scenario}, " .
+            "Original Amount: \${$report->original_debt_amount}, Current Payment: \${$report->current_monthly_debt_payment}, " .
             "Total Months: {$report->total_months}, Total Interest Paid: \${$report->total_interest_paid}";
 
-        if ($report->minimum_payment) {
-            $summary .= ", Minimum Payment: \${$report->minimum_payment}";
+        if ($report->minimum_monthly_debt_payment) {
+            $summary .= ", Minimum Payment: \${$report->minimum_monthly_debt_payment}";
         }
         if ($report->new_interest_rate) {
             $summary .= ", New Interest Rate: {$report->new_interest_rate}%";
         }
-        if ($report->new_payment) {
-            $summary .= ", New Payment: \${$report->new_payment}";
+        if ($report->new_monthly_debt_payment) {
+            $summary .= ", New Payment: \${$report->new_monthly_debt_payment}";
         }
 
         return $summary;
@@ -148,29 +148,29 @@ class WhatIfChatModal extends Component
     {
 
         $message = "Hello! I'm here to help with your financial planning based on your What-If Report " .
-            "for **{$this->report->debt->debt_name}** using the **{$this->report->algorithm}** algorithm. " .
+            "for **{$this->report->debt->debt_name}** using the **{$this->report->what_if_scenario}** scenario. " .
             "Here’s your report summary:\n\n" .
-            "- **Original Amount**: \${$this->report->original_amount}\n" .
-            "- **Current Payment**: \${$this->report->current_payment}/month\n";
+            "- **Original Debt Amount**: \${$this->report->original_debt_amount}\n" .
+            "- **Current Payment**: \${$this->report->current_monthly_debt_payment}/month\n";
 
         
-        /** If the algorithm is payment-change */
-        if ($this->report->algorithm === 'payment-change' && $this->report->new_payment) {
-            $message .= "- **New Payment**: \${$this->report->new_payment}/month\n" .
+        /** If the scenario is payment-change */
+        if ($this->report->what_if_scenario === 'payment-change' && $this->report->new_monthly_debt_payment) {
+            $message .= "- **New Payment**: \${$this->report->new_monthly_debt_payment}/month\n" .
                 "- **Total Months to Pay Off**: {$this->report->total_months} (with new payment)\n" .
                 "- **Total Interest Paid**: \${$this->report->total_interest_paid} (with new payment)\n";
         } 
         
-        /** else it is interest-rate. */
+        /** else it is interest-rate-change. */
         else {
             $message .= "- **Total Months to Pay Off**: {$this->report->total_months} (with current payment)\n" .
                 "- **Total Interest Paid**: \${$this->report->total_interest_paid} (with current payment)\n" .
                 "- **New Interest Rate**: {$this->report->new_interest_rate}%\n";
         }
 
-        /** Append minimum payment if not null */
-        if ($this->report->minimum_payment) {
-            $message .= "- **Minimum Payment**: \${$this->report->minimum_payment}/month\n";
+        /** Append minimum monthly debt payment if not null */
+        if ($this->report->minimum_monthly_debt_payment) {
+            $message .= "- **Minimum Required Payment**: \${$this->report->minimum_monthly_debt_payment}/month\n";
         }
 
         $message .= "\nHow can I assist you with this report today?";

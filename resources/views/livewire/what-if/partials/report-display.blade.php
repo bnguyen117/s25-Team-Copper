@@ -1,20 +1,21 @@
 <!-- 
-    Renders the:
-    1. WhatIfReport header and grid summary.
-    2. timeline table displaying remaining balance, and interest paid monthly.
-    3. A Filament chart displaying remaining balance, and interest paid monthly.
+    Displays the WhatIfReport summary, timeline table, and Filament chart
+    based on the selected scenario.
 -->
 
-<!-- Include report header and record grid summary based on the user's chosen $report->algorithm -->
-@include('livewire.what-if.scenarios.'.$report->algorithm)
+<!-- Includes the scenario specific header and summary cards from $report->what_if_scenario -->
+@include('livewire.what-if.scenarios.'.$report->what_if_scenario)
 
-<!-- Include timeline table -->
+<!-- Includes the timeline table with monthly repayment details -->
 @include('livewire.what-if.partials.timeline-table')
 
-<!-- Chart displaying repayment trends over time -->
+<!-- Container for the Filament chart -->
 <div class="mt-4">
+
+        <!-- Filament chart showing debt repayment trends over time with $report data passed as 'chartData' -->
         @livewire(\App\Filament\Widgets\DebtRepaymentChart::class, ['chartData' => $report])
-        <style>
-             canvas { height: 50vh !important; }
-        </style>
+
+        <!-- Set the charts height to half of the viewing screen -->
+        <style>canvas { height: 50vh !important; }</style>
+
 </div>
