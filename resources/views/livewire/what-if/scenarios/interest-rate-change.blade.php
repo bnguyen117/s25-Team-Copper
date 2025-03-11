@@ -13,7 +13,7 @@
 <div class="space-y-4 mb-6">
 
     <!-- Section showing current debt details -->
-    <div>
+    <div class="bg-gradient-to-br from-gray-200 to-gray-100 dark:from-gray-900 dark:to-gray-700 shadow-xl rounded-xl p-4">
         <!-- Header for current debt detail cards -->
         <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Current Debt Details</h3>
 
