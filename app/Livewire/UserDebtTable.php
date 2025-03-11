@@ -132,7 +132,7 @@ class UserDebtTable extends Component implements HasForms, HasTable
                         ->weight(FontWeight::Medium),
 
                     TextColumn::make('category')
-                        ->label('Category')
+                        ->description('Category', position: 'above')
                         ->sortable()
                         ->weight(FontWeight::Medium),
                 ])->from('lg'),
