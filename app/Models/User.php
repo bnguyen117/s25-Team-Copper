@@ -25,6 +25,7 @@ class User extends Authenticatable
         'budget',
         'avatar',
         'password',
+        'first_login'
     ];
 
     /**
@@ -47,6 +48,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'first_login' => 'boolean',
         ];
     }
 
