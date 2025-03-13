@@ -15,27 +15,27 @@
     <!-- Section showing current debt details -->
     <div class="bg-gradient-to-br from-gray-200 to-gray-100 dark:from-gray-900 dark:to-gray-700 shadow-xl rounded-xl p-4">
         <!-- Header for current debt detail cards -->
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Current Debt Details</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Original Debt Details</h3>
 
         <!-- Grid container for current debt detail cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
-            <!-- Current interest rate from the debt record -->
+            <!-- Original annual interest rate at time of report -->
             <div class="bg-gradient-to-tl from-gray-200 to-gray-50 dark:from-gray-900 dark:to-gray-700 rounded-lg shadow-md p-4">
                 <p class="text-sm text-gray-600 dark:text-gray-400">Interest Rate</p>
-                <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ number_format($report->debt->interest_rate ?? 0, 2) }}%</p>
+                <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ number_format($report->original_interest_rate ?? 0, 2) }}%</p>
             </div>
             
-            <!-- Original debt amount from the report -->
+            <!-- Original debt amount at time of report  -->
             <div class="bg-gradient-to-tl from-gray-200 to-gray-50 dark:from-gray-900 dark:to-gray-700 rounded-lg shadow-md p-4">
                 <p class="text-sm text-gray-600 dark:text-gray-400">Debt Amount</p>
                 <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">${{ number_format($report->original_debt_amount, 2) }}</p>
             </div>
 
-            <!-- Current monthly debt payment from the report -->
+            <!-- Original monthly debt payment at the time of report -->
             <div class="bg-gradient-to-tl from-gray-200 to-gray-50 dark:from-gray-900 dark:to-gray-700 rounded-lg shadow-md p-4">
                 <p class="text-sm text-gray-600 dark:text-gray-400">Monthly Payment</p>
-                <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">${{ number_format($report->current_monthly_debt_payment, 2) }}</p>
+                <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">${{ number_format($report->original_monthly_debt_payment, 2) }}</p>
             </div>
 
         </div>

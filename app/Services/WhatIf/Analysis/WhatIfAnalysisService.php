@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\WhatIf\Analysis;
 use App\Models\Debt;
 
 
@@ -60,8 +60,9 @@ class WhatIfAnalysisService
         return [
             'debt_name' => $debtRecord->debt_name,
             'original_debt_amount' => $debtRecord->amount,
-            'minimum_monthly_debt_payment' => $debtRecord->minimum_payment,
-            'current_monthly_debt_payment' => $monthlyPayment,
+            'original_interest_rate' => $debtRecord->interest_rate,
+            'original_monthly_debt_payment' => $debtRecord->monthly_payment,
+            'original_minimum_debt_payment' => $debtRecord->minimum_payment,
             'new_interest_rate' => $newInterestRate,
             'timeline' => $timeline,
             'total_months' => $currentMonth,
@@ -123,8 +124,9 @@ class WhatIfAnalysisService
         return [
             'debt_name' => $debtRecord->debt_name,
             'original_debt_amount' => $debtRecord->amount,
-            'minimum_monthly_dept_payment' => $debtRecord->minimum_payment,
-            'current_monthly_debt_payment' => $debtRecord->monthly_payment,
+            'original_interest_rate' => $debtRecord->interest_rate,
+            'original_monthly_debt_payment' => $debtRecord->monthly_payment,
+            'original_minimum_debt_payment' => $debtRecord->minimum_payment,
             'new_monthly_debt_payment' => $newMonthlyPayment,
             'timeline' => $timeline,
             'total_months' => $currentMonth,

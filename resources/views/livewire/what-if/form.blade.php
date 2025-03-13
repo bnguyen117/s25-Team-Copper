@@ -50,10 +50,18 @@
                 <div class="bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 p-4 rounded-lg text-red-700 dark:text-red-300">
                     <p class="font-semibold">Error: {{ $report['error'] }}</p>
                 </div>
-            
-            <!-- Otherwise, display the report by including the report-display partial and passing the 'report' details -->
             @else
-                @include('livewire.what-if.partials.report-display', ['report' => $report])
+                <!-- Includes the scenario specific header and summary cards from $report->what_if_scenario -->
+                @include('livewire.what-if.scenarios.'.$report->what_if_scenario)
+
+                <!-- Includes the timeline table with monthly repayment details -->
+                @include('livewire.what-if.partials.timeline-table')
+
+                <!-- Filament chart showing debt repayment trends over time with $report data passed as 'chartData' -->
+                <div class="mt-4">
+                        @livewire(\App\Filament\Widgets\DebtRepaymentChart::class, ['chartData' => $report])
+                        <style>canvas { height: 50vh !important; }</style>
+                </div>
             @endif
         </div>
     @endif

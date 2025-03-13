@@ -6,7 +6,16 @@
 
 <div class="p-4">
 
-    <!-- Include the report-display partial and pass the WhatIfReport details as 'report' -->
-    @include('livewire.what-if.partials.report-display', ['report' => $report])
+    <!-- Includes the scenario specific header and summary cards from $report->what_if_scenario -->
+    @include('livewire.what-if.scenarios.'.$report->what_if_scenario)
+
+    <!-- Includes the timeline table with monthly repayment details -->
+    @include('livewire.what-if.partials.timeline-table')
+
+    <!-- Container for the Filament chart -->
+    <div class="mt-4">
+            @livewire(\App\Filament\Widgets\DebtRepaymentChart::class, ['chartData' => $report])
+            <style>canvas { height: 50vh !important; }</style>
+    </div>
 
 </div>
