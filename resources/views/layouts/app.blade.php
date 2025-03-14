@@ -37,6 +37,11 @@
 
         <!-- Footer -->
         @include('layouts.footer')
+        
+        <!-- Tutorial popup on first login -->
+        @auth
+            @livewire('tutorial-modal')
+        @endauth
     </div>
 
     <!-- Scripts -->

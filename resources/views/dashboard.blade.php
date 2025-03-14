@@ -7,9 +7,9 @@
 
     <div class="max-w-4xl mx-auto mt-8 space-y-6">
         <!-- Income and Budgeting & Debt Breakdown -->
-        <div class="flex justify-between space-x-4">
+        <div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
             <!-- Income and Budgeting -->
-            <div class="w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
+            <div class="w-full md:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 border-b pb-2">Income and Budgeting</h3>
                 <canvas id="incomeChart" class="mx-auto mt-4" width="150" height="150"></canvas>
 
@@ -27,7 +27,7 @@
             </div>
             
             <!-- Debt Breakdown Chart -->
-            <div class="w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
+            <div class="w-full md:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 border-b pb-2">Debt Breakdown</h3>
                 <canvas id="debtBreakdownChart" class="w-[200px] h-[200px] mx-auto p-4" width="210" height="210"></canvas>
             </div>
@@ -40,9 +40,9 @@
         </div>
 
         <!-- Rewards & Inspiration and Goal Progress Side by Side -->
-        <div class="flex justify-between space-x-4">
+        <div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
             <!-- Rewards & Inspiration -->
-            <div class="w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
+            <div class="w-full md:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 border-b pb-2">Rewards & Inspiration</h3>
                 <p class="mt-4 text-lg font-semibold text-gray-400">You got <span class="text-green-400">[insert num]</span> badges</p>
                 <a href="{{ url('http://s25-team-copper.test/rewards') }}" class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg block text-center">View Rewards</a>
@@ -66,7 +66,7 @@
             </div>
 
             <!-- Your Goal Progress -->
-            <div class="w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
+            <div class="w-full md:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 border-b pb-2">Your Goal Progress</h3>
             
                 <!-- Display Goal Name Above the Slider -->
