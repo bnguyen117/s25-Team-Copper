@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('first_login')->default(true)->after('budget');
+        Schema::table('budgets', function (Blueprint $table) {
+            //
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('first_login');
+        Schema::table('budgets', function (Blueprint $table) {
+            //
         });
     }
 };

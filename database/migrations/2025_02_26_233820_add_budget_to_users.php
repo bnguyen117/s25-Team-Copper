@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('first_login')->default(true)->after('budget');
+            $table->decimal('budget', 10, 2)->nullable()->after('email'); // Add budget column
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('first_login');
+            $table->dropColumn('budget'); // Remove budget column if rollback
         });
     }
 };
