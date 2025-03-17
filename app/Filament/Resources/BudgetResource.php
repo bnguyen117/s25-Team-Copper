@@ -26,12 +26,8 @@ class BudgetResource extends Resource
                 Forms\Components\TextInput::make('user_id')
                     ->required()
                     ->numeric(),
-                Forms\Components\Select::make('budget_type')
-                    ->required()
-                    ->options([
-                        'Standard' => '50-30-20',
-                        'Custom' => 'Custom',
-                    ]),
+                Forms\Components\TextInput::make('budget_type')
+                    ->required(),
                 Forms\Components\TextInput::make('monthly_income')
                     ->required()
                     ->numeric()
@@ -39,15 +35,12 @@ class BudgetResource extends Resource
                     ->prefix('$'),
                 Forms\Components\TextInput::make('budgeted_needs')
                     ->numeric()
-                    ->default(0)
                     ->prefix('$'),
                 Forms\Components\TextInput::make('budgeted_wants')
                     ->numeric()
-                    ->default(0)
                     ->prefix('$'),
                 Forms\Components\TextInput::make('budgeted_savings')
                     ->numeric()
-                    ->default(0)
                     ->prefix('$'),
                 Forms\Components\TextInput::make('needs_spending_this_month')
                     ->numeric()
