@@ -73,13 +73,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Set a one to many relationship
+     * Set a one to one relationship
      * 
-     * Where one user can have many Budgets.
+     * Where one user can have one Budget.
      */
     public function budgets()
     {
-        return $this->hasMany(Budget::class);
+        return $this->hasOne(Budget::class);
     }
 
     /**
