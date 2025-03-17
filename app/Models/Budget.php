@@ -17,6 +17,6 @@ class Budget extends Model
         'needs_spending_this_month',
         'wants_spending_this_month',
         'amount_saved_this_month',
-    ];
+    ]
     
 }
