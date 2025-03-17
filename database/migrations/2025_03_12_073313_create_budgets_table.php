@@ -16,9 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('budget_type', ['Standard', 'Custom'])->default('Standard');
             $table->decimal('monthly_income', 10, 2)->default(0);
-            $table->decimal('budgeted_needs', 10, 2);
-            $table->decimal('budgeted_wants', 10, 2);
-            $table->decimal('budgeted_savings', 10, 2);
+            $table->decimal('budgeted_needs', 10, 2)->default(0);
+            $table->decimal('budgeted_wants', 10, 2)->default(0);
+            $table->decimal('budgeted_savings', 10, 2)->default(0);
             $table->decimal('needs_spending_this_month', 10, 2)->default(0);
             $table->decimal('wants_spending_this_month', 10, 2)->default(0);
             $table->decimal('amount_saved_this_month', 10, 2)->default(0);

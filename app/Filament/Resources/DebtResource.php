@@ -65,7 +65,7 @@ class DebtResource extends Resource
                     ->label('User')
                     ->sortable()
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('debt_name')
+                Tables\Columns\TextColumn::make('debt_name')
                     ->label('Debt Name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('amount')
