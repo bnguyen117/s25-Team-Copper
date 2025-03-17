@@ -19,13 +19,4 @@ class Budget extends Model
         'amount_saved_this_month',
     ];
     
-    /**
-     * Set a one to one relationship
-     * 
-     * Where one user can have one Budget.
-     */
-    public function budgets()
-    {
-        return $this->belongsTo(User::class);
-    }
 }
