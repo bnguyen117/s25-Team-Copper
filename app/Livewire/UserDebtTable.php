@@ -169,12 +169,11 @@ class UserDebtTable extends Component implements HasForms, HasTable
 
             TextInput::make('interest_rate')
                 ->required()
-                ->numeric()
+                ->rules(['numeric', 'between:0,100', 'decimal:0,2'])
                 ->placeholder('Your annual interest rate')
                 ->suffix('%')
                 ->minValue(0)
-                ->maxValue(99.99)
-                ->rule('decimal:2'),
+                ->maxValue(99.99),
 
             Select::make('category')
                 ->required()

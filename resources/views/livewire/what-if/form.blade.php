@@ -48,7 +48,7 @@
             <!-- Display error message if $report holds an error -->
             @if(isset($report['error']))
                 <div class="bg-red-100 dark:bg-red-900/30 border-l-4 border-red-500 p-4 rounded-lg text-red-700 dark:text-red-300">
-                    <p class="font-semibold">Error: {{ $report['error'] }}</p>
+                    <p class="font-semibold">Error: {!! $report['error'] !!}</p>
                 </div>
             @else
                 <!-- Includes the scenario specific header and summary cards from $report->what_if_scenario -->
@@ -62,6 +62,12 @@
                         @livewire(\App\Filament\Widgets\DebtRepaymentChart::class, ['chartData' => $report])
                         <style>canvas { height: 50vh !important; }</style>
                 </div>
+
+                <!-- Include the goal impact section if a goal was provided -->
+                @if($report->goal_impact)
+                    @include('livewire.what-if.partials.goal-impact')
+                @endif
+
             @endif
         </div>
     @endif
