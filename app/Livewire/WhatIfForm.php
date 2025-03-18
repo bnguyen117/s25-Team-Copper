@@ -19,20 +19,20 @@ class WhatIfForm extends Component implements HasForms
 {
     use InteractsWithForms;
 
-    public $debt_id;                        // Selected Debt ID for analysis
+    public $debt_id;                        // Selected Debt ID
     public $financial_goal_id;              // Selected Financial goal ID (optional)
     public $monthly_income;                 // User's monthly income
-    public $monthly_debt_expenses;          // User's monthly debt expenses (calculated from the user's debts)
+    public $monthly_debt_expenses;          // User's monthly debt expenses (calculated from the user's monthly payments)
     public $monthly_non_debt_expenses;      // User's monthly non-debt expenses (e.g. groceries, utility bills, etc)
     public $what_if_scenario;               // User's chosen what-if scenario
     public $new_interest_rate;              // New interest rate for 'interest-rate-change' scenario
     public $new_monthly_debt_payment;       // New monthly payment for 'payment-change' scenario
-    public $what_if_report;                 // Stores the what-if analysis result; passed to the view for rendering
+    public $what_if_report;                 // Stores the what-if report data; Passed to the view for rendering
 
 
     /**
      * On component mount:
-     *  - Resets the form and what_if_scenario with clearForm().
+     *  - Resets the form and what_if_report with clearForm().
      *  - Sets $this->monthly_debt_expenses to the sum of the user's debt payments.
      */
     public function mount(): void {
@@ -55,77 +55,88 @@ class WhatIfForm extends Component implements HasForms
 
                 // Required field for the user's monthly income.
                 TextInput::make('monthly_income')
-                ->type('number')
-                ->required()
-                ->prefix('$')
-                ->placeholder('Enter your monthly income'),
-
-                // Disabled field showing the total of the user's monthly debt payments.
-                TextInput::make('monthly_debt_expenses')
-                ->type('number')
-                ->label('Monthly Debt Expenses')
-                ->prefix('$')
-                ->disabled()
-                ->default($this->monthly_debt_expenses)
-                ->helperText('The sum of your monthly debt payments.'),
+                    ->label('Monthly Income')
+                    ->type('number')
+                    ->numeric()
+                    ->prefix('$')
+                    ->minValue(0)
+                    ->maxValue(9999999)
+                    ->placeholder('Enter your monthly income')
+                    ->required(),
 
                 // Optional field for additonal non-debt expenses.
                 TextInput::make('monthly_non_debt_expenses')
-                ->type('number')
-                ->label('Non-Debt Monthly Expenses')
-                ->prefix('$')
-                ->default(0)
-                ->minValue(0)
-                ->helperText('Expenses like groceries, utilities, etc.'),
+                    ->label('Monthly Non-Debt Expenses')
+                    ->type('number')
+                    ->numeric()
+                    ->prefix('$')
+                    ->minValue(0)
+                    ->maxValue(9999999)
+                    ->placeholder('Expenses like groceries, utilities, etc.')
+                    ->reactive()
+                    ->helperText(function ($get) {
+                        $nonDebtExpenses = $get('monthly_non_debt_expenses') ?: 0;
+                        $totalExpenses = $this->monthly_debt_expenses + $nonDebtExpenses;
+                        return "(debt + non-debt) expenses: $" . number_format($totalExpenses, 2);
+                    }),
 
-                // Required field to select a debt for analysis.
+                // Required field to select a debt.
                 Select::make('debt_id')
-                ->label('Debt')
-                ->options(fn () => $this->getCurrentUserDebts())
-                ->placeholder('Select a debt for analysis')
-                ->required(),
+                    ->label('Debt to Analyze')
+                    ->options(fn () => $this->getCurrentUserDebts())
+                    ->placeholder('Choose a debt')
+                    ->required()
+                    ->reactive(),
 
-                // Optional field to select a financial goal for analysis.
+                // Optional field to select a financial goal.
                 Select::make('financial_goal_id')
-                ->label('Financial Goal')
-                ->options(fn () => $this->getCurrentUserGoals())
-                ->nullable()
-                ->placeholder('Select a financial goal (optional)'),
+                    ->label('Financial Goal (Optional)')
+                    ->options(fn () => $this->getCurrentUserGoals())
+                    ->nullable()
+                    ->placeholder('Select a goal'),
 
                 // Required field to choose a what-if scenario - controls visibility of the following fields.
                 Select::make('what_if_scenario')
-                ->label('Scenario')
-                ->placeholder('Select a scenario')
-                ->required()
-                ->reactive()                   
-                ->options([
-                    'interest-rate-change' => 'What if my interest rate changes?',
-                    'payment-change' => 'What if I change my monthly payment?',
-                ]),
+                    ->label('Scenario')
+                    ->placeholder('Select a scenario')
+                    ->required()                  
+                    ->options([
+                        'interest-rate-change' => 'What if my interest rate changes?',
+                        'payment-change' => 'What if I change my monthly payment?',
+                    ])
+                    ->reactive(),
 
                 /**
                  * What-If Scenario Specific Fields.
                  */
                 // Required field for the new annual interest rate (visible for 'interest-rate-change').
                 TextInput::make('new_interest_rate')
-                ->type('number')
-                ->label('New Interest Rate (%)')
-                ->suffix('%')
-                ->visible(fn ($get) => $get('what_if_scenario') === 'interest-rate-change')
-                ->required(fn ($get) => $get('what_if_scenario') === 'interest-rate-change')
-                ->minValue(0)
-                ->maxValue(100)
-                ->placeholder('Input a new annual interest rate'),
+                    ->type('number')
+                    ->numeric()
+                    ->rules(['numeric', 'between:0,100', 'decimal:0,2'])
+                    ->label('New Interest Rate (%)')
+                    ->suffix('%')
+                    ->minValue(0)
+                    ->maxValue(100)
+                    ->placeholder('Input a new annual interest rate')
+                    ->visible(fn ($get) => $get('what_if_scenario') === 'interest-rate-change')
+                    ->required(fn ($get) => $get('what_if_scenario') === 'interest-rate-change')
+                    ->helperText(fn ($get) => ($debt = Debt::find($get('debt_id'))) ? "Current rate: " . number_format($debt->interest_rate, 2) . "%" : null)
+                    ->reactive(),
 
                 // Required field for the new monthly debt payment (visible for 'payment-change)'.
                 TextInput::make('new_monthly_debt_payment')
-                ->type('number')
-                ->prefix('$')
-                ->visible(fn ($get) => $get('what_if_scenario') === 'payment-change')
-                ->required(fn ($get) => $get('what_if_scenario') === 'payment-change')
-                ->minValue(0)
-                ->placeholder('Input a new monthly payment'),                                                 
-                ]);
+                    ->type('number')
+                    ->numeric()
+                    ->prefix('$')
+                    ->minValue(0)
+                    ->maxValue(9999999)
+                    ->placeholder('Input a new monthly payment')
+                    ->visible(fn ($get) => $get('what_if_scenario') === 'payment-change')
+                    ->required(fn ($get) => $get('what_if_scenario') === 'payment-change')
+                    ->helperText(fn ($get) => ($debt = Debt::find($get('debt_id'))) ? "Current monthly payment: $" . number_format($debt->monthly_payment, 2) : null)
+                    ->reactive(),             
+            ]);
     }
 
     /** Called on form submission and runs the selected what-if scenario */
@@ -144,6 +155,7 @@ class WhatIfForm extends Component implements HasForms
                 $state['new_interest_rate'],                                   
                 $state['monthly_income'],
                 $total_monthly_expenses,
+                $state['financial_goal_id']
             );
         } 
         
@@ -154,6 +166,7 @@ class WhatIfForm extends Component implements HasForms
                 $state['new_monthly_debt_payment'],                                   
                 $state['monthly_income'],
                 $total_monthly_expenses,
+                $state['financial_goal_id']
             );
         }
 
@@ -197,23 +210,27 @@ class WhatIfForm extends Component implements HasForms
     /** Create a WhatIfReport record in the database. */
     private function saveWhatIfReport(array $state, array $result): WhatIfReport {
         return WhatIfReport::create([
-            // Identifiers                
+            // Indentifiers and scenario choice            
             'user_id' => Auth::id(),
             'debt_id' => $state['debt_id'],
+            'financial_goal_id' => $state['financial_goal_id'],
+            'what_if_scenario' => $state['what_if_scenario'],
 
-            // Snapshot debt values at the time of report generation
+            // Original debt state
             'original_debt_amount' => $result['original_debt_amount'],
             'original_interest_rate' => $result['original_interest_rate'],
             'original_monthly_debt_payment' => $result['original_monthly_debt_payment'],
-            'original_minimum_debt_payment' => $result['original_minimum_debt_payment'] ?? null,
+            'original_minimum_debt_payment' => $result['original_minimum_debt_payment'],
 
-            // New data relating to the report's analysis
-            'what_if_scenario' => $state['what_if_scenario'],
-            'new_interest_rate' => $result['new_interest_rate'] ?? null,
-            'new_monthly_debt_payment' => $result['new_monthly_debt_payment'] ?? null,
+            //Scenario inputs
+            'new_interest_rate' => $state['new_interest_rate'] ?? null,
+            'new_monthly_debt_payment' => $state['new_monthly_debt_payment'] ?? null,
+
+            // Scenario outcomes
             'total_months' => $result['total_months'],
             'total_interest_paid' => $result['total_interest_paid'],
             'timeline' => $result['timeline'],
+            'goal_impact' => $result['goal_impact'],
         ]);
     }
 }

@@ -18,4 +18,8 @@
             <style>canvas { height: 50vh !important; }</style>
     </div>
 
+    <!-- Include the goal impact section if a goal was provided -->
+    @if($report->goal_impact)
+        @include('livewire.what-if.partials.goal-impact')
+    @endif
 </div>

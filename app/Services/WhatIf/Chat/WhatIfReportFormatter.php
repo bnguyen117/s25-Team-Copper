@@ -5,104 +5,148 @@ namespace App\Services\WhatIf\Chat;
 use App\Models\{WhatIfReport, Debt};
 use Illuminate\Support\Facades\Log;
 
+/**
+ * A collection of methods to process thee user's information.
+ */
 class WhatIfReportFormatter
 {
-
     /**
-     * Generates a summary of the user's overall information and given report.
+     * Generates a summary of the user's overall information.
      * Used to provide context to the AI chatbot in its system prompt.
      */
     public function generateSummary(WhatIfReport $report): string
     {
-        $summary = [
+        $summary = array_merge(
             $this->formatDebtOverview($report),
             $this->formatOriginalDebtDetails($report),
             $this->formatScenarioResults($report),
-            $this->formatAdditionalDetails($report),
+            $this->formatGoalImpact($report) ?? [], //empty if null
             $this->formatUserDebtProfile($report),
+            $this->formatAdditionalDetails($report) ?? []
+        );
+
+        $output = implode("\n", $summary);
+        Log::info('WhatIfReport Summary:', ['summary' => $output]);
+        return $output;
+    }
+
+    /** General Debt details */
+    private function formatDebtOverview(WhatIfReport $report): array
+    {
+        return [
+            "Debt Overview:",
+            sprintf("  - Debt Name: %s", $report->debt->debt_name),
+            sprintf("  - Debt Category: %s", $report->debt->category),
         ];
-        return implode("\n", array_filter($summary));
     }
 
-    /**
-     * General Debt details
-     */
-    private function formatDebtOverview(WhatIfReport $report): string
+    /** Snapshot details that represent the debt at the time of report. */
+    private function formatOriginalDebtDetails(WhatIfReport $report): array
     {
-        return "Debt Overview:\n" .
-            "  - Debt Name: {$report->debt->debt_name}\n" .
-            "  - Debt Category: {$report->debt->category}\n";
+        return [
+            "Original Debt Details at Time of Report:",
+            sprintf("  - Original Debt Amount: $%s", number_format($report->original_debt_amount, 2)),
+            sprintf("  - Original Monthly Payment: $%s", number_format($report->original_monthly_debt_payment, 2)),
+            sprintf("  - Original Interest Rate: %s%%", number_format($report->original_interest_rate, 2)),
+            sprintf("  - Original Minimum Monthly Payment: $%s", number_format($report->original_minimum_debt_payment, 2)),
+        ];
     }
 
-    /**
-     * Snapshot details that represent the debt at the time of report.
-     */
-    private function formatOriginalDebtDetails(WhatIfReport $report): string
+    /** Details that relate to the debt after analysis. */
+    private function formatScenarioResults(WhatIfReport $report): array
     {
-        return "Original Debt Details at Time of Report:\n" .
-            "  - Original Debt Amount: $" . number_format($report->original_debt_amount, 2) . "\n" .
-            "  - Original Monthly Payment: $" . number_format($report->original_monthly_debt_payment, 2) . "\n" .
-            "  - Original Interest Rate: " . number_format($report->original_interest_rate ?? 0, 2) . "%\n" .
-            "  - Original Minimum Monthly Payment: $" . number_format($report->original_minimum_debt_payment ?? 0, 2) . "\n";
+        $lines = [
+            sprintf("What-If Scenario Results (Algorithm: %s):", $report->what_if_scenario),
+            sprintf("  - Total Months Until Full Repayment: %d", $report->total_months),
+            sprintf("  - Total Interest Paid: $%s", number_format($report->total_interest_paid, 2)),
+            sprintf("  - Timeline (Monthly Breakdown): %s", json_encode($report->timeline)),
+        ];
+        
+        // Scenario specific lines
+        if ($report->new_interest_rate)
+            $lines[] = sprintf("  - New Interest Rate: %s%%", number_format($report->new_interest_rate, 2));
+        if ($report->new_monthly_debt_payment)
+            $lines[] = sprintf("  - New Monthly Payment: $%s", number_format($report->new_monthly_debt_payment, 2));
+    
+        return $lines;
     }
 
-    /**
-     * Details that relate to the debt after analysis.
-     */
-    private function formatScenarioResults(WhatIfReport $report): string
+    /** Details about the impact on the user's financial goal. */
+    private function formatGoalImpact(WhatIfReport $report): ?array
     {
-        $result = "What-If Scenario Results (Algorithm: {$report->what_if_scenario}):\n" .
-            "  - Total Months Until Full Repayment: {$report->total_months}\n" .
-            "  - Total Interest Paid: $" . number_format($report->total_interest_paid, 2) . "\n" .
-            "  - Timeline (Monthly Breakdown): " . json_encode($report->timeline) . "\n";
+        if (!$report->goal_impact) return null; // Null if user did not select a goal
 
-        if ($report->new_interest_rate) {
-            $result .= "  - New Interest Rate: " . number_format($report->new_interest_rate, 2) . "%\n";
-        }
-        if ($report->new_monthly_debt_payment) {
-            $result .= "  - New Monthly Payment: $" . number_format($report->new_monthly_debt_payment, 2) . "\n";
-        }
-        return $result;
+        $impact = $report->goal_impact;
+        $lines = [
+            "Goal Impact:",
+            sprintf("  - Goal Name: %s", $impact['goal_name']),
+            sprintf("  - Current Amount: $%s", number_format($impact['current_amount'], 2)),
+            sprintf("  - Target Amount: $%s", number_format($impact['target_amount'], 2)),
+            sprintf("  - Remaining Amount: $%s", number_format($impact['remaining_amount'], 2)),
+            sprintf("  - Monthly Savings After Expenses: $%s", number_format($impact['monthly_savings'], 2)),
+            sprintf("  - Months Until Achieved: %s", $impact['months_to_goal'] ?? 'N/A'),
+            sprintf("  - Target Months: %d", $impact['achieve_by_months']),
+        ];
+    
+        $status = $impact['monthly_savings'] == 0 ?
+
+            // User has no monthly savings
+            sprintf(
+                "  - Status: No progress possible due to zero savings (Expenses: $%s, Income: $%s, Shortfall: $%s)",
+                number_format($impact['total_expenses'], 2),
+                number_format($impact['monthly_income'], 2),
+                number_format($impact['shortfall'], 2)
+            )
+            
+            // Determine if the goal is delayed or on track
+            : ($impact['months_to_goal'] > $impact['achieve_by_months']
+                ? "  - Status: Delayed beyond target"
+                : "  - Status: On track");
+    
+        $lines[] = $status;
+        return $lines;
     }
 
-    /**
-     * Details on all of the user's debts.
-     */
-    private function formatUserDebtProfile(WhatIfReport $report): string
+    /** Details the rest of the user's debts. */
+    private function formatUserDebtProfile(WhatIfReport $report): array
     {
-        $userDebts = Debt::where('user_id', $report->user_id)->get();
         $profile = ["User's Full Debt Profile:"];
-
-        if ($userDebts->isEmpty()) {
+    
+        // Grab all user debts except the one linked to the report
+        $additionalDebts = Debt::where('user_id', $report->user_id)
+        ->where('id', '!=', $report->debt_id)->get();
+    
+        if ($additionalDebts->isEmpty()) {
             $profile[] = "No additional debts found for this user.";
-        } else {
-            foreach ($userDebts as $debt) {
-                if ($debt->id !== $report->debt_id) {
-                    $profile[] = "- Debt Name: {$debt->debt_name}, " .
-                        "Category: {$debt->category}, " .
-                        "Current Balance: $" . number_format($debt->amount, 2) . ", " .
-                        "Interest Rate: " . number_format($debt->interest_rate, 2) . "%, " .
-                        "Monthly Payment: $" . number_format($debt->monthly_payment ?? 0, 2) . ", " .
-                        "Minimum Payment: $" . number_format($debt->minimum_payment ?? 0, 2);
-                }
-            }
+            return $profile;
         }
-        return implode("\n", $profile);
+    
+        // Append each additonal debt's information
+        foreach ($additionalDebts as $debt) {
+            $profile[] = sprintf(
+                "- Debt Name: %s, Category: %s, Current Balance: $%s, Interest Rate: %s%%, Monthly Payment: $%s, Minimum Payment: $%s",
+                $debt->debt_name,
+                $debt->category,
+                number_format($debt->amount, 2),
+                number_format($debt->interest_rate, 2),
+                number_format($debt->monthly_payment, 2),
+                number_format($debt->minimum_payment, 2),
+            );
+        }
+        return $profile;
     }
 
-
-    /**
-     * Additonal details miscellaneous details.
-     */
-    private function formatAdditionalDetails(WhatIfReport $report): ?string
+    /** Additional miscellaneous details. */
+    private function formatAdditionalDetails(WhatIfReport $report): ?array
     {
         $details = [];
-        if ($report->debt->description) {
-            $details[] = "Description: {$report->debt->description}";
-        }
-        if ($report->debt->due_date) {
-            $details[] = "Due Date: {$report->debt->due_date}";
-        }
-        return $details ? implode("\n", $details) : null;
+
+        if ($report->debt->description)
+            $details[] = sprintf("Description: %s", $report->debt->description);
+    
+        if ($report->debt->due_date)
+            $details[] = sprintf("Due Date: %s", $report->debt->due_date);
+        
+        return $details ? $details : null;
     }
 }
