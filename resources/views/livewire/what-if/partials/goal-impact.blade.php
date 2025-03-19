@@ -58,8 +58,8 @@
 
                 <!-- Remaining amount left to gather -->
                 <div class="bg-gradient-to-tl from-gray-200 to-gray-50 dark:from-gray-900 dark:to-gray-700 rounded-lg shadow-md p-4">
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Remaining Amount</p>
-                    <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">${{ number_format($report->goal_impact['remaining_amount'], 2) }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Amount Still Needed</p>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">${{ number_format($report->goal_impact['amount_still_needed'], 2) }}</p>
                 </div>
 
                 <!-- Monthly savings after all other expenses -->
@@ -71,12 +71,54 @@
                 <!-- Months until goal is achieved -->
                 <div class="bg-gradient-to-tl from-gray-200 to-gray-50 dark:from-gray-900 dark:to-gray-700 rounded-lg shadow-md p-4">
                     <p class="text-sm text-gray-600 dark:text-gray-400">Months Until Achieved</p>
-                    <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $report->goal_impact['months_to_goal'] ?? 'N/A' }}</p>
+                    <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $report->goal_impact['projected_months'] ?? 'N/A' }}</p>
                 </div>
             </div>
 
+            <!-- The user has already achieved their goal -->
+            @if($report->goal_impact['amount_still_needed'] == 0)
+
+                <!-- Notification container to notify the user their goal is already achieved -->
+                <div class="mt-2 border-l-4 border-green-500 bg-green-100 dark:bg-green-900/30 p-4 rounded-r-lg">
+
+                    <!-- Title message -->
+                    <p class="text-lg font-semibold text-green-700 dark:text-green-300">
+                        Goal Achieved!
+                    </p>
+
+                    <!-- Explanation message -->
+                    <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+                        You've already met your target of ${{ number_format($report->goal_impact['target_amount'], 2) }} for {{ $report->goal_impact['goal_name'] }}. Congratulations!
+                    </p>
+                </div>
+
+            <!-- The user is past due on achieving their goal -->
+            @elseif($report->goal_impact['is_overdue'] && $report->goal_impact['amount_still_needed'] > 0)
+
+                <!-- Warning container to alert the user that they are past their goal's achieve-by date -->
+                <div class="mt-2 border-l-4 border-red-500 bg-red-100 dark:bg-red-900/30 p-4 rounded-r-lg">
+
+                    <!-- Title message -->
+                    <p class="text-lg font-semibold text-red-700 dark:text-red-300">
+                        Goal Overdue!
+                    </p>
+
+                    <!-- Explantion message -->
+                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                        Your goal {{ $report->goal_impact['goal_name'] }} is past due, 
+                        and you still need ${{ number_format($report->goal_impact['amount_still_needed'], 2) }}.
+                    </p>
+
+                    <!-- Tip message  -->
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                        Tip: You can still accomplish your goal in {{ $report->goal_impact['projected_months'] }} months 
+                        with your current savings of ${{ number_format($report->goal_impact['monthly_savings'], 2) }}, 
+                        or catch up this month by saving an extra ${{ number_format($report->goal_impact['extra_savings_needed'], 2) }} now.
+                    </p>
+                </div>
+
             <!-- The user's plan will delay their goal -->
-            @if($report->goal_impact['months_to_goal'] > $report->goal_impact['achieve_by_months'])
+            @elseif($report->goal_impact['projected_months'] > $report->goal_impact['target_months'])
 
                 <!-- Warning container to alert the user that this plan will delay their goal -->
                 <div class="mt-2 border-l-4 border-yellow-500 bg-yellow-100 dark:bg-yellow-900/30 p-4 rounded-r-lg">
@@ -88,7 +130,7 @@
 
                     <!-- Explanation message -->
                     <p class="mt-1 text-sm text-yellow-600 dark:text-yellow-400">
-                        This plan delays your goal beyond its {{ $report->goal_impact['achieve_by_months'] }}-month target.
+                        This plan delays your goal beyond its {{ $report->goal_impact['target_months'] }}-month target.
                     </p>
 
                     <!-- Tip message to provide a helpful nudge -->
@@ -98,7 +140,7 @@
                 </div>
 
             <!-- The user's plan keeps their goal on track -->
-            @elseif($report->goal_impact['months_to_goal'] <= $report->goal_impact['achieve_by_months'])
+            @elseif($report->goal_impact['projected_months'] <= $report->goal_impact['target_months'])
                 <!-- Notification container to notify the user that their plan keeps their goal on track -->
                 <div class="mt-2 border-l-4 border-green-500 bg-green-100 dark:bg-green-900/30 p-4 rounded-r-lg">
 
@@ -109,7 +151,7 @@
 
                     <!-- Explanation message -->
                     <p class="mt-1 text-sm text-green-600 dark:text-green-400">
-                        This plan keeps your goal within its {{ $report->goal_impact['achieve_by_months'] }}-month target.
+                        This plan keeps your goal within its {{ $report->goal_impact['target_months'] }}-month target.
                     </p>
                 </div>
             @endif
