@@ -45,6 +45,9 @@ class WhatIfForm extends Component implements HasForms
         return view('livewire.what-if.form', ['report' => $this->what_if_report]); 
     }
 
+    // Create a drop down menu for the user to select a debt or savings scenario.
+    
+
     /**
      * Defines the form's field structure.
      */
