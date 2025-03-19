@@ -125,31 +125,39 @@ class WhatIfAnalysisService {
         $goal = FinancialGoal::find($financialGoalId);
         
         $monthlySavings = max(0, $monthlyIncome - $totalMonthlyExpenses);
-        $remainingAmount = $goal->target_amount - $goal->current_amount;
+        $amountStillNeeded = max(0, $goal->target_amount - $goal->current_amount);
 
-        // Number of months until goal is achieved.
-        $monthsToGoal = $monthlySavings > 0 ? ceil($remainingAmount / $monthlySavings) : null;
-    
+        // The user's goal target in months
+        $targetMonthsRaw = now()->diffInMonths($goal->achieve_by);
+        $targetMonths = max(1, ceil($targetMonthsRaw));
+
+        // Check if the goal is overdue
+        $isOverdue = $goal->achieve_by <= now();
+
+        // The projected number of months the user will acheive their goal based on monthly savings.
+        $projectedMonths = $monthlySavings > 0 && $amountStillNeeded > 0 ? ceil($amountStillNeeded / $monthlySavings) : 0;
+        
         $result = [
             'goal_name' => $goal->goal_name,
             'monthly_savings' => $monthlySavings,
-            'months_to_goal' => $monthsToGoal,
-            'achieve_by_months' => (int)round(now()->diffInMonths($goal->achieve_by)),
+            'projected_months' => $projectedMonths,
+            'target_months' => $targetMonths,
             'target_amount' => $goal->target_amount,
             'current_amount' => $goal->current_amount,
-            'remaining_amount' => $remainingAmount,
+            'amount_still_needed' => $amountStillNeeded,
+            'is_overdue' => $isOverdue,
         ];
+
+        if ($amountStillNeeded > 0 && $monthlySavings > 0) {
+            $extraSavingsNeeded = ceil($amountStillNeeded / $result['target_months']) - $monthlySavings;
+            $result['extra_savings_needed'] = max(0, $extraSavingsNeeded);
+        } 
+        else $result['extra_savings_needed'] = 0;
     
         if ($monthlySavings == 0) {
             $result['total_expenses'] = $totalMonthlyExpenses;
             $result['monthly_income'] = $monthlyIncome;
             $result['shortfall'] = $totalMonthlyExpenses - $monthlyIncome;
-        }
-
-        elseif ($monthsToGoal > $result['achieve_by_months']) {
-            // Extra savings needed to meet the goal on time
-            $extraSavingsNeeded = ceil($remainingAmount / $result['achieve_by_months']) - $monthlySavings;
-            $result['extra_savings_needed'] = max(0, $extraSavingsNeeded);
         }
 
         return $result;

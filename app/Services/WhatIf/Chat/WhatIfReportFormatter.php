@@ -75,34 +75,34 @@ class WhatIfReportFormatter
     private function formatGoalImpact(WhatIfReport $report): ?array
     {
         if (!$report->goal_impact) return null; // Null if user did not select a goal
-
-        $impact = $report->goal_impact;
+    
+        $i = $report->goal_impact;
         $lines = [
             "Goal Impact:",
-            sprintf("  - Goal Name: %s", $impact['goal_name']),
-            sprintf("  - Current Amount: $%s", number_format($impact['current_amount'], 2)),
-            sprintf("  - Target Amount: $%s", number_format($impact['target_amount'], 2)),
-            sprintf("  - Remaining Amount: $%s", number_format($impact['remaining_amount'], 2)),
-            sprintf("  - Monthly Savings After Expenses: $%s", number_format($impact['monthly_savings'], 2)),
-            sprintf("  - Months Until Achieved: %s", $impact['months_to_goal'] ?? 'N/A'),
-            sprintf("  - Target Months: %d", $impact['achieve_by_months']),
+            sprintf("  - Goal Name: %s", $i['goal_name']),
+            sprintf("  - Current Amount: $%s", number_format($i['current_amount'], 2)),
+            sprintf("  - Target Amount: $%s", number_format($i['target_amount'], 2)),
+            sprintf("  - Amount Still Needed: $%s", number_format($i['amount_still_needed'], 2)),
+            sprintf("  - Monthly Savings After Expenses: $%s", number_format($i['monthly_savings'], 2)),
+            sprintf("  - Months Until Achieved: %s", $i['projected_months'] ?? 'N/A'),
+            sprintf("  - Target Months: %d", $i['target_months']),
         ];
     
-        $status = $impact['monthly_savings'] == 0 ?
-
+        $status = "  - Status: ";
+        if ($i['monthly_savings'] == 0) {
             // User has no monthly savings
-            sprintf(
-                "  - Status: No progress possible due to zero savings (Expenses: $%s, Income: $%s, Shortfall: $%s)",
-                number_format($impact['total_expenses'], 2),
-                number_format($impact['monthly_income'], 2),
-                number_format($impact['shortfall'], 2)
-            )
-            
-            // Determine if the goal is delayed or on track
-            : ($impact['months_to_goal'] > $impact['achieve_by_months']
-                ? "  - Status: Delayed beyond target"
-                : "  - Status: On track");
-    
+            $status .= sprintf(
+                "No progress possible due to zero savings (Expenses: $%s, Income: $%s, Shortfall: $%s)",
+                number_format($i['total_expenses'], 2),
+                number_format($i['monthly_income'], 2),
+                number_format($i['shortfall'], 2)
+            );
+        }
+        // Check if goal is overdue, delayed, or on track 
+        elseif ($i['is_overdue'] && $i['amount_still_needed'] > 0) $status .= "Overdue";
+        elseif ($i['projected_months'] > $i['target_months']) $status .= "Delayed beyond target";
+        else $status .= "On track";
+
         $lines[] = $status;
         return $lines;
     }
