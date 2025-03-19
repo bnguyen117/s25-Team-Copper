@@ -27,9 +27,9 @@
             </div>
             
             <!-- Debt Breakdown Chart -->
-            <div class="w-full md:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
+            <div class="w-full md:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center" style="height:280px;">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 border-b pb-2">Debt Breakdown</h3>
-                <canvas id="debtBreakdownChart" class="w-[200px] h-[200px] mx-auto p-4" width="210" height="210"></canvas>
+                <canvas id="debtBreakdownChart" class="mx-auto" style="width:270px; height:270px;"></canvas>
             </div>
         </div>
 
@@ -222,8 +222,8 @@
 const ctxDebtBreakdown = document.getElementById('debtBreakdownChart').getContext('2d');
 
 // Aggregated data for the debt breakdown chart
-const categories = {!! json_encode($categories) !!};
-const debtAmounts = {!! json_encode($debtAmounts) !!};
+const categories = {!! json_encode((isset($categories) && count($categories) > 0) ? $categories : ['No Data']) !!};
+const debtAmounts = {!! json_encode((isset($debtAmounts) && count($debtAmounts) > 0) ? $debtAmounts : [1]) !!};
 
 // Calculate total debt from the aggregated amounts
 const totalDebt = debtAmounts.reduce((acc, debt) => acc + debt, 0);
@@ -243,11 +243,11 @@ const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
     options: {
         cutout: '70%',
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 display: true,
-                position: 'bottom',
+                position: 'right',
                 labels: {
                     usePointStyle: true,
                     pointStyle: 'circle',
