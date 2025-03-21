@@ -16,8 +16,8 @@
               <!--Desktop-only header row with column labels -->  
               <tr class="hidden md:table-row">
                   <th class="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-300">Month</th>
-                  <th class="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">Principal Paid</th>
                   <th class="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">Interest Paid</th>
+                  <th class="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">Principal Paid</th>
                   <th class="px-4 py-3 text-right font-semibold text-gray-700 dark:text-gray-300">Remaining Balance</th>
               </tr>
           </thead>
@@ -43,16 +43,16 @@
                                 <span class="text-gray-900 dark:text-gray-100">{{ $entry['month'] }}</span>
                             </div>
 
-                            <!-- Principal Paid label and value-->
-                            <div class="flex justify-between">
-                                <span class="font-semibold text-gray-700 dark:text-gray-300">Principal Paid:</span>
-                                <span class="text-gray-900 dark:text-gray-100">${{ number_format($entry['principal_paid'], 2) }}</span>
-                            </div>
-
                             <!-- Interest Paid label and value-->
                             <div class="flex justify-between">
                                 <span class="font-semibold text-gray-700 dark:text-gray-300">Interest Paid:</span>
                                 <span class="text-gray-900 dark:text-gray-100">${{ number_format($entry['interest_paid'], 2) }}</span>
+                            </div>
+
+                            <!-- Principal Paid label and value-->
+                            <div class="flex justify-between">
+                                <span class="font-semibold text-gray-700 dark:text-gray-300">Principal Paid:</span>
+                                <span class="text-gray-900 dark:text-gray-100">${{ number_format($entry['principal_paid'], 2) }}</span>
                             </div>
 
                             <!-- Remaining Balance label and value -->
@@ -69,10 +69,10 @@
                       {{ $entry['month'] }}
                   </td>  
                   <td class="hidden md:table-cell px-4 py-2 text-right text-gray-900 dark:text-gray-100">
-                      ${{ number_format($entry['principal_paid'], 2) }}
+                      ${{ number_format($entry['interest_paid'], 2) }}
                   </td>
                   <td class="hidden md:table-cell px-4 py-2 text-right text-gray-900 dark:text-gray-100">
-                      ${{ number_format($entry['interest_paid'], 2) }}
+                      ${{ number_format($entry['principal_paid'], 2) }}
                   </td>
                   <td class="hidden md:table-cell px-4 py-2 text-right text-gray-900 dark:text-gray-100">
                       ${{ number_format($entry['balance'], 2) }}
