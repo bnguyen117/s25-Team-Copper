@@ -24,9 +24,11 @@ class WhatIfForm extends Component implements HasForms
     public $monthly_income;                 // User's monthly income
     public $monthly_debt_expenses;          // User's monthly debt expenses (calculated from the user's monthly payments)
     public $monthly_non_debt_expenses;      // User's monthly non-debt expenses (e.g. groceries, utility bills, etc)
+    public $monthly_saved;                 // User's monthly savings (not currently used)
     public $what_if_scenario;               // User's chosen what-if scenario
     public $new_interest_rate;              // New interest rate for 'interest-rate-change' scenario
     public $new_monthly_debt_payment;       // New monthly payment for 'payment-change' scenario
+    public $new_monthly_savings;            // New monthly savings for 'savings-change' scenario (not currently used)
     public $what_if_report;                 // Stores the what-if report data; Passed to the view for rendering
 
 
@@ -82,6 +84,16 @@ class WhatIfForm extends Component implements HasForms
                         $totalExpenses = $this->monthly_debt_expenses + $nonDebtExpenses;
                         return "(debt + non-debt) expenses: $" . number_format($totalExpenses, 2);
                     }),
+                
+                // Required field to select the type of analysis (debt or savings) using a drop down menu.
+                Select::make('analysis_type')
+                    ->label('Analysis Type')
+                    ->options([
+                        'debt' => 'Debt Analysis',
+                        'savings' => 'Savings Analysis',
+                    ])
+                    ->reactive()
+                    ->placeholder('Select an analysis type'),
 
                 // Required field to select a debt.
                 Select::make('debt_id')
@@ -89,7 +101,8 @@ class WhatIfForm extends Component implements HasForms
                     ->options(fn () => $this->getCurrentUserDebts())
                     ->placeholder('Choose a debt')
                     ->required()
-                    ->reactive(),
+                    ->reactive()
+                    ->visible(fn ($get) => $get('analysis_type') === 'debt'), // Only show if 'debt' is selected
 
                 // Optional field to select a financial goal.
                 Select::make('financial_goal_id')
