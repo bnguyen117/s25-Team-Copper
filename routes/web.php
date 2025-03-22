@@ -10,6 +10,8 @@ use App\Http\Controllers\FriendController;
 use App\Http\Controllers\FriendRequestController;
 use App\Http\Controllers\GroupController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GameController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -70,6 +72,10 @@ Route::middleware('auth')->group(function () {
 
     // Search for Friends
     Route::get('/friends/search', [FriendRequestController::class, 'search'])->name('friends.search');
+
+    //Rewards route
+    Route::get('/game/{id}', [GameController::class, 'showGame']);
+
 });
 
 require __DIR__.'/auth.php';
