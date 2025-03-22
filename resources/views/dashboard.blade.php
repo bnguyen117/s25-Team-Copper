@@ -33,11 +33,14 @@
             </div>
         </div>
 
+        
         <!-- Debt Stats -->
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-10 text-center" style="height: 350px;">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 border-b pb-2">Your Debt Stats</h3>
-            <canvas id="debtChart" class="mx-auto mt-4"></canvas>
+            <div class="max-w-md mx-auto mt-8 space-y-6">
+        <canvas id="debtChart" class="w-full h-full"></canvas>
         </div>
+    </div>
 
         <!-- Rewards & Inspiration and Goal Progress Side by Side -->
         <div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
@@ -191,6 +194,7 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: true,
