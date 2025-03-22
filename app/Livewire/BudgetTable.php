@@ -39,16 +39,37 @@ class BudgetTable extends Component implements HasForms, HasTable
     {
         return $table
             ->query(Budget::where('user_id', Auth::id()))
-            ->heading('Budgets')
+            ->heading('Budget')
             ->paginated(false)
             ->columns([
                 Tables\Columns\TextColumn::make('income')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('expenses')
+                Tables\Columns\TextColumn::make('needs_percentage')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('savings')
+                Tables\Columns\TextColumn::make('wants_percentage')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('savings_percentage')   
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('budgeted_needs')       // 50
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('budgeted_wants')       // 30
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('budgeted_savings')     // 20
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('needs_progress')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('wants_progress')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('savings_progress')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('remaining_balance')
@@ -65,7 +86,6 @@ class BudgetTable extends Component implements HasForms, HasTable
                     ->form($this->getFormFields())
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = Auth::id();
-                        $data['remaining_balance'] = $data['income'] - $data['expenses'] - $data['savings'];
                         return $data;
                     }),
             ])
@@ -99,20 +119,6 @@ class BudgetTable extends Component implements HasForms, HasTable
                         ->sortable()
                         ->weight(FontWeight::Medium),
 
-                    TextColumn::make('expenses')
-                        ->numeric()
-                        ->description('Monthly Expenses', position: 'above')
-                        ->money('usd')
-                        ->sortable()
-                        ->weight(FontWeight::Medium),
-
-                    TextColumn::make('savings')
-                        ->numeric()
-                        ->description('Monthly Savings', position: 'above')
-                        ->money('usd')
-                        ->sortable()
-                        ->weight(FontWeight::Medium),
-
                     // Note: Will not be user-entered after testing
                     TextColumn::make('remaining_balance')
                         ->numeric()
@@ -135,18 +141,6 @@ class BudgetTable extends Component implements HasForms, HasTable
         return
         [
             TextInput::make('income')
-                ->required()
-                ->numeric()
-                ->minValue(0)
-                ->prefix('$'),
-
-            TextInput::make('expenses')
-                ->required()
-                ->numeric()
-                ->minValue(0)
-                ->prefix('$'),
-
-            TextInput::make('savings')
                 ->required()
                 ->numeric()
                 ->minValue(0)

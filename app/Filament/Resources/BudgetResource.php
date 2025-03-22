@@ -29,10 +29,23 @@ class BudgetResource extends Resource
                 Forms\Components\TextInput::make('income')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('expenses')
-                    ->required()
+                Forms\Components\TextInput::make('needs_percentage')
                     ->numeric(),
-                Forms\Components\TextInput::make('savings')
+                Forms\Components\TextInput::make('wants_percentage')
+                    ->numeric(),
+                Forms\Components\TextInput::make('savings_percentage')   
+                    ->numeric(),
+                Forms\Components\TextInput::make('budgeted_needs')       // 50
+                    ->numeric(),
+                Forms\Components\TextInput::make('budgeted_wants')       // 30
+                    ->numeric(),
+                Forms\Components\TextInput::make('budgeted_savings')     // 20
+                    ->numeric(),
+                Forms\Components\TextInput::make('needs_progress')
+                    ->numeric(),
+                Forms\Components\TextInput::make('wants_progress')
+                    ->numeric(),
+                Forms\Components\TextInput::make('savings_progress')
                     ->numeric(),
                 Forms\Components\TextInput::make('remaining_balance')
                     ->numeric(),
@@ -47,13 +60,31 @@ class BudgetResource extends Resource
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('income')
+                Tables\Columns\TextColumn::make('needs_percentage')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('expenses')
+                Tables\Columns\TextColumn::make('wants_percentage')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('savings')
+                Tables\Columns\TextColumn::make('savings_percentage')   
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('budgeted_needs')       // 50
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('budgeted_wants')       // 30
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('budgeted_savings')     // 20
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('needs_progress')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('wants_progress')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('savings_progress')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('remaining_balance')
