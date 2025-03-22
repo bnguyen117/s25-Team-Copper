@@ -32,18 +32,6 @@ class DebtRepaymentChart extends ChartWidget
                     'borderColor' => '#2196F3',                                         // Blue line color
                     'fill' => false,                                                    // Do not fill under the line
                 ],
-                [   // Dataset for displaying interest paid monthly over time
-                    'label' => 'Interest Paid',                                         // Label displayed inthe legend
-                    'data' => array_map(fn ($entry) => $entry['interest_paid'], $timeline), // Monthly Interest values
-                    'borderColor' => '#FF9800',                                         // Orange line color
-                    'fill' => false,
-                ],
-                [
-                    'label' => 'Principal Paid',
-                    'data' => array_map(fn ($entry) => $entry['principal_paid'], $timeline),
-                    'borderColor' => '#4CAF50',
-                    'fill' => false,
-                ],
             ],
             'labels' => array_map(fn ($entry) => "Month {$entry['month']}", $timeline), // Monthly labels on the x-axis of the chart
         ];
