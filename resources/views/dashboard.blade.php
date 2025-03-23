@@ -373,6 +373,10 @@ const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
         let currentData = chart.data.datasets[0].data;
         let currentLabels = chart.data.labels;
         let lastAmount = currentData[currentData.length - 1];
+
+        if (lastAmount === 0) {
+        return;
+        }
         // Subtract monthly payment if payment is made
         let newAmount = lastAmount - window.currentMonthlyPayment;
         newAmount = newAmount < 0 ? 0 : newAmount;
