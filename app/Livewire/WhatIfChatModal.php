@@ -59,7 +59,8 @@ class WhatIfChatModal extends Component
             "If the algorithm is 'payment-change', 'total_months' and 'total_interest_paid' reflect the 'new_payment' scenario.\n" .
             "If the algorithm is 'interest-rate-change', 'total_months' and 'total_interest_paid' reflect the 'new_interest_rate' scenario.\n" .
             "Assist the user by providing accurate financial advice based on this data.\n" .
-            "Clarify assumptions when needed, and format monetary values to two decimal places.";
+            "Clarify assumptions when needed, and format monetary values to two decimal places.\n" .
+            "When explaining calculations or equations, do not use LaTeX or special formatting (e.g., \\text{}, \\frac{}, or [ ].";
     }
 
     
