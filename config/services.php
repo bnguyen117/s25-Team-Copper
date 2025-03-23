@@ -35,4 +35,7 @@ return [
         ],
     ],
 
+    'gamelayer' => [
+        'api_key' => env('GAMELAYER_API_KEY'),
+    ],
 ];
