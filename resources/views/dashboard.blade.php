@@ -95,7 +95,26 @@
     </div>
 
                 <a href="{{ route('finance') }}" 
-                   class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg block text-center">Edit Goals</a> 
+                class="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg block text-center">Edit Goals</a> 
+                </div>
+            </div>
+            <!-- Line Graph for Debt Payment History & Payment Confirmation -->
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center mt-8">
+            <!-- Title that will update with the current debt -->
+            <h3 class="text-lg font-se  mibold text-gray-900 dark:text-gray-100 border-b pb-2" id="debtTitle">Debt Payment History</h3>
+            
+            <!-- Chart.js Canvas for the Line Graph -->
+            <canvas id="debtLineChart" class="mx-auto mt-4" width="300" height="200"></canvas>
+            
+            <!-- Button to Switch to the Next Debt -->
+            <button id="nextDebt" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">Next Debt</button>
+            
+            <!-- Payment Confirmation Question and Yes/No Buttons -->
+            <div class="mt-6">
+                <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">Have you made your payment this month?</p>
+                <div class="flex justify-center mt-4 space-x-4">
+                    <button id="paymentYes" class="px-4 py-2 bg-green-600 text-white rounded-lg">Yes</button>
+                    <button id="paymentNo" class="px-4 py-2 bg-red-600 text-white rounded-lg">No</button>
                 </div>
             </div>
         </div>
@@ -278,6 +297,101 @@ const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
         }
     }
 });
+// ----------------- Line Graph for Debt Payment History -----------------
+            // Use the real debts from the debt table.
+            // We simulate a 6-month payment history for each debt using its monthly_payment value.
+            let rawDebts = {!! json_encode($debts) !!};
+    let currentDebtIndex = 0;
+    
+    // Get the canvas context for the debt line chart
+    const ctxDebtLine = document.getElementById('debtLineChart').getContext('2d');
+    
+    // Function to initialize the chart for the current debt
+    function initDebtChart() {
+        let currentDebt = rawDebts[currentDebtIndex];
+        // Parse numeric values (ensure amount and monthly_payment are numbers)
+        let totalDebt = parseFloat(currentDebt.amount);
+        let monthlyPayment = parseFloat(currentDebt.monthly_payment);
+        
+        // Set initial labels and data (only the starting point is shown)
+        let labels = ["Start"];
+        let data = [totalDebt];
+        
+        // Destroy the existing chart if it exists
+        if (window.lineChart) {
+            window.lineChart.destroy();
+        }
+        
+        // Create a new chart instance
+        window.lineChart = new Chart(ctxDebtLine, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: currentDebt.debt_name + ' Payment History',
+                    data: data,
+                    borderColor: '#36A2EB',
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Remaining Debt ($)' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Payment Cycle' }
+                    }
+                }
+            }
+        });
+        
+        // Reset the cycle counter and store the monthly payment value globally for updates
+        window.currentCycle = 0;
+        window.currentMonthlyPayment = monthlyPayment;
+        // Update the debt title with the current debt name
+        document.getElementById('debtTitle').innerText = currentDebt.debt_name + ' Payment History';
+    }
+    
+    // Initialize the chart for the first debt on page load
+    initDebtChart();
+    
+    // Payment Confirmation Buttons Event Listeners
+    document.getElementById('paymentYes').addEventListener('click', function() {
+        let chart = window.lineChart;
+        let currentData = chart.data.datasets[0].data;
+        let currentLabels = chart.data.labels;
+        let lastAmount = currentData[currentData.length - 1];
+        // Subtract monthly payment if payment is made
+        let newAmount = lastAmount - window.currentMonthlyPayment;
+        window.currentCycle++;
+        currentData.push(newAmount);
+        currentLabels.push("Cycle " + window.currentCycle);
+        chart.update();
+    });
+    
+    document.getElementById('paymentNo').addEventListener('click', function() {
+        let chart = window.lineChart;
+        let currentData = chart.data.datasets[0].data;
+        let currentLabels = chart.data.labels;
+        // If payment is not made, retain the same debt amount
+        let lastAmount = currentData[currentData.length - 1];
+        window.currentCycle++;
+        currentData.push(lastAmount);
+        currentLabels.push("Cycle " + window.currentCycle);
+        chart.update();
+    });
+    
+    // Next Debt Button: Cycle through available debts
+    document.getElementById('nextDebt').addEventListener('click', function() {
+        currentDebtIndex = (currentDebtIndex + 1) % rawDebts.length;
+        initDebtChart();
+    });
+
     </script>
     
 </x-app-layout>
