@@ -297,10 +297,8 @@ const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
         }
     }
 });
-// ----------------- Line Graph for Debt Payment History -----------------
-            // Use the real debts from the debt table.
-            // We simulate a 6-month payment history for each debt using its monthly_payment value.
-            let rawDebts = {!! json_encode($debts) !!};
+// Line Graph for Debt Payment History 
+    let rawDebts = {!! json_encode($debts) !!};
     let currentDebtIndex = 0;
     
     // Get the canvas context for the debt line chart
