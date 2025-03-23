@@ -8,17 +8,32 @@
         </h2>
     </x-slot>
 
-    <!-- Main content container holding the Filament form -->
-    <div class="mt-16 mb-16 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
+    <!-- Debt Table -->
+    <div class="mt-16 mb-16 m-auto max-w-7xl lg:px-8">
         @livewire('user-debt-table')
     </div>
-   <!-- User Goals Table Section -->
-    <div id="goals" class="mb-16 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
-    @livewire('user-goal-table')
+
+    <!-- User Goals Table -->
+    <div id="goals" class="mb-16 m-auto max-w-7xl lg:px-8">
+        @livewire('user-goal-table')
     </div>
-    <!-- Budgeting Table Section -->
-    <div class="mt-16 mb-16 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
+
+    <!-- Budgeting Section -->
+    <div class="mt-16 mb-16 m-auto max-w-7xl lg:px-8">
+        <!-- Budget Table -->
         @livewire('budget-table')
+
+        <!-- Budget Form (Manual or AI) -->
+        <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center">Create Your Budget</h2>
+            @livewire('budget-form')
+        </div>
+
+        <!-- Budget Chart -->
+        <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center">Budget Breakdown</h2>
+            @livewire('budget-chart')
+        </div>
     </div>
 
 </x-app-layout>

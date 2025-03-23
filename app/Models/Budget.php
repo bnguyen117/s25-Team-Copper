@@ -8,11 +8,18 @@ class Budget extends Model
 {
     // Define which fields can be mass-assigned (for security purposes)
     protected $fillable = [
-        'user_id',
-        'income',
-        'expenses',
-        'savings',
-        'remaining_balance',
+    'user_id',
+    'income',
+    'needs_percentage',
+    'wants_percentage',
+    'savings_percentage',
+    'budgeted_needs',
+    'budgeted_wants',
+    'budgeted_savings',
+    'needs_progress',
+    'wants_progress',
+    'savings_progress',
+    'remaining_balance',
     ];
 
     /**
