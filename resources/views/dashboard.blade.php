@@ -99,12 +99,12 @@
                 </div>
             </div>
             <!-- Line Graph for Debt Payment History & Payment Confirmation -->
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center mt-8">
+            <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center mt-8">
             <!-- Title that will update with the current debt -->
             <h3 class="text-lg font-se  mibold text-gray-900 dark:text-gray-100 border-b pb-2" id="debtTitle">Debt Payment History</h3>
             
             <!-- Chart.js Canvas for the Line Graph -->
-            <canvas id="debtLineChart" class="mx-auto mt-4" width="300" height="200"></canvas>
+            <canvas id="debtLineChart" class="mx-auto" style="width:350px; height:200px;"></canvas>
             
             <!-- Button to Switch to the Next Debt -->
             <button id="nextDebt" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">Next Debt</button>
@@ -366,9 +366,10 @@ const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
         let lastAmount = currentData[currentData.length - 1];
         // Subtract monthly payment if payment is made
         let newAmount = lastAmount - window.currentMonthlyPayment;
+        newAmount = newAmount < 0 ? 0 : newAmount;
         window.currentCycle++;
         currentData.push(newAmount);
-        currentLabels.push("Cycle " + window.currentCycle);
+        currentLabels.push("Month " + window.currentCycle);
         chart.update();
     });
     
@@ -380,7 +381,7 @@ const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
         let lastAmount = currentData[currentData.length - 1];
         window.currentCycle++;
         currentData.push(lastAmount);
-        currentLabels.push("Cycle " + window.currentCycle);
+        currentLabels.push("Month " + window.currentCycle);
         chart.update();
     });
     
