@@ -300,7 +300,16 @@ const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
 // Line Graph for Debt Payment History 
     let rawDebts = {!! json_encode($debts) !!};
     let currentDebtIndex = 0;
-    
+
+    // Check if there are no debts and assign default data if needed
+    if (!rawDebts || rawDebts.length === 0) {
+    rawDebts = [{
+        debt_name: 'No Debt',
+        amount: 0,
+        monthly_payment: 0
+    }];
+    }
+
     // Get the canvas context for the debt line chart
     const ctxDebtLine = document.getElementById('debtLineChart').getContext('2d');
     
@@ -371,6 +380,11 @@ const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
         currentData.push(newAmount);
         currentLabels.push("Month " + window.currentCycle);
         chart.update();
+
+        // If debt reaches 0, update the title to congratulate the user
+        if (newAmount === 0) {
+            alert("Congrats, you have finished this debt!");
+            }
     });
     
     document.getElementById('paymentNo').addEventListener('click', function() {
@@ -383,6 +397,10 @@ const debtBreakdownChart = new Chart(ctxDebtBreakdown, {
         currentData.push(lastAmount);
         currentLabels.push("Month " + window.currentCycle);
         chart.update();
+        
+        if (lastAmount === 0) {
+            alert("Congrats, you have finished this debt!");
+        }
     });
     
     // Next Debt Button: Cycle through available debts
