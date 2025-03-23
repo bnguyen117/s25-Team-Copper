@@ -59,7 +59,7 @@
 
                 <!-- Filament chart showing debt repayment trends over time with $report data passed as 'chartData' -->
                 <div class="mt-4">
-                        @livewire(\App\Filament\Widgets\DebtRepaymentChart::class, ['chartData' => $report])
+                        @livewire(\App\Filament\Widgets\DebtRepaymentChart::class, ['chartData' => $report], key('chart-' . $report->id))
                         <style>canvas { height: 50vh !important; }</style>
                 </div>
 

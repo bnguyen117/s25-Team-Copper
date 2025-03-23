@@ -13,40 +13,53 @@ class DebtRepaymentChart extends ChartWidget
 
     protected function getData(): array
     {
-        // If the `$chartData` is null or has no timeline key
-        if (!$this->chartData || !isset($this->chartData['timeline'])) {
-            return [ // Return an empty chart
+        // If the `$chartData` is null return an empty chart
+        if (!$this->chartData) {
+            return [
                 'datasets' => [],
                 'labels' => [],
             ];
         }
 
-        // Else, extract the `$chartData` into `$timeline`
+        // Store timeline; Retrieve month count until full repayment.
         $timeline = $this->chartData['timeline'];
+        $monthCount = count($timeline);
 
-        return [
-            'datasets' => [
-                [   // Dataset for displaying remaining balance monthly over time
-                    'label' => 'Remaining Balance',                                     // Label displayed in the legend
-                    'data' => array_map(fn ($entry) => $entry['balance'], $timeline),   // Monthly balance values
-                    'borderColor' => '#2196F3',                                         // Blue line color
-                    'fill' => false,                                                    // Do not fill under the line
+        // If timeline is less than 36 months, plot points monthly.
+        if ($monthCount < 36) {
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Remaining Balance',                                     
+                        'data' => array_map(fn ($entry) => round($entry['balance'], 2), $timeline),   
+                        'borderColor' => '#2196F3',                                         
+                        'fill' => true,                                                    
+                        'backgroundColor' => 'rgba(33, 150, 243, 0.2)',
+                    ],
                 ],
-                [   // Dataset for displaying interest paid monthly over time
-                    'label' => 'Interest Paid',                                         // Label displayed inthe legend
-                    'data' => array_map(fn ($entry) => $entry['interest_paid'], $timeline), // Monthly Interest values
-                    'borderColor' => '#FF9800',                                         // Orange line color
-                    'fill' => false,
+                'labels' => array_map(fn ($entry) => "Month {$entry['month']}", $timeline),
+            ];
+        }
+        // For 36+ months, plot points yearly.
+        else {
+            $yearlyData = [];
+            foreach ($timeline as $entry) {
+                $year = ceil($entry['month'] / 12);
+                $yearlyData[$year] = round($entry['balance'], 2);
+            }
+            return [
+                'datasets' => [
+                    [
+                        'label' => 'Remaining Balance',                                     
+                        'data' => array_values($yearlyData),
+                        'borderColor' => '#2196F3',                                         
+                        'fill' => true,                                                    
+                        'backgroundColor' => 'rgba(33, 150, 243, 0.2)',
+                    ],
                 ],
-                [
-                    'label' => 'Principal Paid',
-                    'data' => array_map(fn ($entry) => $entry['principal_paid'], $timeline),
-                    'borderColor' => '#4CAF50',
-                    'fill' => false,
-                ],
-            ],
-            'labels' => array_map(fn ($entry) => "Month {$entry['month']}", $timeline), // Monthly labels on the x-axis of the chart
-        ];
+                'labels' => array_map(fn($year) => "Year {$year}", array_keys($yearlyData)),
+            ];
+        }
     }
 
     protected function getType(): string
