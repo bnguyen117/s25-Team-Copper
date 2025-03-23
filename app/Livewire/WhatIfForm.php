@@ -108,6 +108,16 @@ class WhatIfForm extends Component implements HasForms
                     ->visible(fn ($get) => $get('analysis_type') === 'debt'), // Only show if 'debt' is selected
 
                 //Required field to input user's current savings amount.
+                Select::make('current_savings')
+                    ->label('Current Monthly Savings Amount')
+                    ->type('number')
+                    ->numeric()
+                    ->prefix('$')
+                    ->minValue(0)
+                    ->maxValue(9999999)
+                    ->placeholder('How much are you currently saving per month?')
+                    ->reactive()
+                    ->visible(fn ($get) => $get('analysis_type') === 'savings'), // Only show if 'savings' is selected
 
                 // Optional field to select a financial goal.
                 Select::make('financial_goal_id')
