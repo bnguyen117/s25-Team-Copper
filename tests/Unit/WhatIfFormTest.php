@@ -5,12 +5,13 @@ namespace Tests\Unit;
 use App\Livewire\WhatIfForm;
 use App\Models\User;
 use App\Models\Debt;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class WhatIfFormTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected $user;
     protected $debt;
@@ -32,7 +33,6 @@ class WhatIfFormTest extends TestCase
     /** @test */
     public function save_what_if_report_saves_correct_record()
     {
-        // Arrange: Define input data
         $state = [
             'debt_id' => $this->debt->id,
             'financial_goal_id' => null,
@@ -51,8 +51,8 @@ class WhatIfFormTest extends TestCase
             'timeline' => [],
             'goal_impact' => null,
         ];
+        Auth::login($this->user);
         new WhatIfForm()->saveWhatIfReport($state, $result);
-
         // Check that the record is saved correctly
         $this->assertDatabaseHas('what_if_reports', [
             'user_id' => $this->user->id,
