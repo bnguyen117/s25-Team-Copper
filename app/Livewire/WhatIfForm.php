@@ -303,7 +303,7 @@ class WhatIfForm extends Component implements HasForms
     
 
     /** Create a WhatIfReport record in the database. */
-    private function saveWhatIfReport(array $state, array $result): WhatIfReport {
+    public function saveWhatIfReport(array $state, array $result): WhatIfReport {
         return WhatIfReport::create([
             // Indentifiers and scenario choice            
             'user_id' => Auth::id(),
