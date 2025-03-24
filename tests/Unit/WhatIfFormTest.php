@@ -36,8 +36,8 @@ class WhatIfFormTest extends TestCase
         $state = [
             'debt_id' => $this->debt->id,
             'financial_goal_id' => null,
-            'what_if_scenario' => 'interest-rate-change',
-            'new_interest_rate' => 7.50,
+            'debt_what_if_scenario' => 'interest-rate-change',
+            'debt_new_interest_rate' => 7.50,
             'new_monthly_debt_payment' => null,
         ];
 
