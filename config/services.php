@@ -34,8 +34,4 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
-    'gamelayer' => [
-        'api_key' => env('GAMELAYER_API_KEY'),
-    ],
 ];
