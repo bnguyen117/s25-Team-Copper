@@ -14,7 +14,7 @@ class WhatIfReportFormatter
      * Generates a summary of the user's overall information.
      * Used to provide context to the AI chatbot in its system prompt.
      */
-    public function generateSummary(WhatIfReport $report): string
+    public function generateDebtSummary(WhatIfReport $report): string
     {
         $summary = array_merge(
             $this->formatDebtOverview($report),
