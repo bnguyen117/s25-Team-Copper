@@ -244,7 +244,7 @@ class WhatIfForm extends Component implements HasForms
         $total_monthly_expenses = $this->monthly_debt_expenses + ($state['monthly_non_debt_expenses'] ?? 0);
 
         // Call the interest-rate-change algorithm.
-        if ($state['what_if_scenario'] === 'interest-rate-change') {
+        if ($state['debt_what_if_scenario'] === 'interest-rate-change') {
             $result = (new WhatIfAnalysisService)->interestRateChangeScenario(
                 $state['debt_id'],                                            
                 $state['new_interest_rate'],                                   
@@ -255,7 +255,7 @@ class WhatIfForm extends Component implements HasForms
         } 
         
         // Call the payment-change algorithm.
-        elseif ($state['what_if_scenario'] === 'payment-change') {
+        elseif ($state['debt_what_if_scenario'] === 'payment-change') {
             $result = (new WhatIfAnalysisService)->changeMonthlyPaymentScenario(
                 $state['debt_id'],                                            
                 $state['new_monthly_debt_payment'],                                   
