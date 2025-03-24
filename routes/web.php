@@ -70,6 +70,9 @@ Route::middleware('auth')->group(function () {
 
     // Search for Friends
     Route::get('/friends/search', [FriendRequestController::class, 'search'])->name('friends.search');
+
+    // Create Message in Group
+    Route::post('/groups/{group}/messages', [App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
 });
 
 require __DIR__.'/auth.php';

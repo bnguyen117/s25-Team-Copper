@@ -45,7 +45,7 @@ class GroupController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route('groups.index')->with('success', 'Group created successfully.');
+        return redirect()->route('groups.show', $group->id)->with('success', 'Group created successfully.');
     }
 
     /**
@@ -53,12 +53,20 @@ class GroupController extends Controller
      */
     public function show(Group $group)
     {
-        // Ensure only members can view private groups
         if ($group->is_private && !$group->members->contains(Auth::id())) {
             return redirect()->route('groups.index')->with('error', 'You do not have access to this private group.');
         }
 
-        return view('groups.show', ['group' => $group]);
+        // Eager load user info, sort by latest, and paginate
+        $messages = $group->messages()
+                      ->with('user')
+                      ->latest()
+                      ->paginate(10);
+
+        return view('groups.show', [
+            'group' => $group,
+            'messages' => $messages
+        ]);
     }
 
     /**
@@ -149,5 +157,7 @@ class GroupController extends Controller
 
         return redirect()->route('groups.index')->with('success', 'Group updated successfully.');
     }
+
+
         
 }
