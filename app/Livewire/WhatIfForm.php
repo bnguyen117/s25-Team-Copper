@@ -247,7 +247,7 @@ class WhatIfForm extends Component implements HasForms
         if ($state['debt_what_if_scenario'] === 'interest-rate-change') {
             $result = (new WhatIfAnalysisService)->interestRateChangeScenario(
                 $state['debt_id'],                                            
-                $state['new_interest_rate'],                                   
+                $state['debt_new_interest_rate'],                                   
                 $state['monthly_income'],
                 $total_monthly_expenses,
                 $state['financial_goal_id']
@@ -303,13 +303,13 @@ class WhatIfForm extends Component implements HasForms
     
 
     /** Create a WhatIfReport record in the database. */
-    private function saveWhatIfReport(array $state, array $result): WhatIfReport {
+    public function saveWhatIfReport(array $state, array $result): WhatIfReport {
         return WhatIfReport::create([
             // Indentifiers and scenario choice            
             'user_id' => Auth::id(),
             'debt_id' => $state['debt_id'],
             'financial_goal_id' => $state['financial_goal_id'],
-            'what_if_scenario' => $state['what_if_scenario'],
+            'what_if_scenario' => $state['debt_what_if_scenario'],
 
             // Original debt state
             'original_debt_amount' => $result['original_debt_amount'],
@@ -318,7 +318,7 @@ class WhatIfForm extends Component implements HasForms
             'original_minimum_debt_payment' => $result['original_minimum_debt_payment'],
 
             //Scenario inputs
-            'new_interest_rate' => $state['new_interest_rate'] ?? null,
+            'new_interest_rate' => $state['debt_new_interest_rate'] ?? null,
             'new_monthly_debt_payment' => $state['new_monthly_debt_payment'] ?? null,
 
             // Scenario outcomes
