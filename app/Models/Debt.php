@@ -13,8 +13,10 @@ class Debt extends Model
         'amount',
         'interest_rate',
         'minimum_payment',
+        'monthly_payment',
         'description',
         'due_date',
+        'category',
     ];
 
     /**

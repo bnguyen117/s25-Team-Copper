@@ -26,6 +26,8 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+
 
 // Filament Support
 use Filament\Support\Enums\FontWeight;
@@ -102,6 +104,13 @@ class UserDebtTable extends Component implements HasForms, HasTable
                         ->sortable()
                         ->weight(FontWeight::Medium),
 
+                    TextColumn::make('monthly_payment')
+                        ->numeric()
+                        ->description('Monthly Payment', position: 'above')
+                        ->money('usd')
+                        ->sortable()
+                        ->weight(FontWeight::Medium),
+
                     TextColumn::make('interest_rate')
                         ->numeric()
                         ->description('Interest Rate', position: 'above')
@@ -122,6 +131,10 @@ class UserDebtTable extends Component implements HasForms, HasTable
                         ->sortable()
                         ->weight(FontWeight::Medium),
 
+                    TextColumn::make('category')
+                        ->description('Category', position: 'above')
+                        ->sortable()
+                        ->weight(FontWeight::Medium),
                 ])->from('lg'),
             ])->collapsible(),
         ];
@@ -135,25 +148,51 @@ class UserDebtTable extends Component implements HasForms, HasTable
         return
         [
             TextInput::make('debt_name')
+                ->placeholder("Your debt's name")
                 ->required(),
 
             TextInput::make('amount')
                 ->required()
                 ->numeric()
+                ->placeholder('Your total debt amount')
+                ->minValue(0)
+                ->maxValue(99999999.99)
+                ->prefix('$'),
+            
+            TextInput::make('monthly_payment')
+                ->numeric()
+                ->required()
+                ->placeholder('Your planned monthly payment')
                 ->minValue(0)
                 ->maxValue(99999999.99)
                 ->prefix('$'),
 
             TextInput::make('interest_rate')
                 ->required()
-                ->numeric()
+                ->rules(['numeric', 'between:0,100', 'decimal:0,2'])
+                ->placeholder('Your annual interest rate')
                 ->suffix('%')
                 ->minValue(0)
-                ->maxValue(99.99)
-                ->rule('decimal:2'),
+                ->maxValue(99.99),
+
+            Select::make('category')
+                ->required()
+                ->label('Category')
+                ->options([
+                    'Credit Card' => 'Credit Card',
+                    'Student Loan' => 'Student Loan',
+                    'Auto Loan' => 'Auto Loan',
+                    'Mortgage' => 'Mortgage',
+                    'Personal Loan' => 'Personal Loan',
+                    'Medical Debt' => 'Medical Debt',
+                    'Other' => 'Other'
+            ])
+            ->default('Other'),
 
             TextInput::make('minimum_payment')
+                ->required()
                 ->numeric()
+                ->placeholder('Your minimum required monthly payment')
                 ->prefix('$')
                 ->minValue(0)
                 ->maxValue('99999999.99'),

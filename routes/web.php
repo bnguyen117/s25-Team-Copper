@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WhatIfController;
@@ -33,6 +34,10 @@ Route::middleware('auth')->group(function () {
 
     // Reward Routes
     Route::get('/rewards', [RewardsController::class, 'index'])->name('rewards');
+
+    # Dashboard Routes
+    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+    //
 
     // Community Routes
     Route::get('/community', [CommunityController::class, 'index'])->name('community.index');

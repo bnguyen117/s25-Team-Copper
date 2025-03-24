@@ -169,7 +169,8 @@ class UserGoalTable extends Component implements HasForms, HasTable
             TextInput::make('description')
                 ->columnSpanFull(),
 
-            DatePicker::make('achieve_by'),
+            DatePicker::make('achieve_by')
+                ->required(),
         ];
 
         // If editing an existing goal, allow users to modify their status.

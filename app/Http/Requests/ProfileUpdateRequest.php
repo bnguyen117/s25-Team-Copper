@@ -28,6 +28,7 @@ class ProfileUpdateRequest extends FormRequest
             ],
             'birthdate' => ['required', 'date', 'before_or_equal:' . now()->subYears(13)->format('Y-m-d')], // New: Birthdate (Must be at least 13 years old)
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'], // New: Avatar File Validation
+            'budget' => ['required', 'numeric', 'min:0'], //New:Budget Validation
         ];
     }
 }

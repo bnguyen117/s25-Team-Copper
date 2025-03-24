@@ -30,6 +30,9 @@ class ProfileTest extends TestCase
             ->patch('/profile', [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
+                'display_name' => 'Test Display Name',
+                'birthdate' => '2000-01-01', 
+                'budget' => 1000,
             ]);
 
         $response
@@ -40,6 +43,9 @@ class ProfileTest extends TestCase
 
         $this->assertSame('Test User', $user->name);
         $this->assertSame('test@example.com', $user->email);
+        $this->assertSame('Test Display Name', $user->display_name); 
+        $this->assertSame('2000-01-01', $user->birthdate);
+        $this->assertSame(1000, $user->budget);
         $this->assertNull($user->email_verified_at);
     }
 
@@ -52,6 +58,9 @@ class ProfileTest extends TestCase
             ->patch('/profile', [
                 'name' => 'Test User',
                 'email' => $user->email,
+                'display_name' => 'Test Display Name',
+                'birthdate' => '2000-01-01',
+                'budget' => 1000,
             ]);
 
         $response
