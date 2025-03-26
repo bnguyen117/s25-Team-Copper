@@ -14,20 +14,31 @@ class WhatIfReportFormatter
      * Generates a summary of the user's overall information.
      * Used to provide context to the AI chatbot in its system prompt.
      */
-    public function generateDebtSummary(WhatIfReport $report): string
+    public function generateSummary(WhatIfReport $report): string
     {
-        $summary = array_merge(
-            $this->formatDebtOverview($report),
-            $this->formatOriginalDebtDetails($report),
-            $this->formatScenarioResults($report),
-            $this->formatGoalImpact($report) ?? [], //empty if null
-            $this->formatUserDebtProfile($report),
-            $this->formatAdditionalDetails($report) ?? []
-        );
+        if ($report->analysis_type == 'savings') {
+            $summary = array_merge(
+                $this->formatSavingsOverview($report),
+                $this->formatOriginalSavingsDetails($report),
+                $this->formatScenarioResults($report),
+                $this->formatGoalImpact($report) ?? [] //empty if null
+            );
+        }
+        else if ($report->analysis_type == 'debt') {
+            $summary = array_merge(
+                $this->formatDebtOverview($report),
+                $this->formatOriginalDebtDetails($report),
+                $this->formatScenarioResults($report),
+                $this->formatGoalImpact($report) ?? [], //empty if null
+                $this->formatUserDebtProfile($report),
+                $this->formatAdditionalDetails($report) ?? []
+            );
+            
+        }
 
         $output = implode("\n", $summary);
-        Log::info('WhatIfReport Summary:', ['summary' => $output]);
-        return $output;
+            Log::info('WhatIfReport Summary:', ['summary' => $output]);
+            return $output;
     }
 
     /** General Debt details */
@@ -37,6 +48,15 @@ class WhatIfReportFormatter
             "Debt Overview:",
             sprintf("  - Debt Name: %s", $report->debt->debt_name),
             sprintf("  - Debt Category: %s", $report->debt->category),
+        ];
+    }
+
+    private function formatSavingsOverview(WhatIfReport $report): array {
+        // TODO: Implement savings overview
+        return [
+            "Savings Overview:",
+            print(" - Savings Name:  "),
+            print(" - Savings Category:"),
         ];
     }
 
@@ -52,22 +72,46 @@ class WhatIfReportFormatter
         ];
     }
 
+    private function formatOriginalSavingsDetails(WhatIfReport $report): array {
+        return [
+            "Original Savings Details at Time of Report:",
+            sprintf("  - Original Savings Amount: $%s", number_format($report->original_savings_amount, 2)),
+            sprintf("  - Original Monthly Savings: $%s", number_format($report->original_monthly_savings, 2)),
+            sprintf("  - Original Savings Interest Rate: %s%%", number_format($report->original_savings_interest_rate, 2) ),
+        ];
+    }
+
     /** Details that relate to the debt after analysis. */
     private function formatScenarioResults(WhatIfReport $report): array
     {
-        $lines = [
-            sprintf("What-If Scenario Results (Algorithm: %s):", $report->what_if_scenario),
-            sprintf("  - Total Months Until Full Repayment: %d", $report->total_months),
-            sprintf("  - Total Interest Paid: $%s", number_format($report->total_interest_paid, 2)),
-            sprintf("  - Timeline (Monthly Breakdown): %s", json_encode($report->timeline)),
-        ];
-        
-        // Scenario specific lines
-        if ($report->new_interest_rate)
-            $lines[] = sprintf("  - New Interest Rate: %s%%", number_format($report->new_interest_rate, 2));
-        if ($report->new_monthly_debt_payment)
-            $lines[] = sprintf("  - New Monthly Payment: $%s", number_format($report->new_monthly_debt_payment, 2));
-    
+        if ($report->analysis_type == 'debt') {
+            $lines = [
+                sprintf("What-If Scenario Results (Algorithm: %s):", $report->debt_what_if_scenario),
+                sprintf("  - Total Months Until Full Repayment: %d", $report->total_months),
+                sprintf("  - Total Interest Paid: $%s", number_format($report->total_interest_paid, 2)),
+                sprintf("  - Timeline (Monthly Breakdown): %s", json_encode($report->timeline)),
+            ];
+            
+            // Scenario specific lines
+            if ($report->new_interest_rate)
+                $lines[] = sprintf("  - New Interest Rate: %s%%", number_format($report->new_interest_rate, 2));
+            if ($report->new_monthly_debt_payment)
+                $lines[] = sprintf("  - New Monthly Payment: $%s", number_format($report->new_monthly_debt_payment, 2));
+        }
+        elseif ($report->analysis_type == 'savings') {
+            $lines = [
+                sprintf("What-If Scenario Results (Algorithm: %s):", $report->savings_what_if_scenario),
+                sprintf("  - Total Interest Earned: $%s", number_format($report->total_interest_earned, 2)),
+                sprintf("  - Timeline (Monthly Breakdown): %s", json_encode($report->timeline)),
+            ];
+
+            // Scenario specific lines
+            if ($report->new_interest_rate)
+                $lines[] = sprintf("  - New Interest Rate: %s%%", number_format($report->new_interest_rate, 2));
+            if ($report->new_monthly_savings)
+                $lines[] = sprintf("  - New Monthly Savings: $%s", number_format($report->new_monthly_savings, 2));
+        }
+       
         return $lines;
     }
 

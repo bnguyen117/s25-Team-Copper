@@ -351,25 +351,33 @@ class WhatIfForm extends Component implements HasForms
     /** Create a WhatIfReport record in the database. */
     public function saveWhatIfReport(array $state, array $result): WhatIfReport {
         return WhatIfReport::create([
-            // Indentifiers and scenario choice            
+            // Indentifiers and scenario choice   
+            'analysis_type' => $state['analysis_type'],       
             'user_id' => Auth::id(),
-            'debt_id' => $state['debt_id'],
+            'debt_id' => $state['debt_id'] ?? null,
             'financial_goal_id' => $state['financial_goal_id'],
-            'what_if_scenario' => $state['debt_what_if_scenario'],
+            'debt_what_if_scenario' => $state['debt_what_if_scenario'] ?? null,
+            'savings_what_if_scenario' => $state['savings_what_if_scenario'] ?? null,
 
             // Original debt state
-            'original_debt_amount' => $result['original_debt_amount'],
-            'original_interest_rate' => $result['original_interest_rate'],
-            'original_monthly_debt_payment' => $result['original_monthly_debt_payment'],
-            'original_minimum_debt_payment' => $result['original_minimum_debt_payment'],
+            'original_debt_amount' => $result['original_debt_amount'] ?? null,
+            'original_interest_rate' => $result['original_interest_rate'] ?? null,
+            'original_monthly_debt_payment' => $result['original_monthly_debt_payment'] ?? null,
+            'original_minimum_debt_payment' => $result['original_minimum_debt_payment'] ?? null,
+            'original_savings_amount' => $result['original_savings_amount'] ?? null,
+            'original_monthly_savings' => $result['original_monthly_savings'] ?? null,
+            'original_savings_interest_rate' => $result['original_savings_interest_rate'] ?? null,
 
             //Scenario inputs
             'new_interest_rate' => $state['debt_new_interest_rate'] ?? null,
             'new_monthly_debt_payment' => $state['new_monthly_debt_payment'] ?? null,
+            'new_annual_interest_rate' => $state['savings_new_annual_interest_rate'] ?? null,
+            'new_monthly_savings' => $state['new_monthly_savings'] ?? null,
 
             // Scenario outcomes
             'total_months' => $result['total_months'],
-            'total_interest_paid' => $result['total_interest_paid'],
+            'total_interest_earned' => $result['total_interest_earned'] ?? null,
+            'total_interest_paid' => $result['total_interest_paid'] ?? null,
             'timeline' => $result['timeline'],
             'goal_impact' => $result['goal_impact'],
         ]);

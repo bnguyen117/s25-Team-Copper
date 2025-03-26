@@ -52,15 +52,27 @@ class WhatIfChatModal extends Component
      */
     private function buildSystemPrompt(WhatIfReport $report): string
     {
-        return // Return the system prompt.
-            "You are an AI financial advisor. Here is the user's What-If Report data:\n\n" .
+        if ($report->analysis_type == 'debt') {
+            $prompt =  "You are an AI financial advisor. Here is the user's What-If Report data:\n\n" .
             (new WhatIfReportFormatter)->generateSummary($report) . "\n\n" .
-            "This report uses the '" . $report->what_if_scenario . "' algorithm.\n" .
+            "This report uses the '" . $report->debt_what_if_scenario . "' algorithm.\n" .
             "If the algorithm is 'payment-change', 'total_months' and 'total_interest_paid' reflect the 'new_payment' scenario.\n" .
             "If the algorithm is 'interest-rate-change', 'total_months' and 'total_interest_paid' reflect the 'new_interest_rate' scenario.\n" .
             "Assist the user by providing accurate financial advice based on this data.\n" .
             "Clarify assumptions when needed, and format monetary values to two decimal places.\n" .
             "When explaining calculations or equations, do not use LaTeX or special formatting (e.g., \\text{}, \\frac{}, or [ ].";
+        }
+        elseif ($report->analysis_type == 'savings') {
+            $prompt = "You are an AI financial advisor. Here is the user's What-If Report data:\n\n" .
+            (new WhatIfReportFormatter)->generateSummary($report) . "\n\n" .
+            "This report uses the '" . $report->savings_what_if_scenario . "' algorithm.\n" .
+            "If the algorithm is 'interest-rate-change', 'total_saved' and 'total_interest_earned' reflect the 'new_interest_rate' scenario.\n" .
+            "If the algorithm is 'savings-change', 'total_saved' and 'total_interest_earned' reflect the 'new_monthly_savings' scenario.\n" .
+            "Assist the user by providing accurate financial advice based on this data.\n" .
+            "Clarify assumptions when needed, and format monetary values to two decimal places.\n" .
+            "When explaining calculations or equations, do not use LaTeX or special formatting (e.g., \\text{}, \\frac{}, or [ ].";
+        }
+        return $prompt;
     }
 
     
