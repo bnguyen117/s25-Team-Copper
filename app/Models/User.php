@@ -121,4 +121,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id');
     }
+
+    /**
+     * Set a one to many relationship
+     *
+     * Where one user can have many Messages.
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 }

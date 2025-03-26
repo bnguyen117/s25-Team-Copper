@@ -76,6 +76,9 @@ Route::middleware('auth')->group(function () {
     //Rewards route
     Route::get('/game/{id}', [GameController::class, 'showGame']);
 
+
+    // Create Message in Group
+    Route::post('/groups/{group}/messages', [App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
 });
 
 require __DIR__.'/auth.php';
