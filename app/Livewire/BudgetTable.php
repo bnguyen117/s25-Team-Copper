@@ -45,10 +45,31 @@ class BudgetTable extends Component implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('income')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('expenses')
+                Tables\Columns\TextColumn::make('needs_percentage')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('savings')
+                Tables\Columns\TextColumn::make('wants_percentage')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('savings_percentage')   
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('budgeted_needs')       // 50
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('budgeted_wants')       // 30
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('budgeted_savings')     // 20
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('needs_progress')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('wants_progress')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('savings_progress')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('remaining_balance')

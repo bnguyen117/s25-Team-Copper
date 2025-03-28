@@ -2,46 +2,65 @@
 
 namespace App\Livewire;
 
-use App\Models\Budget;
-use Filament\Forms;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Livewire\Component;
-use Illuminate\Contracts\View\View;
+use App\Models\Budget;
 use Illuminate\Support\Facades\Auth;
 
-class BudgetForm extends Component implements HasForms
+class BudgetForm extends Component
 {
-    use InteractsWithForms;
+    public $income, $expenses, $savings, $remaining_balance;
+    public $useAI = false; // Toggle AI recommendation
 
-    public ?array $data = [];
-
-    public function mount(): void
+    public function mount()
     {
-        $this->form->fill();
+        $budget = Budget::where('user_id', Auth::id())->latest()->first();
+
+        if ($budget) {
+            $this->income = $budget->income;
+            $this->expenses = $budget->budgeted_needs + $budget->budgeted_wants;
+            $this->savings = $budget->budgeted_savings;
+            $this->remaining_balance = $budget->remaining_balance;
+        }
     }
 
-    public function form(Form $form): Form
+    public function calculateRemainingBalance()
     {
-        return $form
-            ->schema([
-                //
-            ])
-            ->statePath('data')
-            ->model(Budget::class);
+        $this->remaining_balance = $this->income - ($this->expenses + $this->savings);
     }
 
-    public function create(): void
+    public function useAIRecommendations()
     {
-        $data = $this->form->getState();
+        $this->useAI = true;
 
-        $record = Budget::create($data);
-
-        $this->form->model($record)->saveRelationships();
+        // AI Budget Suggestions (Basic Algorithm)
+        $this->expenses = $this->income * 0.50; // 50% Needs
+        $this->savings = $this->income * 0.20; // 20% Savings
+        $this->remaining_balance = $this->income - ($this->expenses + $this->savings);
     }
 
-    public function render(): View
+    public function saveBudget()
+    {
+        $this->validate([
+            'income' => 'required|numeric|min:0',
+            'expenses' => 'required|numeric|min:0',
+            'savings' => 'required|numeric|min:0',
+        ]);
+
+        Budget::updateOrCreate(
+            ['user_id' => Auth::id()],
+            [
+                'income' => $this->income,
+                'budgeted_needs' => $this->expenses * 0.70, // 70% of expenses are needs
+                'budgeted_wants' => $this->expenses * 0.30, // 30% of expenses are wants
+                'budgeted_savings' => $this->savings,
+                'remaining_balance' => $this->remaining_balance,
+            ]
+        );
+
+        session()->flash('success', 'Budget saved successfully!');
+    }
+
+    public function render()
     {
         return view('livewire.budget-form');
     }
