@@ -13,13 +13,14 @@ use \Illuminate\View\View;
 /** A Livewire component for the AI chatbot Modal connected to WhatIfReports. */
 class WhatIfChatModal extends Component
 {
-    public WhatIfReport $report;    // Holds the current WhatIfReport record.
-    public array $messages = [];    // Holds the chat's history.
-    public string $userInput = '';  // Holds the user's text input.
+    public WhatIfReport $report;        // Holds the current WhatIfReport record.
+    public array $messages = [];        // Holds the chat's history.
+    public string $userInput = '';      // Holds the user's text input.
+    public bool $showQuestions = false; // Flag for controlling visibility of questions list
 
 
     public function mount(): void { $this->initializeChat(); }
-    public function render(): View { return view('livewire.what-if.chat-interface'); }
+    public function render(): View { return view('livewire.what-if.chat-interface', ['report' => $this->report]); }
 
 
     /** Handles sending a request to OpenAI when the user sends a message. */
@@ -35,6 +36,15 @@ class WhatIfChatModal extends Component
         $this->userInput = '';
     }
 
+    /* Handles asking a predefined question on click */
+    public function askQuestion(string $question): void {
+        $this->userInput = $question;
+        $this->sendMessage();
+        $this->showQuestions=false;
+    }
+
+    /* Toggle the visibility of the predefined questions list */
+    public function toggleQuestions(): void {$this->showQuestions = !$this->showQuestions;}
 
     /** Initialize the chat history with a system prompt and welcome message. */
     private function initializeChat(): void
