@@ -325,7 +325,7 @@ class WhatIfForm extends Component implements HasForms
             'total_months' => $result['total_months'],
             'total_interest_paid' => $result['total_interest_paid'],
             'timeline' => $result['timeline'],
-            'goal_impact' => $result['goal_impact'],
+            'goal_impact' => $result['goal_impact'] ?? null,
         ]);
     }
 }
