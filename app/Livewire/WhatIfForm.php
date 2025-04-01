@@ -379,7 +379,7 @@ class WhatIfForm extends Component implements HasForms
             'total_interest_earned' => $result['total_interest_earned'] ?? null,
             'total_interest_paid' => $result['total_interest_paid'] ?? null,
             'timeline' => $result['timeline'],
-            'goal_impact' => $result['goal_impact'],
+            'goal_impact' => $result['goal_impact'] ?? null,
         ]);
     }
 }
