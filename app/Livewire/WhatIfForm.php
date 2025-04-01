@@ -257,10 +257,12 @@ class WhatIfForm extends Component implements HasForms
         // Sum total expenses.
         $total_monthly_expenses = $this->monthly_debt_expenses + ($state['monthly_non_debt_expenses'] ?? 0);
 
+        $what_if_scenario = $state['debt_what_if_scenario'] ?? $state['savings_what_if_scenario'];
+
         // Checks if the analysis type is debt or savings, then chooses algorithm based on selected scenario.
         if ($state['analysis_type'] === 'debt') {
             // Call the interest-rate-change algorithm.
-            if ($state['debt_what_if_scenario'] === 'interest-rate-change') {
+            if ($state['debt_what_if_scenario'] === 'interest-rate-change') {}
                 $result = (new WhatIfAnalysisService)->debtInterestRateChangeScenario(
                     $state['debt_id'],                                            
                     $state['debt_new_interest_rate'],                                   
@@ -280,8 +282,6 @@ class WhatIfForm extends Component implements HasForms
                     $state['financial_goal_id']
                 );
             }
-
-        }
 
         elseif ($state['analysis_type'] === 'savings') {
             if ($state['savings_what_if_scenario'] === 'interest-rate-change') {
@@ -315,7 +315,7 @@ class WhatIfForm extends Component implements HasForms
         if (isset($result['error'])) $this->what_if_report = $result;
         
         // Save the WhatIfReport record to the DB and $this->what_if_report.
-        else $this->what_if_report = $this->saveWhatIfReport($state, $result);
+        else $this->what_if_report = $this->saveWhatIfReport($state, $result, $what_if_scenario);
     }
 
 
@@ -349,15 +349,14 @@ class WhatIfForm extends Component implements HasForms
     
 
     /** Create a WhatIfReport record in the database. */
-    public function saveWhatIfReport(array $state, array $result): WhatIfReport {
+    public function saveWhatIfReport(array $state, array $result, $what_if_scenario): WhatIfReport {
         return WhatIfReport::create([
             // Indentifiers and scenario choice   
             'analysis_type' => $state['analysis_type'],       
             'user_id' => Auth::id(),
             'debt_id' => $state['debt_id'] ?? null,
             'financial_goal_id' => $state['financial_goal_id'],
-            'debt_what_if_scenario' => $state['debt_what_if_scenario'] ?? null,
-            'savings_what_if_scenario' => $state['savings_what_if_scenario'] ?? null,
+            'what_if_scenario' => $what_if_scenario ?? null,
 
             // Original debt state
             'original_debt_amount' => $result['original_debt_amount'] ?? null,

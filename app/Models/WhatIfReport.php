@@ -9,8 +9,8 @@ class WhatIfReport extends Model
 {
     protected $fillable = [
         // Idententifiers
-        'analysis_type',                 // The type of analysis performed
         'user_id',                          // Links a report to a user
+        'analysis_type',                 // The type of analysis performed
         'debt_id',                          // Links a report to a debt
         'financial_goal_id',                // Links a report to a goal
 
@@ -24,13 +24,12 @@ class WhatIfReport extends Model
         'original_savings_interest_rate',      // The annual interest rate on savings
 
         // New data relating to the report's analysis
-        'debt_what_if_scenario',                 // The name of the debt what-if scenario
-        'savings_what_if_scenario',             // The name of the savings what-if scenario
+        'what_if_scenario',                 // The name of the debt what-if scenario
         'new_interest_rate',                // The new interest rate
         'new_monthly_debt_payment',         // New monthly debt payment amount
-        'new_monthly_savings',              // New monthly savings amount
         'total_months',                     // The total months to pay off the debt
         'total_saved',
+        'new_monthly_savings',              // New monthly savings amount
         'total_interest_paid',              // The total interest paid over the time period
         'total_interest_earned',             // The total interest earned over the time period
         'timeline',                         // A Json array holding the results of each month.

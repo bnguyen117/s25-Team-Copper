@@ -172,7 +172,7 @@ class WhatIfAnalysisService {
 
         // Build timeline up to 30 years
         while ($month++ < 360) {
-            $interestEarned = 1 + ($monthlyRate);
+            $interestEarned = 1 + $monthlyRate;
             $balance = $balance * $interestEarned + $newMonthlySavings;
             $timeline[] = [
                 'month' => $month,
