@@ -38,6 +38,8 @@ class UserDebtTable extends Component implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
+    protected $listeners = ['refreshDebtTable' => '$refresh'];
+
     public function table(Table $table): Table
     {
         return $table
@@ -153,7 +155,8 @@ class UserDebtTable extends Component implements HasForms, HasTable
 
             TextInput::make('amount')
                 ->required()
-                ->numeric()
+                ->formatStateUsing(fn ($state) => number_format($state, 2, '.', ''))
+                ->rules(['numeric', 'decimal:0,2'])
                 ->placeholder('Your total debt amount')
                 ->minValue(0)
                 ->maxValue(99999999.99)
