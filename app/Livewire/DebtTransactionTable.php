@@ -14,10 +14,12 @@ use Filament\Tables\Table;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Panel;
+use Filament\Notifications\Notification;
 use Livewire\Component;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class DebtTransactionTable extends Component implements HasForms, HasTable
 {
@@ -41,6 +43,7 @@ class DebtTransactionTable extends Component implements HasForms, HasTable
                     ->button()
                     ->slideover()
                     ->form($this->getFormFields())
+                    ->before(fn (array $data) => $this->validatePayment($data))
                     ->after(
                         function (DebtTransaction $record) {
                         $this->updateDebt($record);             // Update debt with new transaction
@@ -52,7 +55,10 @@ class DebtTransactionTable extends Component implements HasForms, HasTable
                     ->button()
                     ->slideOver()
                     ->form($this->getFormFields())
-                    ->before(fn (DebtTransaction $record) => $this->originalPrincipal = $record->principal_paid)
+                    ->before(function (array $data, DebtTransaction $record) {
+                        $this->validatePayment($data);
+                        $this->originalPrincipal = $record->principal_paid;
+                    })
                     ->after(function (DebtTransaction $record) {
                         $debt = $record->debt->fresh();
                         $debt->amount += $this->originalPrincipal;  // Reverse the original transaction's impact
@@ -84,6 +90,24 @@ class DebtTransactionTable extends Component implements HasForms, HasTable
                 ]),
             ]);
     }
+
+
+    /**
+     * Validates that the payment covers the interest owed
+     */
+    private function validatePayment(array $data): void {
+        $debt = Debt::find($data['debt_id']);
+        $interestOwed = $debt->amount * ($debt->interest_rate/1200);
+        if ($data['amount'] < $interestOwed) {
+            Notification::make()
+                ->title('Payment is Too Low')
+                ->body("Payment must be at least the interest owed of \$" . number_format($interestOwed, 2))
+                ->danger()
+                ->send();
+            throw ValidationException::withMessages([]);
+        }
+    }
+
 
     /**
      * Update a debt and transaction record based on a payment transaction
