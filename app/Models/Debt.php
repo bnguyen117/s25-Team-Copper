@@ -28,4 +28,9 @@ class Debt extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(DebtTransaction::class);
+    }
 }
