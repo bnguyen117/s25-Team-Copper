@@ -29,11 +29,6 @@
         <input type="number" wire:model="remaining_balance" class="w-full p-2 border rounded bg-gray-200" readonly>
     </div>
 
-    <!-- AI Recommendations Button -->
-    <button wire:click="useAIRecommendations" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
-        Use AI Recommendations
-    </button>
-
     <!-- Save Budget Button -->
     <button wire:click="saveBudget" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
         Save Budget
