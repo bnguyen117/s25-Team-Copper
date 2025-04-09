@@ -36,4 +36,12 @@
     @livewire('user-goal-table')
     </div>
 
+    <!-- AI Budget Chat Section -->
+    <div class="mt-16 mb-16 m-auto max-w-7xl lg:px-8">
+        <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center">Chat with Your AI Budgeting Assistant</h2>
+            @livewire('budgeting-chat')
+        </div>
+    </div>
+
 </x-app-layout>
