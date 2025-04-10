@@ -9,8 +9,10 @@ use App\Http\Controllers\RewardsController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\FriendRequestController;
 use App\Http\Controllers\GroupController;
+use App\Gamify\Points\PostCreated;
+use App\Gamify\Badges\FirstContribution;
 use Illuminate\Support\Facades\Route;
-
+use QCod\Gamify\Gamify;
 
 Route::get('/', function () {
     return view('welcome');
@@ -71,6 +73,26 @@ Route::middleware('auth')->group(function () {
 
     // Search for Friends
     Route::get('/friends/search', [FriendRequestController::class, 'search'])->name('friends.search');
+
+    //FOR TESTING
+    Route::post('/award-points', function () {
+        $user = Auth::user();
+    
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    
+        // ✅ Pass user as subject
+        for ($i = 0; $i < (1000 / 20); $i++) {
+            $user->givePoint(new PostCreated($user));
+        }
+    
+        if ((new FirstContribution())->qualifier($user)) {
+            $user->attachBadge(new FirstContribution());
+        }
+    
+        return back()->with('success', 'Points awarded!');
+    })->name('award.test.points');
 
 });
 

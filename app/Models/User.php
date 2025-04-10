@@ -6,11 +6,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use QCod\Gamify\Gamify;
+use QCod\Gamify\HasReputations;
+
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasReputations, Gamify;
 
     /**
      * The attributes that are mass assignable.
@@ -121,4 +124,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id');
     }
+
+    /**
+     * Set a one to many relationship where a user can have many badges
+     */
+    public function badges()
+    {
+        return $this->belongsToMany(\QCod\Gamify\Badge::class, 'user_badges')
+            ->withTimestamps();
+    }
+
 }
