@@ -17,17 +17,22 @@
                     Your Achievements
                 </h3>
 
-                <!-- Badge Grid (stand-in for now) -->
+                <!-- Badge Grid -->
                 <div class="grid grid-cols-3 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    <button class="p-2 rounded-full shadow-md hover:opacity-80">
-                        <img src="https://images.vexels.com/media/users/3/143188/isolated/preview/5f44f3160a09b51b4fa4634ecdff62dd-money-icon.png?w=360" alt="Badge" class="w-full h-auto rounded-full">
+                    <button class="p-2 rounded-full shadow-md hover:opacity-80">  <!--stand-in-->
+                        <img src="{{ asset('img/rewards/default.png') }}" alt="Badge" class="w-full h-auto rounded-full">
                     </button>
-                    <button class="p-2 rounded-full shadow-md hover:opacity-80">
-                        <img src="https://production-tcf.imgix.net/app/uploads/2016/02/02182858/2014-1-2-the-high-cost-of-student-debt-jill-2.jpg" alt="Badge" class="w-full h-auto rounded-full">
-                    </button>
-                    <!-- Add more badges as needed -->
+                    
+                <!-- DB part -->
+                    @foreach (auth()->user()->badges as $badge)
+                        <div class="p-2 rounded-full shadow-md hover:opacity-80">
+                            <img src="{{ $badge->icon ?? 'rewards/img/default.png' }}" 
+                                alt="{{ $badge->name }}" 
+                                class="w-full h-auto rounded-full">
+                            <p class="text-center text-sm mt-2 text-white">{{ $badge->name }}</p>
+                        </div>
+                    @endforeach
                 </div>
-            </div>
 
             <!-- Current Goals Section -->
             <div class="bg-[#A9DFFF] shadow-sm sm:rounded-lg p-6 mt-8">
@@ -41,4 +46,12 @@
             </div>
         </div>
     </div>
+
+    <!--testing-->
+    <form method="POST" action="{{ route('award.test.points') }}">
+    @csrf
+    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+        Click to Earn 1000 Points
+    </button>
+    </form>
 </x-app-layout>
