@@ -24,7 +24,7 @@
             <div class="bg-white dark:bg-gray-800 p-4 rounded shadow">
                 <form method="POST" action="{{ route('messages.store', $group->id) }}">
                     @csrf
-                    <textarea name="content" rows="3" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white" placeholder="Post a message..." required></textarea>
+                    <textarea name="body" rows="3" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white" placeholder="Post a message..." required></textarea>
                     <div class="flex justify-end mt-2">
                         <x-primary-button>Post</x-primary-button>
                     </div>
@@ -48,7 +48,7 @@
                         <div>
                             <p class="font-semibold text-gray-900 dark:text-white">{{ $message->user->display_name }}</p>
                             <p class="text-sm text-gray-500">{{ $message->created_at->diffForHumans() }}</p>
-                            <p class="mt-2 text-gray-800 dark:text-gray-300">{{ $message->content }}</p>
+                            <p class="mt-2 text-gray-800 dark:text-gray-300">{{ $message->body }}</p>
                         </div>
                     </div>
                 @empty

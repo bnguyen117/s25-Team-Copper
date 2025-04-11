@@ -19,6 +19,10 @@ class Debt extends Model
         'category',
     ];
 
+    protected $casts = [
+        'due_date' => 'date'
+    ];
+
     /**
      * Set a many to one one relationship.
      * 
