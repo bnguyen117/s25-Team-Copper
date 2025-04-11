@@ -12,7 +12,7 @@ class MessageController extends Controller
     public function store(Request $request, Group $group)
     {
         $request->validate([
-            'content' => 'required|string|max:2000',
+            'body' => 'required|string|max:2000',
         ]);
 
         if (!$group->members->contains(Auth::id())) {
@@ -21,7 +21,7 @@ class MessageController extends Controller
 
         $group->messages()->create([
             'user_id' => Auth::id(),
-            'content' => $request->content,
+            'body' => $request->body,
         ]);
 
         return back()->with('success', 'Message posted!');
