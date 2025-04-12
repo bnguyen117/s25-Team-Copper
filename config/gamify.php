@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     // Model which will be having points, generally it will be User. **May need to change this**
-    'payee_model' => '\app\Models\User',  
+    'payee_model' => '\App\Models\User',  
 
     // Reputation model
     'reputation_model' => '\QCod\Gamify\Reputation',
