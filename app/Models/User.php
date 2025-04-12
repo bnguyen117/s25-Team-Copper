@@ -126,6 +126,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Set a one to many relationship
+     *
+     * Where one user can have many Messages.
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    /**
      * Set a one to many relationship where a user can have many badges
      */
     public function badges()

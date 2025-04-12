@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('budgets');
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // to associate the budget with a user
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->decimal('income', 10, 2);
             $table->decimal('needs_percentage', 5, 2)->nullable();
             $table->decimal('wants_percentage', 5, 2)->nullable();

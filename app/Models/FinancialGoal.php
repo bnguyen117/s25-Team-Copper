@@ -18,6 +18,10 @@ class FinancialGoal extends Model
         'achieve_by',
     ];
 
+    protected $casts = [
+        'achieve_by' => 'date'
+    ];
+
     /**
      * Set a many to one one relationship.
      * 

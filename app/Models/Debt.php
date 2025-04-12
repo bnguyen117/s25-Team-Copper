@@ -19,6 +19,10 @@ class Debt extends Model
         'category',
     ];
 
+    protected $casts = [
+        'due_date' => 'date'
+    ];
+
     /**
      * Set a many to one one relationship.
      * 
@@ -27,5 +31,10 @@ class Debt extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(DebtTransaction::class);
     }
 }
