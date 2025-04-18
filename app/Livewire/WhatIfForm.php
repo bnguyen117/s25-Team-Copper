@@ -26,15 +26,16 @@ class WhatIfForm extends Component implements HasForms
     public $monthly_income;                 // User's monthly income
     public $monthly_debt_expenses;          // User's monthly debt expenses (calculated from the user's monthly payments)
     public $monthly_non_debt_expenses;      // User's monthly non-debt expenses (e.g. groceries, utility bills, etc)
+    public $saving_for_goal;               // Determines if the user is saving for a goal
     public $current_savings_amt;            // User's current savings amount
     public $current_monthly_savings;                 // User's monthly savings
     public $current_savings_interest_rate;  // User's current annual interest rate for savings
-    public $debt_what_if_scenario;               // User's chosen what-if scenario for debt type
-    public $savings_what_if_scenario;             // User's chosen what-if scenario for savings type
+    public $what_if_scenario;               // User's chosen what-if scenario for debt type
     public $debt_new_interest_rate;              // New interest rate for 'interest-rate-change' scenario
     public $new_monthly_debt_payment;       // New monthly payment for 'payment-change' scenario
     public $savings_new_annual_interest_rate; // New annual interest rate for 'interest-rate-change' scenario
     public $new_monthly_savings;            // New monthly savings for 'savings-change' scenario
+    public $months_to_save;                 // Number of months to save (optional)
     public $what_if_report;                 // Stores the what-if report data; Passed to the view for rendering
     
 
@@ -72,7 +73,6 @@ class WhatIfForm extends Component implements HasForms
                         'savings' => 'Savings Analysis',
                     ])
                     ->required()
-                    ->reactive()
                     ->live()
                     ->placeholder('Select an analysis type'),
 
@@ -85,7 +85,7 @@ class WhatIfForm extends Component implements HasForms
                     ->minValue(0)
                     ->maxValue(9999999)
                     ->placeholder('Enter your monthly income')
-                    ->required(fn ($get) => $get('analysis_type') === 'debt' || $get('analysis_type') === 'savings') // Required for both analysis types
+                    ->required() // Required for both analysis types
                     ->visible(fn ($get) => $get('analysis_type') === 'debt' || $get('analysis_type') === 'savings'), // Shows if debt or savings analysis is selected
 
                 // Optional field for additonal non-debt expenses.
@@ -97,7 +97,6 @@ class WhatIfForm extends Component implements HasForms
                     ->minValue(0)
                     ->maxValue(9999999)
                     ->placeholder('Expenses like groceries, utilities, etc.')
-                    ->reactive()
                     ->helperText(function ($get) {
                         $nonDebtExpenses = $get('monthly_non_debt_expenses') ?: 0;
                         $totalExpenses = $this->monthly_debt_expenses + $nonDebtExpenses;
@@ -111,24 +110,25 @@ class WhatIfForm extends Component implements HasForms
                     ->options(fn () => $this->getCurrentUserDebts())
                     ->placeholder('Choose a debt')
                     ->required(fn ($get) => $get('analysis_type') === 'debt')
-                    ->reactive()
                     ->visible(fn ($get) => $get('analysis_type') === 'debt'), // Only show if 'debt' is selected
 
-                 // Required field to select whether the user is saving for a goal or not. (Visible for savings what if type)
+                
+                // Required field to determine if the user wants to analyze a goal.
                 Checkbox::make('saving_for_goal')
-                    ->label('Are you saving for a financial goal?')
-                    ->required()
+                    ->label('Are you saving for a goal?')
+                    ->helperText('If checked, you will be able to select a goal for your analysis.')
+                    ->default(false)
                     ->live()
                     ->visible(fn ($get) => $get('analysis_type') === 'savings'), // Only show if 'savings' is selected
 
                 // Optional field to select a financial goal for debt what-if.  Required field for savings what-if.
                 Select::make('financial_goal_id')
-                    ->label('Financial Goal (Optional)')
+                    ->label('Financial Goal')
                     ->options(fn () => $this->getCurrentUserGoals())
                     ->nullable(fn ($get) => $get('analysis_type') === 'debt')
                     ->placeholder('Select a goal')
-                    ->reactive()
-                    ->visible(fn ($get) => ($get('analysis_type') === 'debt' || ($get('analysis_type') === 'savings' && $get('saving_for_goal')))), // Shows if debt or savings analysis is selected
+                    ->required(fn ($get) => $get('analysis_type') === 'savings' && $get('saving_for_goal')) // Required if savings analysis is selected and user is saving for a goal
+                    ->visible(fn ($get) => $get('analysis_type') === 'debt' || ($get('analysis_type') === 'savings' && $get('saving_for_goal'))), // Shows if debt or savings analysis is selected
 
                 //Required field to input user's current savings amount.
                 TextInput::make('current_savings_amt') 
@@ -139,22 +139,20 @@ class WhatIfForm extends Component implements HasForms
                     ->minValue(0)
                     ->maxValue(9999999)
                     ->placeholder('How much do you currently have saved?')
-                    ->reactive()
-                    ->required(fn ($get) => $get('saving_for_goal') === 'no') // Required for non goal savings analysis
-                    ->visible(fn ($get) => $get('saving_for_goal') === 'no'), // Only show if 'savings' is selected
+                    ->required() // Required for non goal savings analysis
+                    ->visible(fn ($get) => $get('analysis_type') === 'savings' && !($get('saving_for_goal'))), // Only show if 'savings' is selected
 
                 //Required field to input user's current monthly savings rate.
                 TextInput::make('current_monthly_savings')
-                    ->label('Current Monthly Savings Amount')
+                    ->label('Current Monthly Savings Rate')
                     ->type('number')
                     ->numeric()
                     ->prefix('$')
                     ->minValue(0)
                     ->maxValue(9999999)
                     ->placeholder('How much are you currently saving per month?')
-                    ->reactive()
-                    ->required(fn ($get) => $get('saving_for_goal') === 'no') // Required for savings analysis
-                    ->visible(fn ($get) => $get('saving_for_goal') === 'no'), // Only show if 'savings' is selected
+                    ->required() // Required for savings analysis
+                    ->visible(fn ($get) => $get('analysis_type') === 'savings' && !($get('saving_for_goal'))), // Only show if 'savings' is selected
 
                 //Optional field to input user's current interest rate for savings.
                 TextInput::make('current_savings_interest_rate')
@@ -166,34 +164,32 @@ class WhatIfForm extends Component implements HasForms
                     ->minValue(0)
                     ->maxValue(100)
                     ->placeholder('What is your current annual interest rate?')
-                    ->reactive()
-                    ->required(fn ($get) => $get('analysis_type') === 'savings') // Required for savings analysis
-                    ->visible(fn ($get) => $get('analysis_type') === 'savings'), // Only show if 'savings' is selected
+                    ->required() // Required for savings analysis
+                    ->visible(fn ($get) => $get('analysis_type') === 'savings' && !($get('saving_for_goal'))), // Only show if 'savings' is selected
 
-                // Required field to choose a what-if scenario - controls visibility of the following fields.
-                Select::make('debt_what_if_scenario')
-                    ->label('Scenario')
+                // Required field to choose a debt what-if scenario - controls visibility of the following fields.  Uses the same name as saving to make it simple.
+                Select::make('what_if_scenario')
+                    ->label('Debt Scenario')
                     ->placeholder('Select a scenario')
                     ->required(fn ($get) => $get('analysis_type') === 'debt')                  
                     ->options([
-                        'interest-rate-change' => 'What if my interest rate changes?',
-                        'payment-change' => 'What if I change my monthly payment?',
+                        'debt-interest-rate-change' => 'What if my debt interest rate changes?',
+                        'debt-payment-change' => 'What if I change my monthly payment?',
                     ])
-                    ->reactive()
+                    ->live()
                     ->visible(fn ($get) => $get('analysis_type') === 'debt'), // Only show if 'debt' is selected
 
-                // Required field to choose a savings what-if scenario.
-                Select::make('savings_what_if_scenario')
-                    ->label('Scenario')
+                // Required field to choose a savings what-if scenario.  Uses same name as debt to make it simple.
+                Select::make('what_if_scenario')
+                    ->label('Saving Scenario')
                     ->placeholder('Select a scenario')
                     ->required(fn ($get) => $get('analysis_type') === 'savings')                  
                     ->options([
-                        'interest-rate-change' => 'What if my interest rate changes?',
+                        'saving-interest-rate-change' => 'What if my saving interest rate changes?',
                         'savings-change' => 'What if I change my monthly savings?',
-                        ''
                     ])
-                    ->reactive()
-                    ->required(fn ($get) => $get('analysis_type') === 'savings')
+                    ->required()
+                    ->live()
                     ->visible(fn ($get) => $get('analysis_type') === 'savings'), // Only show if 'savings' is selected
 
                 /**
@@ -209,10 +205,9 @@ class WhatIfForm extends Component implements HasForms
                     ->minValue(0)
                     ->maxValue(100)
                     ->placeholder('Input a new annual interest rate')
-                    ->visible(fn ($get) => $get('debt_what_if_scenario') === 'interest-rate-change')
-                    ->required(fn ($get) => $get('debt_what_if_scenario') === 'interest-rate-change')
-                    ->helperText(fn ($get) => ($debt = Debt::find($get('debt_id'))) ? "Current rate: " . number_format($debt->interest_rate, 2) . "%" : null)
-                    ->reactive(),
+                    ->visible(fn ($get) => $get('what_if_scenario') === 'debt-interest-rate-change')
+                    ->required()
+                    ->helperText(fn ($get) => ($debt = Debt::find($get('debt_id'))) ? "Current rate: " . number_format($debt->interest_rate, 2) . "%" : null),
 
                 // Required field for the new monthly debt payment (visible for 'payment-change)'.
                 TextInput::make('new_monthly_debt_payment')
@@ -222,10 +217,9 @@ class WhatIfForm extends Component implements HasForms
                     ->minValue(0)
                     ->maxValue(9999999)
                     ->placeholder('Input a new monthly payment')
-                    ->visible(fn ($get) => $get('debt_what_if_scenario') === 'payment-change')
-                    ->required(fn ($get) => $get('debt_what_if_scenario') === 'payment-change')
-                    ->helperText(fn ($get) => ($debt = Debt::find($get('debt_id'))) ? "Current monthly payment: $" . number_format($debt->monthly_payment, 2) : null)
-                    ->reactive(),             
+                    ->visible(fn ($get) => $get('what_if_scenario') === 'debt-payment-change')
+                    ->required()
+                    ->helperText(fn ($get) => ($debt = Debt::find($get('debt_id'))) ? "Current monthly payment: $" . number_format($debt->monthly_payment, 2) : null),             
 
                 // Required field for new annual interest rate for savings.  (visible for interest rate change)
                 TextInput::make('savings_new_annual_interest_rate')
@@ -237,10 +231,9 @@ class WhatIfForm extends Component implements HasForms
                     ->minValue(0)
                     ->maxValue(100)
                     ->placeholder('Input a new annual interest rate')
-                    ->visible(fn ($get) => $get('savings_what_if_scenario') === 'interest-rate-change')
-                    ->required(fn ($get) => $get('savings_what_if_scenario') === 'interest-rate-change')
-                    ->helperText(fn ($get) => $get('current_savings') ? "Current rate: " . number_format($get('current_savings'), 2) . "%" : null)
-                    ->reactive(),  
+                    ->visible(fn ($get) => $get('what_if_scenario') === 'saving-interest-rate-change')
+                    ->required()
+                    ->helperText(fn ($get) => $get('current_savings') ? "Current rate: " . number_format($get('current_savings'), 2) . "%" : null),
 
                 // Required field for new monthly savings amount.  (visible for savings amount change)
                 TextInput::make('new_monthly_savings') 
@@ -250,12 +243,21 @@ class WhatIfForm extends Component implements HasForms
                     ->minValue(0)
                     ->maxValue(9999999)
                     ->placeholder('Input a new monthly savings amount')
-                    ->visible(fn ($get) => $get('savings_what_if_scenario') === 'savings-change')
-                    ->required(fn ($get) => $get('savings_what_if_scenario') === 'savings-change')
-                    ->helperText(fn ($get) => $get('current_monthly_savings') ? "Current monthly savings: $" . number_format($get('current_monthly_savings'), 2) : null)
-                    ->reactive(),
+                    ->visible(fn ($get) => $get('what_if_scenario') === 'savings-change')
+                    ->required()
+                    ->helperText(fn ($get) => $get('current_monthly_savings') ? "Current monthly savings: $" . number_format($get('current_monthly_savings'), 2) : null),
 
                 // Optional field for the user to input the amount of months they want to save money. (Visible for both interest rate change and savings amount change.)
+                TextInput::make('months_to_save')
+                    ->type('number')
+                    ->numeric()
+                    ->postfix('months')
+                    ->minValue(0)
+                    ->maxValue(9999999)
+                    ->default(12)
+                    ->placeholder('How many months do you want to save?')
+                    ->visible(fn ($get) => $get('what_if_scenario') === 'saving-interest-rate-change' || $get('what_if_scenario') === 'savings-change')
+                    ->helperText('If you do not provide a value, then the analysis will project up to 12 months into the future.'),
             ]);
     }
 
@@ -270,57 +272,51 @@ class WhatIfForm extends Component implements HasForms
 
         $what_if_scenario = $state['debt_what_if_scenario'] ?? $state['savings_what_if_scenario'];
 
-        // Checks if the analysis type is debt or savings, then chooses algorithm based on selected scenario.
-        if ($state['analysis_type'] === 'debt') {
-            // Call the interest-rate-change algorithm.
-            if ($state['debt_what_if_scenario'] === 'interest-rate-change') {}
-                $result = (new WhatIfAnalysisService)->debtInterestRateChangeScenario(
-                    $state['debt_id'],                                            
-                    $state['debt_new_interest_rate'],                                   
-                    $state['monthly_income'],
-                    $total_monthly_expenses,
-                    $state['financial_goal_id']
-                );
-            } 
-            
-            // Call the payment-change algorithm.
-            elseif ($state['debt_what_if_scenario'] === 'payment-change') {
-                $result = (new WhatIfAnalysisService)->changeMonthlyPaymentScenario(
-                    $state['debt_id'],                                            
-                    $state['new_monthly_debt_payment'],                                   
-                    $state['monthly_income'],
-                    $total_monthly_expenses,
-                    $state['financial_goal_id']
-                );
-            }
-
-        elseif ($state['analysis_type'] === 'savings') {
-            if ($state['savings_what_if_scenario'] === 'interest-rate-change') {
-                $result = (new WhatIfAnalysisService)->savingsInterestRateChangeScenario(
-                    $state['current_savings_amt'],
-                    $state['current_monthly_savings'],  
-                    $state['current_savings_interest_rate'],                                 
-                    $state['savings_new_annual_interest_rate'],                                   
-                    $state['monthly_income'],
-                    $total_monthly_expenses,
-                    $state['financial_goal_id']
-                );
-            }
-
-            elseif ($state['savings_what_if_scenario'] === 'savings-change') {
-                $result = (new WhatIfAnalysisService)->changeMonthlySavingsScenario(
-                    $state['current_savings_amt'],
-                    $state['current_monthly_savings'],  
-                    $state['current_savings_interest_rate'],                                 
-                    $state['new_monthly_savings'],                                   
-                    $state['monthly_income'],
-                    $total_monthly_expenses,
-                    $state['financial_goal_id']
-                );
-            }
+        // Call the interest-rate-change algorithm.
+        if ($state['what_if_scenario'] === 'interest-rate-change') {
+            $result = (new WhatIfAnalysisService)->debtInterestRateChangeScenario(
+                $state['debt_id'],                                            
+                $state['debt_new_interest_rate'],                                   
+                $state['monthly_income'],
+                $total_monthly_expenses,
+                $state['financial_goal_id']
+            );
+        }
+        
+        // Call the payment-change algorithm.
+        elseif ($state['what_if_scenario'] === 'payment-change') {
+            $result = (new WhatIfAnalysisService)->changeMonthlyPaymentScenario(
+                $state['debt_id'],                                            
+                $state['new_monthly_debt_payment'],                                   
+                $state['monthly_income'],
+                $total_monthly_expenses,
+                $state['financial_goal_id']
+            );
         }
 
-        
+        if ($state['what_if_scenario'] === 'interest-rate-change') {
+            $result = (new WhatIfAnalysisService)->savingsInterestRateChangeScenario(
+                $state['current_savings_amt'],
+                $state['current_monthly_savings'],  
+                $state['current_savings_interest_rate'],                                 
+                $state['savings_new_annual_interest_rate'],                                   
+                $state['monthly_income'],
+                $total_monthly_expenses,
+                $state['financial_goal_id']
+            );
+        }
+
+        elseif ($state['savings_what_if_scenario'] === 'savings-change') {
+            $result = (new WhatIfAnalysisService)->changeMonthlySavingsScenario(
+                $state['current_savings_amt'],
+                $state['current_monthly_savings'],  
+                $state['current_savings_interest_rate'],                                 
+                $state['new_monthly_savings'],                                   
+                $state['monthly_income'],
+                $total_monthly_expenses,
+                $state['financial_goal_id']
+            );
+        }
 
         // If result returned an error, save it to $this->what_if_report.
         if (isset($result['error'])) $this->what_if_report = $result;
