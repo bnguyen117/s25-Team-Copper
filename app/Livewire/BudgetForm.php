@@ -17,15 +17,18 @@ class BudgetForm extends Component
 
         if ($budget) {
             $this->income = $budget->income;
+            $this->needs = $this->income * $budget->needs_percentage;
+            $this->wants = $this->income * $budget->wants_percentage;
+            $this->savings = $this->income * $budget->savings_percentage;
+            $this->remaining_balance = $this->calculateRemainingBalance();
         }
         else{
             $this->income = 0;
+            $this->needs = 0;
+            $this->wants = 0;
+            $this->savings = 0;
+            $this->remaining_balance = 0;
         }
-
-        $this->needs = $this->income * $budget->needs_percentage;
-        $this->wants = $this->income * $budget->wants_percentage;
-        $this->savings = $this->income * $budget->savings_percentage;
-        $this->remaining_balance = $this->calculateRemainingBalance();
         
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
@@ -151,7 +154,7 @@ class BudgetForm extends Component
         $this->validate([
             'income' => 'required|numeric|min:0',
         ]);
-           
+
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
