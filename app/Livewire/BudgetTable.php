@@ -43,7 +43,6 @@ class BudgetTable extends Component implements HasForms, HasTable
         return $table
             // Filter Budget to only values belonging to current user.
             ->query(Budget::where('user_id', Auth::id()))
-            ->heading('Current Budget')
             ->columns(
                 [
                 TextColumn::make('income')
