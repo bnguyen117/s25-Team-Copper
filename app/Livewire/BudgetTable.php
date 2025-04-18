@@ -51,23 +51,23 @@ class BudgetTable extends Component implements HasForms, HasTable
                         ->money('usd')
                         ->weight(FontWeight::Medium),
 
-                    TextColumn::make('budgeted_needs')
-                        ->numeric()
-                        ->description('Needs', position: 'above')
-                        ->money('usd')
-                        ->weight(FontWeight::Medium),
+                TextColumn::make('budgeted_needs')
+                    ->numeric()
+                    ->description('Needs', position: 'above')
+                    ->money('usd')
+                    ->weight(FontWeight::Medium),
 
-                    TextColumn::make('budgeted_wants')
-                        ->numeric()
-                        ->description('Wants', position: 'above')
-                        ->money('usd')
-                        ->weight(FontWeight::Medium),
+                TextColumn::make('budgeted_wants')
+                    ->numeric()
+                    ->description('Wants', position: 'above')
+                    ->money('usd')
+                    ->weight(FontWeight::Medium),
 
-                    TextColumn::make('budgeted_savings')
-                        ->numeric()
-                        ->description('Savings', position: 'above')
-                        ->money('usd')
-                        ->weight(FontWeight::Medium),
+                TextColumn::make('budgeted_savings')
+                    ->numeric()
+                    ->description('Savings', position: 'above')
+                    ->money('usd')
+                    ->weight(FontWeight::Medium),
                 ]
             )
             ->paginated(false);
