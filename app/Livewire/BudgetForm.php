@@ -43,8 +43,6 @@ class BudgetForm extends Component
     {
         $this->validate([
             'income' => 'required|numeric|min:0',
-            // 'expenses' => 'required|numeric|min:0',
-            // 'savings' => 'required|numeric|min:0',
         ]);
 
         Budget::updateOrCreate(
@@ -59,6 +57,70 @@ class BudgetForm extends Component
         );
 
         session()->flash('success', 'Budget saved successfully!');
+    }
+
+    public function defaultBudget()
+    {
+        $this->validate([
+            'income' => 'required|numeric|min:0',
+        ]);
+
+        Budget::updateOrCreate(
+            ['user_id' => Auth::id()],
+            [
+                'income' => $this->income,
+                'needs_percentage' => 0.50,
+                'wants_percentage' => 0.30,
+                'savings_percentage' => 0.20,
+            ]
+        );
+
+        $this->mount();
+    }
+
+    public function prioritizeDebts()
+    {
+        Budget::updateOrCreate(
+            ['user_id' => Auth::id()],
+            [
+                'income' => $this->income,
+                'needs_percentage' => 0.80,
+                'wants_percentage' => 0.10,
+                'savings_percentage' => 0.10,
+            ]
+        );
+
+        $this->mount();
+    }
+
+    public function prioritizeSavings()
+    {
+        Budget::updateOrCreate(
+            ['user_id' => Auth::id()],
+            [
+                'income' => $this->income,
+                'needs_percentage' => 0.50,
+                'wants_percentage' => 0.10,
+                'savings_percentage' => 0.40,
+            ]
+        );
+
+        $this->mount();
+    }
+
+    public function prioritizeWants()
+    {
+        Budget::updateOrCreate(
+            ['user_id' => Auth::id()],
+            [
+                'income' => $this->income,
+                'needs_percentage' => 0.50,
+                'wants_percentage' => 0.40,
+                'savings_percentage' => 0.10,
+            ]
+        );
+
+        $this->mount();
     }
 
     public function render()

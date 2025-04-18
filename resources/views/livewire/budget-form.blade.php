@@ -29,8 +29,23 @@
         <input type="number" wire:model="remaining_balance" class="w-full p-2 border rounded bg-gray-200" readonly>
     </div> -->
 
-    <!-- Save Budget Button -->
-    <button wire:click="saveBudget" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
-        Save Budget
+    <!-- Default Budget Button -->
+    <button wire:click="defaultBudget" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
+        Default Budget
+    </button>
+
+    <!-- Prioritize Debt Payoff Button-->
+    <button wire:click="prioritizeDebts" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
+        Priotitize Debt Payoff
+    </button>
+
+    <!-- Prioritize Savings Button-->
+    <button wire:click="prioritizeSavings" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
+        Priotitize Savings
+    </button>
+
+    <!-- Prioritize Wants Button-->
+    <button wire:click="prioritizeWants" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
+        Priotitize Wants
     </button>
 </div>
