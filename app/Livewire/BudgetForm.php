@@ -80,6 +80,10 @@ class BudgetForm extends Component
 
     public function prioritizeDebts()
     {
+        $this->validate([
+            'income' => 'required|numeric|min:0',
+        ]);
+
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
@@ -95,6 +99,10 @@ class BudgetForm extends Component
 
     public function prioritizeSavings()
     {
+        $this->validate([
+            'income' => 'required|numeric|min:0',
+        ]);
+
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
@@ -110,6 +118,10 @@ class BudgetForm extends Component
 
     public function prioritizeWants()
     {
+        $this->validate([
+            'income' => 'required|numeric|min:0',
+        ]);
+        
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
