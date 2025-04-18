@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BudgetForm extends Component
 {
-    public $income, $expenses, $savings, $remaining_balance;
+    public $income, $needs, $wants, $savings, $remaining_balance;
     public $useAI = false; // Toggle AI recommendation
 
     public function mount()
@@ -17,15 +17,16 @@ class BudgetForm extends Component
 
         if ($budget) {
             $this->income = $budget->income;
-            $this->expenses = $budget->budgeted_needs + $budget->budgeted_wants;
-            $this->savings = $budget->budgeted_savings;
-            $this->remaining_balance = $budget->remaining_balance;
+            $this->needs = $this->income * $budget->needs_percentage;
+            $this->wants = $this->income * $budget->wants_percentage;
+            $this->savings = $this->income * $budget->savings_percentage;
+            $this->remaining_balance = $this->calculateRemainingBalance();
         }
     }
 
     public function calculateRemainingBalance()
     {
-        $this->remaining_balance = $this->income - ($this->expenses + $this->savings);
+        $this->remaining_balance = $this->income - ($this->needs + $this->wants + $this->savings);
     }
 
     public function useAIRecommendations()
@@ -42,16 +43,16 @@ class BudgetForm extends Component
     {
         $this->validate([
             'income' => 'required|numeric|min:0',
-            'expenses' => 'required|numeric|min:0',
-            'savings' => 'required|numeric|min:0',
+            // 'expenses' => 'required|numeric|min:0',
+            // 'savings' => 'required|numeric|min:0',
         ]);
 
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
                 'income' => $this->income,
-                'budgeted_needs' => $this->expenses * 0.70, // 70% of expenses are needs
-                'budgeted_wants' => $this->expenses * 0.30, // 30% of expenses are wants
+                'budgeted_needs' => $this->needs,
+                'budgeted_wants' => $this->wants,
                 'budgeted_savings' => $this->savings,
                 'remaining_balance' => $this->remaining_balance,
             ]
