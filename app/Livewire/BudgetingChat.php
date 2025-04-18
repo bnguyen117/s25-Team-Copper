@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use OpenAI\Laravel\Facades\OpenAi;
+use OpenAI\Laravel\Facades\OpenAI;
 use League\CommonMark\CommonMarkConverter;
 use App\Services\Budgeting\BudgetFormatter;
 use Illuminate\View\View;
