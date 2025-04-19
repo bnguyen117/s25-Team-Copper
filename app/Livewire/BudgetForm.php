@@ -90,6 +90,8 @@ class BudgetForm extends Component
         );
 
         session()->flash('success', 'Budget saved successfully!');
+        $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetingChat');
     }
 
     public function defaultBudget()
@@ -109,6 +111,8 @@ class BudgetForm extends Component
         );
 
         $this->mount();
+        $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetingChat');
     }
 
     public function prioritizeDebts()
@@ -128,6 +132,8 @@ class BudgetForm extends Component
         );
 
         $this->mount();
+        $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetingChat');
     }
 
     public function prioritizeSavings()
@@ -147,6 +153,8 @@ class BudgetForm extends Component
         );
 
         $this->mount();
+        $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetingChat');
     }
 
     public function prioritizeWants()
@@ -166,6 +174,8 @@ class BudgetForm extends Component
         );
 
         $this->mount();
+        $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetingChat');
     }
 
     public function render()
