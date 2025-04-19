@@ -38,6 +38,8 @@ class BudgetTable extends Component implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
+    protected $listeners =['refreshBudgetTable'  => '$refresh'];
+
     public function table(Table $table): Table
     {
         return $table

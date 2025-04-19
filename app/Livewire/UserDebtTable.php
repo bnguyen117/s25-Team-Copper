@@ -62,23 +62,36 @@ class UserDebtTable extends Component implements HasForms, HasTable
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = Auth::id();
                         return $data;
+                    })
+                    ->after(function () {
+                        $this->dispatch('refreshBudgetingChat');
                     }),
+
             ])
             ->actions([
                 // Edit button for updating a record.
                 EditAction::make()
                     ->button()
                     ->slideOver()
-                    ->form($this->getFormFields()),
+                    ->form($this->getFormFields())
+                    ->after(function () {
+                        $this->dispatch('refreshBudgetingChat');
+                    }),
                 // Delete button for deleting a record.
                 DeleteAction::make()
                     ->button()
+                    ->after(function () {
+                        $this->dispatch('refreshBudgetingChat');
+                    }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
                     BulkAction::make('delete')
                         ->requiresConfirmation()
                         ->action(fn (Collection $records) => $records->each->delete())
+                        ->after(function () {
+                            $this->dispatch('refreshBudgetingChat');
+                        }),
                 ]),
             ]);
     }

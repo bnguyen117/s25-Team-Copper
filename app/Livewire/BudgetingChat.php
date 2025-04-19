@@ -14,8 +14,15 @@ class BudgetingChat extends Component
     public string $userInput = '';
     public bool $showQuestions = false;
 
+    protected $listeners = ['refreshBudgetingChat' => 'refreshChat'];
+
     public function mount(): void {$this->initializeChat();}
     public function render(): View {return view('livewire.budgeting-chat');}
+
+    public function refreshChat(): void {
+        if (!empty($this->messages))  $this->messages[0] = ['role' => 'system', 'content' => $this->buildSystemPrompt()];
+        else $this->messages[] = ['role' => 'system', 'content' => $this->buildSystemPrompt()];
+    }
 
     /** Handles sending a request to OpenAI when the user sends a message. */
     public function sendMessage(): void
