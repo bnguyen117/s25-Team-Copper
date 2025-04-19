@@ -26,10 +26,10 @@
                 <!-- DB part -->
                     @foreach (auth()->user()->badges as $badge)
                         <div class="p-2 rounded-full shadow-md hover:opacity-80">
-                            <img src="{{ $badge->icon ?? 'rewards/img/default.png' }}" 
+                            <img src="{{ $badge->icon ?? 'rewards/img/default.png' }}"  
                                 alt="{{ $badge->name }}" 
                                 class="w-full h-auto rounded-full">
-                            <p class="text-center text-sm mt-2 text-white">{{ $badge->name }}</p>
+                          <p class="text-center text-sm mt-2 text-white">{{ $badge->name }}</p>
                         </div>
                     @endforeach
                 </div>
@@ -47,11 +47,4 @@
         </div>
     </div>
 
-    <!--testing-->
-    <form method="POST" action="{{ route('award.test.points') }}">
-    @csrf
-    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
-        Click to Earn 1000 Points
-    </button>
-    </form>
 </x-app-layout>

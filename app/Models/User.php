@@ -6,14 +6,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use QCod\Gamify\Gamify;
+//use QCod\Gamify\Gamify;
 use QCod\Gamify\HasReputations;
 
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasReputations, Gamify;
+    use HasFactory, Notifiable, HasReputations; // Gamify;
 
     /**
      * The attributes that are mass assignable.

@@ -76,26 +76,7 @@ Route::middleware('auth')->group(function () {
 
     // Create Message in Group
     Route::post('/groups/{group}/messages', [App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
-    //FOR TESTING
-    Route::post('/award-points', function () {
-        $user = Auth::user();
-    
-        if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    
-        // ✅ Pass user as subject
-        for ($i = 0; $i < (1000 / 20); $i++) {
-            $user->givePoint(new PostCreated($user));
-        }
-    
-        if ((new FirstContribution())->qualifier($user)) {
-            $user->attachBadge(new FirstContribution());
-        }
-    
-        return back()->with('success', 'Points awarded!');
-    })->name('award.test.points');
-
+ 
 });
 
 require __DIR__.'/auth.php';
