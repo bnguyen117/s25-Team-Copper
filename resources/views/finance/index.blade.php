@@ -21,6 +21,12 @@
             <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center">Create Your Budget</h2>
             @livewire('budget-form')
         </div>
+
+        <!-- Budget Chart -->
+        <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center">Current Monthly Budget</h2>
+            @livewire('budget-table')
+        </div>
     </div>
 
     <!-- Debt Table -->

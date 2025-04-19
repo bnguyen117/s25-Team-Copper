@@ -48,6 +48,7 @@ class DebtTransactionTable extends Component implements HasForms, HasTable
                         function (DebtTransaction $record) {
                         $this->updateDebt($record);             // Update debt with new transaction
                         $this->dispatch('refreshDebtTable');    // Refresh debt table in real-time
+                        $this->dispatch('refreshBudgetingChat');
                     }),
             ])
             ->actions([
@@ -66,6 +67,7 @@ class DebtTransactionTable extends Component implements HasForms, HasTable
                         $this->updateDebt($record);                 // Update debt with new transaction details
                         $this->originalPrincipal = null;            // Reset for the next edit
                         $this->dispatch('refreshDebtTable');        // Refresh debt table UI
+                        $this->dispatch('refreshBudgetingChat');
                     }),
                 Tables\Actions\DeleteAction::make()
                     ->button()
@@ -74,6 +76,7 @@ class DebtTransactionTable extends Component implements HasForms, HasTable
                         $debt->amount += $record->principal_paid;   // Reverse the transaction's debt impact
                         $debt->save();
                         $this->dispatch('refreshDebtTable');        // Refresh debt table UI
+                        $this->dispatch('refreshBudgetingChat');
                     }),
             ])
             ->bulkActions([
@@ -86,6 +89,7 @@ class DebtTransactionTable extends Component implements HasForms, HasTable
                                 $debt->save();
                             }
                             $this->dispatch('refreshDebtTable');     // Refresh debt table UI
+                            $this->dispatch('refreshBudgetingChat');
                         }),
                 ]),
             ]);
