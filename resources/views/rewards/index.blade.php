@@ -26,8 +26,8 @@
                 <!-- DB part -->
                     @foreach (auth()->user()->badges as $badge)
                         <div class="p-2 rounded-full shadow-md hover:opacity-80">
-                            <img src="{{ $badge->icon ?? 'rewards/img/default.png' }}"  
-                                alt="{{ $badge->name }}" 
+                        <img src="{{ $badge->icon ?? 'rewards/img/default.png' }}"
+                        alt="{{ $badge->name }}" 
                                 class="w-full h-auto rounded-full">
                           <p class="text-center text-sm mt-2 text-white">{{ $badge->name }}</p>
                         </div>
@@ -43,6 +43,7 @@
                 <a href="http://s25-team-copper.test/finance#goals" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-center block">
                 + Add or Edit Goals
                 </a>
+            </div>
             </div>
         </div>
     </div>
