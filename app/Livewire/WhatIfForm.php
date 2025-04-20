@@ -270,8 +270,6 @@ class WhatIfForm extends Component implements HasForms
         // Sum total expenses.
         $total_monthly_expenses = $this->monthly_debt_expenses + ($state['monthly_non_debt_expenses'] ?? 0);
 
-        $what_if_scenario = $state['debt_what_if_scenario'] ?? $state['savings_what_if_scenario'];
-
         // Call the interest-rate-change algorithm.
         if ($state['what_if_scenario'] === 'interest-rate-change') {
             $result = (new WhatIfAnalysisService)->debtInterestRateChangeScenario(
@@ -306,7 +304,7 @@ class WhatIfForm extends Component implements HasForms
             );
         }
 
-        elseif ($state['savings_what_if_scenario'] === 'savings-change') {
+        elseif ($state['what_if_scenario'] === 'savings-change') {
             $result = (new WhatIfAnalysisService)->changeMonthlySavingsScenario(
                 $state['current_savings_amt'],
                 $state['current_monthly_savings'],  
@@ -322,7 +320,7 @@ class WhatIfForm extends Component implements HasForms
         if (isset($result['error'])) $this->what_if_report = $result;
         
         // Save the WhatIfReport record to the DB and $this->what_if_report.
-        else $this->what_if_report = $this->saveWhatIfReport($state, $result, $what_if_scenario);
+        else $this->what_if_report = $this->saveWhatIfReport($state, $result);
     }
 
 
@@ -356,7 +354,7 @@ class WhatIfForm extends Component implements HasForms
     
 
     /** Create a WhatIfReport record in the database. */
-    public function saveWhatIfReport(array $state, array $result, $what_if_scenario): WhatIfReport {
+    public function saveWhatIfReport(array $state, array $result): WhatIfReport {
         return WhatIfReport::create([
             // Indentifiers and scenario choice   
             'analysis_type' => $state['analysis_type'],       
