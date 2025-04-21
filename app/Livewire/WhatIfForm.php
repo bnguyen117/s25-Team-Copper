@@ -6,6 +6,7 @@ use App\Services\WhatIf\Analysis\WhatIfAnalysisService;
 use App\Models\WhatIfReport;
 use App\Models\Debt;
 use App\Models\FinancialGoal;
+use App\Models\SavingsWhatIfReport;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
@@ -271,15 +272,45 @@ class WhatIfForm extends Component implements HasForms
         $total_monthly_expenses = $this->monthly_debt_expenses + ($state['monthly_non_debt_expenses'] ?? 0);
 
         // Call the interest-rate-change algorithm.
-        if ($state['what_if_scenario'] === 'interest-rate-change') {
-            $result = (new WhatIfAnalysisService)->debtInterestRateChangeScenario(
-                $state['debt_id'],                                            
-                $state['debt_new_interest_rate'],                                   
-                $state['monthly_income'],
-                $total_monthly_expenses,
-                $state['financial_goal_id']
-            );
+        if ($state['analysis_type'] === 'debt') {
+
+            if ($state['what_if_scenario'] === 'interest-rate-change') {
+                $result = (new WhatIfAnalysisService)->debtInterestRateChangeScenario(
+                    $state['debt_id'],                                            
+                    $state['debt_new_interest_rate'],                                   
+                    $state['monthly_income'],
+                    $total_monthly_expenses,
+                    $state['financial_goal_id']
+                );
+            }
+            // Call the payment-change algorithm.
+            elseif ($state['what_if_scenario'] === 'payment-change') {
+                $result = (new WhatIfAnalysisService)->changeMonthlyPaymentScenario(
+                    $state['debt_id'],                                            
+                    $state['new_monthly_debt_payment'],                                   
+                    $state['monthly_income'],
+                    $total_monthly_expenses,
+                    $state['financial_goal_id']
+                );
+            }
         }
+        elseif ($state['analysis_type'] === 'savings') {
+            if ($state['saving_for_goal'] && $state['what_if_scenario'] === 'interest-rate-change') {
+                $result = (new WhatIfAnalysisService)->savingsInterestRateChangeScenario(
+                    ,
+                    $state['current_monthly_savings'],  
+                    $state['current_savings_interest_rate'],                                 
+                    $state['savings_new_annual_interest_rate'],                                   
+                    $state['monthly_income'],
+                    $total_monthly_expenses,
+                    $state['financial_goal_id']
+                );
+            }
+            else {
+
+            }
+        }
+        
         
         // Call the payment-change algorithm.
         elseif ($state['what_if_scenario'] === 'payment-change') {
@@ -318,9 +349,14 @@ class WhatIfForm extends Component implements HasForms
 
         // If result returned an error, save it to $this->what_if_report.
         if (isset($result['error'])) $this->what_if_report = $result;
-        
-        // Save the WhatIfReport record to the DB and $this->what_if_report.
-        else $this->what_if_report = $this->saveWhatIfReport($state, $result);
+
+        elseif ($state['analysis_type'] === 'savings') {
+            $this->what_if_report = $this->saveSavingsWhatIfReport($state, $result);
+        }
+
+        elseif ($state['analysis_type'] === 'debt') {
+            $this->what_if_report = $this->saveWhatIfReport($state, $result);
+        }
     }
 
 
@@ -356,8 +392,7 @@ class WhatIfForm extends Component implements HasForms
     /** Create a WhatIfReport record in the database. */
     public function saveWhatIfReport(array $state, array $result): WhatIfReport {
         return WhatIfReport::create([
-            // Indentifiers and scenario choice   
-            'analysis_type' => $state['analysis_type'],       
+            // Identifiers and scenario choice         
             'user_id' => Auth::id(),
             'debt_id' => $state['debt_id'] ?? null,
             'financial_goal_id' => $state['financial_goal_id'],
@@ -368,22 +403,42 @@ class WhatIfForm extends Component implements HasForms
             'original_interest_rate' => $result['original_interest_rate'] ?? null,
             'original_monthly_debt_payment' => $result['original_monthly_debt_payment'] ?? null,
             'original_minimum_debt_payment' => $result['original_minimum_debt_payment'] ?? null,
-            'original_savings_amount' => $result['original_savings_amount'] ?? null,
-            'original_monthly_savings' => $result['original_monthly_savings'] ?? null,
-            'original_savings_interest_rate' => $result['original_savings_interest_rate'] ?? null,
 
             //Scenario inputs
             'new_interest_rate' => $state['debt_new_interest_rate'] ?? null,
             'new_monthly_debt_payment' => $state['new_monthly_debt_payment'] ?? null,
-            'new_annual_interest_rate' => $state['savings_new_annual_interest_rate'] ?? null,
-            'new_monthly_savings' => $state['new_monthly_savings'] ?? null,
 
             // Scenario outcomes
             'total_months' => $result['total_months'],
-            'total_interest_earned' => $result['total_interest_earned'] ?? null,
             'total_interest_paid' => $result['total_interest_paid'] ?? null,
             'timeline' => $result['timeline'],
             'goal_impact' => $result['goal_impact'] ?? null,
         ]);
+    }
+
+    public function saveSavingWhatIfReport(array $state, array $result): SavingsWhatIfReport {
+        return SavingsWhatIfReport::create([
+            //Identifiers and scenario choice
+            'user_id' => Auth::id(),
+            'financial_goal_id' => $state['financial_goal_id'],
+            'what_if_scenario' => $what_if_scenario ?? null,
+
+            // Original savings state
+            'original_savings' => $result['original_savings_amount'] ?? null,
+            'original_interest_rate' => $result['original_interest_rate'] ?? null,
+            'current_monthly_savings' => $result['original_monthly_savings'] ?? null,
+
+            // Scenario inputs
+            'new_interest_rate' => $state['savings_new_annual_interest_rate'] ?? null,
+            'new_monthly_savings_rate' => $state['new_monthly_savings'] ?? null,              // New monthly savings rate
+            'total_months' => $state['months_to_save'] ?? null,                     // The total months to reach the savings goal
+
+            // Scenario outcomes
+            'total_interest_earned' => $result['total_interest_earned'] ?? null,     // The total interest earned over the time period
+            'timeline' => $result['timeline'] ?? null,                         // A Json array holding the results of each month.
+            'goal_impact' => $result['goal_impact'] ?? null,
+
+        ]);
+
     }
 }
