@@ -59,7 +59,11 @@ class BudgetingChat extends Component
             "You can provide advice on expense tracking, saving for goals, debt management, and income allocation. " .
             "Here is the user's financial information:\n\n" .
             (new BudgetFormatter)->generateSummary() . "\n\n" .
+            "Financial goals are considered wants and are part of the user's budgeted wants. " .
+            "Debts are considered needs and are part of the user's budgeted needs " .
+            "Ensure that when performing calculations on financial goal amounts that you prioritize accuracy " .
             "Ask for specific details (e.g., income, expenses, debts) if needed to give tailored advice. " .
+            "When explaining calculations or equations, do not use LaTeX or special formatting (e.g., \\text{}, \\frac{}, or [ ]. " .
             "Format monetary values to two decimal places and keep explanations clear and simple.";
     }
 
