@@ -18,10 +18,6 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Panel;
 
@@ -48,26 +44,26 @@ class BudgetTable extends Component implements HasForms, HasTable
             ->columns(
                 [
                 TextColumn::make('income')
-                        ->numeric()
-                        ->description('Monthly Income', position: 'above')
-                        ->money('usd')
-                        ->weight(FontWeight::Medium),
+                    ->numeric()
+                    ->label('Monthly Income')
+                    ->money('usd')
+                    ->weight(FontWeight::Medium),
 
                 TextColumn::make('budgeted_needs')
                     ->numeric()
-                    ->description('Needs', position: 'above')
+                    ->label('Budgeted Needs')
                     ->money('usd')
                     ->weight(FontWeight::Medium),
 
                 TextColumn::make('budgeted_wants')
                     ->numeric()
-                    ->description('Wants', position: 'above')
+                    ->label('Budgeted Wants')
                     ->money('usd')
                     ->weight(FontWeight::Medium),
 
                 TextColumn::make('budgeted_savings')
                     ->numeric()
-                    ->description('Savings', position: 'above')
+                    ->label('Budgeted Savings')
                     ->money('usd')
                     ->weight(FontWeight::Medium),
                 ]
