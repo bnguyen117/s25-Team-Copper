@@ -24,4 +24,14 @@ class Message extends Model
     {
         return $this->belongsTo(Group::class);
     }
+    public function parent()
+{
+    return $this->belongsTo(Message::class, 'parent_id');
+}
+
+public function replies()
+{
+    return $this->hasMany(Message::class, 'parent_id');
+}
+
 }
