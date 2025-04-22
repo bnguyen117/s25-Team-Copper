@@ -17,9 +17,9 @@ class BudgetForm extends Component
 
         if ($budget) {
             $this->income = $budget->income;
-            $this->needs = $this->income * $budget->needs_percentage;
-            $this->wants = $this->income * $budget->wants_percentage;
-            $this->savings = $this->income * $budget->savings_percentage;
+            $this->needs = $this->income * ($budget->needs_percentage / 100);
+            $this->wants = $this->income * ($budget->wants_percentage / 100);
+            $this->savings = $this->income * ($budget->savings_percentage / 100);
             $this->remaining_balance = $this->calculateRemainingBalance();
         }
         else{
@@ -89,9 +89,11 @@ class BudgetForm extends Component
             ]
         );
 
-        session()->flash('success', 'Budget saved successfully!');
+        session()->flash('success', 'Generating New Budget...');
         $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
+        $this->dispatch('refreshPercentTable');
     }
 
     public function defaultBudget()
@@ -104,15 +106,19 @@ class BudgetForm extends Component
             ['user_id' => Auth::id()],
             [
                 'income' => $this->income,
-                'needs_percentage' => 0.50,
-                'wants_percentage' => 0.30,
-                'savings_percentage' => 0.20,
+                'needs_percentage' => 50,
+                'wants_percentage' => 30,
+                'savings_percentage' => 20,
             ]
         );
 
+        session()->flash('success', 'Generating New Budget...');
         $this->mount();
+
         $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
+        $this->dispatch('refreshPercentTable');
     }
 
     public function prioritizeDebts()
@@ -125,15 +131,19 @@ class BudgetForm extends Component
             ['user_id' => Auth::id()],
             [
                 'income' => $this->income,
-                'needs_percentage' => 0.80,
-                'wants_percentage' => 0.10,
-                'savings_percentage' => 0.10,
+                'needs_percentage' => 80,
+                'wants_percentage' => 10,
+                'savings_percentage' => 10,
             ]
         );
 
+        session()->flash('success', 'Generating New Budget...');
         $this->mount();
+
         $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
+        $this->dispatch('refreshPercentTable');
     }
 
     public function prioritizeSavings()
@@ -146,15 +156,19 @@ class BudgetForm extends Component
             ['user_id' => Auth::id()],
             [
                 'income' => $this->income,
-                'needs_percentage' => 0.50,
-                'wants_percentage' => 0.10,
-                'savings_percentage' => 0.40,
+                'needs_percentage' => 50,
+                'wants_percentage' => 10,
+                'savings_percentage' => 40,
             ]
         );
 
+        session()->flash('success', 'Generating New Budget...');
         $this->mount();
+
         $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
+        $this->dispatch('refreshPercentTable');
     }
 
     public function prioritizeWants()
@@ -167,15 +181,19 @@ class BudgetForm extends Component
             ['user_id' => Auth::id()],
             [
                 'income' => $this->income,
-                'needs_percentage' => 0.50,
-                'wants_percentage' => 0.40,
-                'savings_percentage' => 0.10,
+                'needs_percentage' => 50,
+                'wants_percentage' => 40,
+                'savings_percentage' => 10,
             ]
         );
 
+        session()->flash('success', 'Generating New Budget...');
         $this->mount();
+
         $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
+        $this->dispatch('refreshPercentTable');
     }
 
     public function render()
