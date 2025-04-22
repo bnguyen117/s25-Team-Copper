@@ -15,6 +15,7 @@ class SavingsWhatIfReport extends Model
         'original_savings',                 // The savings amount
         'original_interest_rate',           // The annual interest rate
         'current_monthly_savings',          // The monthly savings rate
+        'months_to_save',                   // Amount of months user wants to save
 
         // New data relating to the report's analysis
         'what_if_scenario',                 // The name of the savings what-if scenario

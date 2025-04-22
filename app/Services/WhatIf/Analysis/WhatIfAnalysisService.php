@@ -132,8 +132,9 @@ class WhatIfAnalysisService {
 
         //Build timeline up to 30 years 
         while ($month++ < 360) {
-            $interestEarned = 1 + ($monthlyRate);
-            $balance = $balance * $interestEarned + $currentMonthlySavings;
+            $balance += $currentMonthlySavings;
+            $interestEarned = $balance * $monthlyRate;
+            $balance += $interestEarned;
             $timeline[] = [
                 'month' => $month,
                 'balance' => max(0, $balance),
@@ -153,10 +154,6 @@ class WhatIfAnalysisService {
             'total_interest_earned' => array_sum(array_column($timeline, 'interest_earned')),
         ];
 
-        // Add goal impact if provided
-        if ($financialGoalId) 
-            $result['goal_impact'] = $this->calculateGoalImpact($financialGoalId, $monthlyIncome, $totalMonthlyExpenses);
-
         return $result;
     }
 
@@ -172,8 +169,9 @@ class WhatIfAnalysisService {
 
         // Build timeline up to 30 years
         while ($month++ < $monthsToSave) {
-            $interestEarned = (1 + $monthlyRate);
-            $balance = $balance * $interestEarned + $newMonthlySavings;
+            $balance += $newMonthlySavings;
+            $interestEarned = $balance * $monthlyRate;
+            $balance += $interestEarned;
             $timeline[] = [
                 'month' => $month,
                 'balance' => max(0, $balance),
@@ -192,10 +190,6 @@ class WhatIfAnalysisService {
             'total_months' => $month,
             'total_interest_earned' => array_sum(array_column($timeline, 'interest_earned')),
         ];
-
-        // Add goal impact if provided
-        if ($financialGoalId) 
-            $result['goal_impact'] = $this->calculateGoalImpact($financialGoalId, $monthlyIncome, $totalMonthlyExpenses);
 
         return $result;
     }
@@ -263,8 +257,9 @@ class WhatIfAnalysisService {
 
         // Build timeline until the goal is reached.
         while ($balance < $goal->target_amount) {
+            $balance += $newMonthlySavings;
             $interestEarned = $balance * ($monthlyRate);
-            $balance += $interestEarned + $newMonthlySavings;
+            $balance += $interestEarned;
             if ($newMonthlySavings > $goal->target_amount - $balance) {
                 $newMonthlySavings = $goal->target_amount - $balance;
             }

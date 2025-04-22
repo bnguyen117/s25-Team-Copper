@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('current_interest_rate', 5, 2);                // The current interest rate
             $table->decimal('new_interest_rate', 5, 2)->nullable(); // The new interest rate for the `interest rate` algorithm
             $table->decimal('new_monthly_savings', 10, 2)->nullable();      // The new monthly savings amount for the `payment change` algorithm
+            $table->integer('months_to_save')->nullable();                              //The amount of months the user wants to save
             $table->integer('total_months');                        // Total months to reach savings goal
             $table->decimal('total_interest_earned', 10, 2);          // The total interest earned in dollars over time
             $table->json('timeline');                               // Json array of monthly savings details (balance, interest earned)

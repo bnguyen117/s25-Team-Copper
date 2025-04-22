@@ -38,7 +38,7 @@ class WhatIfReportTable extends Component implements HasForms, HasTable
                         ->icon('heroicon-o-eye')
                         ->label('View Report')
                         ->slideOver()
-                        ->modalHeading(fn ($record) => "{$record->debt->debt_name} - " . ucfirst($record->debt_what_if_scenario) . " Report")
+                        ->modalHeading(fn ($record) => "{$record->debt->debt_name} - " . ucfirst($record->what_if_scenario) . " Report")
                         ->modalContent(function ($record) {
                             return view('livewire.what-if.report-modal', ['report' => $record]);
                         })
@@ -50,7 +50,7 @@ class WhatIfReportTable extends Component implements HasForms, HasTable
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->label('Chat with AI')
                         ->slideOver()
-                        ->modalHeading(fn ($record) => "AI Advisor for {$record->debt->debt_name} - " . ucfirst($record->debt_what_if_scenario))
+                        ->modalHeading(fn ($record) => "AI Advisor for {$record->debt->debt_name} - " . ucfirst($record->what_if_scenario))
                         ->modalContent(function ($record) {
                             return view('livewire.what-if.chat-modal', ['report' => $record]);
                         })
@@ -89,7 +89,7 @@ class WhatIfReportTable extends Component implements HasForms, HasTable
                 ->searchable()
                 ->size('md')
                 ->weight(FontWeight::Bold)
-                ->formatStateUsing(fn ($record) => "{$record->debt->debt_name} - " . ucfirst(str_replace('-', ' ', $record->debt_what_if_scenario))),
+                ->formatStateUsing(fn ($record) => "{$record->debt->debt_name} - " . ucfirst(str_replace('-', ' ', $record->what_if_scenario))),
 
             // A collapsible Panel to hold other columns
             Tables\Columns\Layout\Panel::make([

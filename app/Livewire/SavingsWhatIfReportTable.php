@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Models\WhatIfReport;
+use App\Models\SavingsWhatIfReport;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -67,6 +67,6 @@ class SavingsWhatIfReportTable extends Component implements HasForms, HasTable
 
     // Renders the component's view
     public function render(): View {
-        return view('livewire.savings-what-if-report-table');
+        return view('livewire.what-if.report-table');
     }
 }
