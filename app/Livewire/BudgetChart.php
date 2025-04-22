@@ -16,9 +16,9 @@ class BudgetChart extends Component
 
         if ($budget) {
             $this->income = $budget->income;
-            $this->needs = $this->income * $budget->needs_percentage;
-            $this->wants = $this->income * $budget->wants_percentage;
-            $this->savings = $this->income * $budget->savings_percentage;
+            $this->needs = $this->income * ($budget->needs_percentage / 100);
+            $this->wants = $this->income * ($budget->wants_percentage / 100);
+            $this->savings = $this->income * ($budget->savings_percentage / 100);
             $this->remaining_balance = $this->calculateRemainingBalance();
         } else {
             $this->income = 0;
