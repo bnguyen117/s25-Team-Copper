@@ -29,7 +29,7 @@ class PercentageTable extends Component implements HasForms, HasTable
             ->query(Budget::where('user_id', Auth::id()))
             ->columns([
                 TextColumn::make('title')
-                    ->label('Income Percentage:'),
+                    ->label('Income Assigned:'),
                 TextColumn::make('needs_percentage')
                     ->numeric()
                     ->label('Needs')

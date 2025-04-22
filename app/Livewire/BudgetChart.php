@@ -10,6 +10,8 @@ class BudgetChart extends Component
 {
     public $income, $needs, $wants, $savings, $remaining_balance;
 
+    //protected $listeners =['refreshBudgetChart'  => '$refresh']; This breaks everything
+
     public function mount()
     {
         $budget = Budget::where('user_id', Auth::id())->latest()->first();

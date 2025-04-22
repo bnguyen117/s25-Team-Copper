@@ -91,6 +91,7 @@ class BudgetForm extends Component
 
         session()->flash('success', 'Generating New Budget...');
         $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
         $this->dispatch('refreshPercentTable');
     }
@@ -115,6 +116,7 @@ class BudgetForm extends Component
         $this->mount();
 
         $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
         $this->dispatch('refreshPercentTable');
     }
@@ -139,6 +141,7 @@ class BudgetForm extends Component
         $this->mount();
 
         $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
         $this->dispatch('refreshPercentTable');
     }
@@ -163,6 +166,7 @@ class BudgetForm extends Component
         $this->mount();
 
         $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
         $this->dispatch('refreshPercentTable');
     }
@@ -187,6 +191,7 @@ class BudgetForm extends Component
         $this->mount();
 
         $this->dispatch('refreshBudgetTable');
+        $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
         $this->dispatch('refreshPercentTable');
     }
