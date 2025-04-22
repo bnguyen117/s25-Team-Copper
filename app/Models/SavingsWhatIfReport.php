@@ -19,7 +19,7 @@ class SavingsWhatIfReport extends Model
         // New data relating to the report's analysis
         'what_if_scenario',                 // The name of the savings what-if scenario
         'new_interest_rate',                // The new interest rate
-        'new_monthly_savings',              // New monthly savings amount
+        'new_monthly_savings_rate',              // New monthly savings rate
         'total_months',                     // The total months to reach the savings goal
         'total_interest_earned',            // The total interest earned over the time period
         'timeline',                         // A Json array holding the results of each month.
