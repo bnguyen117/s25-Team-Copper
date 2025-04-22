@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use OpenAI\Laravel\Facades\OpenAi;
+use OpenAI\Laravel\Facades\OpenAI;
 use League\CommonMark\CommonMarkConverter;
 use App\Services\Budgeting\BudgetFormatter;
 use Illuminate\View\View;
@@ -14,8 +14,15 @@ class BudgetingChat extends Component
     public string $userInput = '';
     public bool $showQuestions = false;
 
+    protected $listeners = ['refreshBudgetingChat' => 'refreshChat'];
+
     public function mount(): void {$this->initializeChat();}
     public function render(): View {return view('livewire.budgeting-chat');}
+
+    public function refreshChat(): void {
+        if (!empty($this->messages))  $this->messages[0] = ['role' => 'system', 'content' => $this->buildSystemPrompt()];
+        else $this->messages[] = ['role' => 'system', 'content' => $this->buildSystemPrompt()];
+    }
 
     /** Handles sending a request to OpenAI when the user sends a message. */
     public function sendMessage(): void
@@ -52,7 +59,11 @@ class BudgetingChat extends Component
             "You can provide advice on expense tracking, saving for goals, debt management, and income allocation. " .
             "Here is the user's financial information:\n\n" .
             (new BudgetFormatter)->generateSummary() . "\n\n" .
+            "Financial goals are considered wants and are part of the user's budgeted wants. " .
+            "Debts are considered needs and are part of the user's budgeted needs " .
+            "Ensure that when performing calculations on financial goal amounts that you prioritize accuracy " .
             "Ask for specific details (e.g., income, expenses, debts) if needed to give tailored advice. " .
+            "When explaining calculations or equations, do not use LaTeX or special formatting (e.g., \\text{}, \\frac{}, or [ ]. " .
             "Format monetary values to two decimal places and keep explanations clear and simple.";
     }
 
