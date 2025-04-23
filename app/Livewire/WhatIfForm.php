@@ -126,7 +126,7 @@ class WhatIfForm extends Component implements HasForms
                 Select::make('financial_goal_id')
                     ->label('Financial Goal')
                     ->options(fn () => $this->getCurrentUserGoals())
-                    ->nullable(fn ($get) => $get('analysis_type') === 'debt')
+                    ->nullable() // Nullable if debt analysis is selected or user is not saving for a goal
                     ->placeholder('Select a goal')
                     ->required(fn ($get) => $get('analysis_type') === 'savings' && $get('saving_for_goal')) // Required if savings analysis is selected and user is saving for a goal
                     ->visible(fn ($get) => $get('analysis_type') === 'debt' || ($get('analysis_type') === 'savings' && $get('saving_for_goal'))), // Shows if debt or savings analysis is selected

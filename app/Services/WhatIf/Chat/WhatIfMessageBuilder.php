@@ -16,11 +16,11 @@ class WhatIfMessageBuilder
         "for **{$report->debt->debt_name}** using the **{$report->what_if_scenario}** scenario. " .
         "\nHere's your report summary:";
 
-        if ($report->what_if_scenario === 'payment-change') {
+        if ($report->what_if_scenario === 'debt-payment-change') {
             $message .= $this->buildPaymentChangeMessage($report) . "\n";
         } 
         
-        elseif ($report->what_if_scenario === 'interest-rate-change') {
+        elseif ($report->what_if_scenario === 'debt-interest-rate-change') {
             $message .= $this->buildInterestRateChangeMessage($report) . "\n";
         }
 
