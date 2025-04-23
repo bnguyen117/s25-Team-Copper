@@ -1,5 +1,6 @@
 <x-app-layout>
-    <x-slot name="header">
+<x-slot name="header">
+    <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
             @if ($group->image)
                 <img src="{{ asset('storage/' . $group->image) }}" alt="Group Avatar" class="w-12 h-12 rounded-full">
@@ -10,14 +11,21 @@
                 </svg>
             @endif
 
-            <!-- Group name goes here -->
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ $group->name }}
             </h2>
         </div>
-    </x-slot>
 
-    <div class="py-6">
+        @if (Auth::id() === $group->creator_id)
+            <form method="POST" action="{{ route('groups.destroy', $group->id) }}" onsubmit="return confirm('Are you sure you want to delete this group?');">
+                @csrf
+                @method('DELETE')
+                <x-danger-button>Delete</x-danger-button>
+            </form>
+        @endif
+    </div>
+</x-slot>
+     <div class="py-6">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             <!-- Message Posting Form -->
@@ -36,30 +44,18 @@
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Message Board</h3>
 
                 @forelse ($messages as $message)
-                    <div class="flex items-start space-x-4 mb-6 border-b pb-4">
-                        @if($message->user->avatar)
-                            <img src="{{ asset('storage/' . $message->user->avatar) }}" class="w-10 h-10 rounded-full" alt="User Avatar">
-                        @else
-                            <svg class="w-10 h-10 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2a5 5 0 015 5v1a5 5 0 11-10 0V7a5 5 0 015-5zm0 14c-5.523 0-10 4.477-10 10h20c0-5.523-4.477-10-10-10z"/>
-                            </svg>
-                        @endif
-
-                        <div>
-                            <p class="font-semibold text-gray-900 dark:text-white">{{ $message->user->display_name }}</p>
-                            <p class="text-sm text-gray-500">{{ $message->created_at->diffForHumans() }}</p>
-                            <p class="mt-2 text-gray-800 dark:text-gray-300">{{ $message->body }}</p>
-                        </div>
-                    </div>
+                        @include('components.message', ['message' => $message,'group'=> $group])
                 @empty
                     <p class="text-gray-500">No messages yet. Be the first to post!</p>
                 @endforelse
+                {{ $messages->links() }}
 
-                <!-- Pagination Links -->
                 <div class="mt-6">
-                    {{ $messages->links() }}
+                   
                 </div>
             </div>
         </div>
     </div>
 </x-app-layout>
+                
+                    

@@ -17,17 +17,25 @@
                     Your Achievements
                 </h3>
 
-                <!-- Badge Grid (stand-in for now) -->
+                <!-- Badge Grid -->
                 <div class="grid grid-cols-3 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    <button class="p-2 rounded-full shadow-md hover:opacity-80">
-                        <img src="https://images.vexels.com/media/users/3/143188/isolated/preview/5f44f3160a09b51b4fa4634ecdff62dd-money-icon.png?w=360" alt="Badge" class="w-full h-auto rounded-full">
-                    </button>
-                    <button class="p-2 rounded-full shadow-md hover:opacity-80">
-                        <img src="https://production-tcf.imgix.net/app/uploads/2016/02/02182858/2014-1-2-the-high-cost-of-student-debt-jill-2.jpg" alt="Badge" class="w-full h-auto rounded-full">
-                    </button>
-                    <!-- Add more badges as needed -->
+                    @if(auth()->user()->badges->isEmpty())
+                    <div class="col-span-3 text-center text-gray-500 dark:text-gray-400 italic">
+                        You have no badges yet. Explore the app!
+                    </div>
+                    
+                    @else
+                    <!-- DB part -->
+                        @foreach (auth()->user()->badges as $badge)
+                            <div class="p-2 rounded-full shadow-md hover:opacity-80">
+                            <img src="{{ asset('images/badges/' . $badge->icon ) }}" 
+                                    alt="{{ $badge->name }}" 
+                                    class="w-full h-auto rounded-full">
+                            <p class="text-center text-sm mt-2 text-white">{{ $badge->name }}</p>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
-            </div>
 
             <!-- Current Goals Section -->
             <div class="bg-[#A9DFFF] shadow-sm sm:rounded-lg p-6 mt-8">
@@ -35,10 +43,12 @@
                 <div class="p-4 border border-gray-600 rounded-md">
                     <p class="text-gray-700">You have no active goals.</p>
                 </div>
-                <a href="http://s25-team-copper.test/finance#goals" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-center block">
+                <a href="https://prod.s25-team-copper.stspreview.com/finance#goals" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-center block">
                 + Add or Edit Goals
                 </a>
             </div>
+            </div>
         </div>
     </div>
+
 </x-app-layout>

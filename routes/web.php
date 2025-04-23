@@ -9,7 +9,10 @@ use App\Http\Controllers\RewardsController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\FriendRequestController;
 use App\Http\Controllers\GroupController;
+use App\Gamify\Points\PostCreated;
+use App\Gamify\Badges\FirstContribution;
 use Illuminate\Support\Facades\Route;
+use QCod\Gamify\Gamify;
 
 Route::get('/', function () {
     return view('welcome');
@@ -73,6 +76,19 @@ Route::middleware('auth')->group(function () {
 
     // Create Message in Group
     Route::post('/groups/{group}/messages', [App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
+
+    // Delete Message in Group
+    Route::delete('/groups/{group}/messages/{message}', [App\Http\Controllers\MessageController::class, 'destroy'])->name('messages.destroy');
+
+    // Edit Message in Group
+    Route::put('/groups/{group}/messages/{message}', [App\Http\Controllers\MessageController::class, 'update'])->name('messages.update');
+    
+    //Delete Group
+    Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
+    Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
+
+
+
 });
 
 require __DIR__.'/auth.php';
