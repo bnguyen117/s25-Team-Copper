@@ -112,7 +112,7 @@ class BudgetForm extends Component
             ]
         );
 
-        session()->flash('success', 'Generating New Budget...');
+        session()->flash('success', 'Default Budget Created');
         $this->mount();
 
         $this->dispatch('refreshBudgetTable');
@@ -137,7 +137,7 @@ class BudgetForm extends Component
             ]
         );
 
-        session()->flash('success', 'Generating New Budget...');
+        session()->flash('success', 'Debt-Prioritized Budget Created');
         $this->mount();
 
         $this->dispatch('refreshBudgetTable');
@@ -162,7 +162,7 @@ class BudgetForm extends Component
             ]
         );
 
-        session()->flash('success', 'Generating New Budget...');
+        session()->flash('success', 'Savings-Prioritized Budget Created');
         $this->mount();
 
         $this->dispatch('refreshBudgetTable');
@@ -187,7 +187,7 @@ class BudgetForm extends Component
             ]
         );
 
-        session()->flash('success', 'Generating New Budget...');
+        session()->flash('success', 'Wants-Prioritized Budget Created');
         $this->mount();
 
         $this->dispatch('refreshBudgetTable');
