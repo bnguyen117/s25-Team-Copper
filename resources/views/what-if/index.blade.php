@@ -17,6 +17,9 @@
         <!-- Main content container holding the Filament form -->
     <div class=" m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
         @livewire('what-if-report-table')
+        @livewire('savings-what-if-report-table')
     </div>
+
+    
 
 </x-app-layout>

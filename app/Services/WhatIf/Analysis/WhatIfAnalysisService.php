@@ -8,7 +8,7 @@ use App\Models\FinancialGoal;
 class WhatIfAnalysisService {
 
     /** Algo 1: 'interest-rate-change' */
-    public function interestRateChangeScenario($debtId, $newInterestRate, $monthlyIncome, $totalMonthlyExpenses, $financialGoalId = null)
+    public function debtInterestRateChangeScenario($debtId, $newInterestRate, $monthlyIncome, $totalMonthlyExpenses, $financialGoalId = null)
     {
         // Grab debt record
         $debt = Debt::find($debtId);
@@ -115,6 +115,178 @@ class WhatIfAnalysisService {
         if ($financialGoalId)
             $result['goal_impact'] = $this->calculateGoalImpact($financialGoalId, $monthlyIncome, $totalMonthlyExpenses);
         
+        return $result;
+    }
+
+    /**
+     * Algo 3 - 'no-goal-savings-interest-rate-change'
+     */
+    public function noGoalSavingsInterestRateChangeScenario($currentSavingsAmt, $currentMonthlySavings, $currentInterestRate, $newInterestRate, $monthlyIncome, $totalMonthlyExpenses, $financialGoalId = null) {
+        //Once budget is setup, add savings id or something like that.
+        
+        // Set up timeline variables
+        $balance = $currentSavingsAmt;
+        $monthlyRate = $newInterestRate / 100 / 12;
+        $timeline = [];
+        $month = 0;
+
+        //Build timeline up to 30 years 
+        while ($month++ < 360) {
+            $balance += $currentMonthlySavings;
+            $interestEarned = $balance * $monthlyRate;
+            $balance += $interestEarned;
+            $timeline[] = [
+                'month' => $month,
+                'balance' => max(0, $balance),
+                'interest_earned' => $interestEarned,
+                'monthly_savings' => $currentMonthlySavings
+            ];
+        }
+
+        // Build result array
+        $result = [
+            'original_savings_amount' => $currentSavingsAmt,
+            'original_interest_rate' => $currentInterestRate,
+            'original_monthly_savings' => $currentMonthlySavings,
+            'total_saved' => $balance,
+            'timeline' => $timeline,
+            'total_months' => $month,
+            'total_interest_earned' => array_sum(array_column($timeline, 'interest_earned')),
+        ];
+
+        return $result;
+    }
+
+    /**
+     * Algo 4 - 'no-goal-savings-monthly-contribution-change'
+     */
+    public function noGoalMonthlySavingsChangeScenario($currentSavingsAmt, $currentMonthlySavings, $currentInterestRate, $newMonthlySavings, $monthsToSave, $monthlyIncome, $totalMonthlyExpenses, $financialGoalId = null) {
+        // Set up timeline variables
+        $balance = $currentSavingsAmt;
+        $monthlyRate = $currentInterestRate / 100 / 12;
+        $timeline = [];
+        $month = 0;
+
+        // Build timeline up to 30 years
+        while ($month++ < $monthsToSave) {
+            $balance += $newMonthlySavings;
+            $interestEarned = $balance * $monthlyRate;
+            $balance += $interestEarned;
+            $timeline[] = [
+                'month' => $month,
+                'balance' => max(0, $balance),
+                'interest_earned' => $interestEarned,
+                'monthly_savings' => $newMonthlySavings
+            ];
+        }
+
+        // Build result array
+        $result = [
+            'original_savings_amount' => $currentSavingsAmt,
+            'original_interest_rate' => $currentInterestRate,
+            'original_monthly_savings' => $currentMonthlySavings,
+            'total_saved' => $balance, 
+            'timeline' => $timeline,
+            'total_months' => $month,
+            'total_interest_earned' => array_sum(array_column($timeline, 'interest_earned')),
+        ];
+
+        return $result;
+    }
+
+    /**
+     * Algo 5 - 'goal-savings-interest-rate-change'
+     */
+    public function goalSavingsInterestRateChangeScenario($financialGoalId, $currentInterestRate, $newInterestRate, $monthlyIncome, $totalMonthlyExpenses)
+    {
+        // Grab goal record
+        $goal = FinancialGoal::find($financialGoalId);
+
+        // Set up timeline variables
+        $balance = $goal->current_amount;
+        $MonthlyRate = $newInterestRate / 100 / 12;
+        $timeline = [];
+        $month = 0;
+        $monthlySavings = $goal->monthly_savings;
+
+        // Build timeline until the goal is reached.
+        while ($balance < $goal->target_amount) {
+            $balance += $monthlySavings;
+            $interestEarned = $balance * ($MonthlyRate);
+            $balance += $interestEarned;
+            if ($monthlySavings > $goal->target_amount - $balance) {
+                $monthlySavings = $goal->target_amount - $balance;
+            }
+            $timeline[] = [
+                'month' => $month,
+                'balance' => max(0, $balance),
+                'interest_earned' => $interestEarned,
+                'monthly_savings' => $monthlySavings
+            ];
+            if ($month++ > 360) break; // Prevent infinite loop
+        }
+
+        // Build result array
+        $result = [
+            'original_savings_amount' => $goal->current_amount,
+            'original_interest_rate' => $currentInterestRate,
+            'original_monthly_savings' => $goal->monthly_savings,
+            'total_saved' => $balance,
+            'timeline' => $timeline,
+            'total_months' => $month,
+            'total_interest_earned' => array_sum(array_column($timeline, 'interest_earned')),
+        ];
+
+        // Add goal impact
+        $result['goal_impact'] = $this->calculateGoalImpact($financialGoalId, $monthlyIncome, $totalMonthlyExpenses);
+        return $result;
+    }
+
+    /**
+     * Algo 6 - 'goal-monthly-savings-change'
+     */
+    public function goalMonthlySavingsChangeScenario($financialGoalId, $currentInterestRate, $newMonthlySavings, $monthlyIncome, $totalMonthlyExpenses) {
+        // Grab goal record
+        $goal = FinancialGoal::find($financialGoalId);
+
+        // Set up timeline variables
+        $balance = $goal->current_amount;
+        $monthlyRate = $currentInterestRate / 100 / 12;
+        $timeline = [];
+        $month = 0;
+
+        // Build timeline until the goal is reached.
+        while ($balance < $goal->target_amount) {
+            $balance += $newMonthlySavings;
+            $interestEarned = $balance * ($monthlyRate);
+            $balance += $interestEarned;
+            if ($newMonthlySavings > $goal->target_amount - $balance) {
+                $newMonthlySavings = $goal->target_amount - $balance;
+            }
+            $timeline[] = [
+                'month' => $month,
+                'balance' => max(0, $balance),
+                'interest_earned' => $interestEarned,
+                'monthly_savings' => $newMonthlySavings
+            ];
+            if ($month++ > 360) break; // Prevent infinite loop
+        }
+
+        // Build result array
+        $result = [
+            'original_savings_amount' => $goal->current_amount,
+            'original_interest_rate' => $currentInterestRate,
+            'original_monthly_savings' => $goal->monthly_savings,
+            'total_saved' => $balance,
+            'timeline' => $timeline,
+            'total_months' => $month,
+            'total_interest_earned' => array_sum(array_column($timeline, 'interest_earned')),
+        ];
+
+        // Add goal impact
+        if ($financialGoalId) 
+            $result['goal_impact'] = $this->calculateGoalImpact($financialGoalId, $monthlyIncome, $totalMonthlyExpenses);
+
         return $result;
     }
 

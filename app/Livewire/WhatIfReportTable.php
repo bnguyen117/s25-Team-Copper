@@ -25,7 +25,7 @@ class WhatIfReportTable extends Component implements HasForms, HasTable
         return $table
             // Fetch only WhatIfReport records belonging to the currently authenticated user.
             ->query(WhatIfReport::where('user_id', Auth::id()))
-            ->heading('Saved What-If Reports')
+            ->heading('Saved Debt What-If Reports')
             ->columns($this->getReportTableColumns())
             ->paginated(false)
             ->filters([])

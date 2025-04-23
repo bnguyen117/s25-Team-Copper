@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('debt_id')->constrained('debts')->onDelete('cascade');
-            $table->string('algorithm');                            // The what-if scenario algorithm used (payment-change, interest-rate)
+            $table->string('algorithm');                                                 //The what-if scenario algorithm used (payment-change, interest-rate)
             $table->decimal('original_amount', 10, 2);              // The original amount of the debt
             $table->decimal('current_payment', 10, 2);              // The current monthly payment for a debt
             $table->decimal('minimum_payment', 10, 2)->nullable();  // The minimum required payment on a debt

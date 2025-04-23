@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use PhpParser\Node\NullableType;
 
 class WhatIfReport extends Model
 {
@@ -19,7 +20,7 @@ class WhatIfReport extends Model
         'original_minimum_debt_payment',    // The minimum monthly payment 
 
         // New data relating to the report's analysis
-        'what_if_scenario',                 // The name of the what-if scenario
+        'what_if_scenario',                 // The name of the debt what-if scenario
         'new_interest_rate',                // The new interest rate
         'new_monthly_debt_payment',         // New monthly debt payment amount
         'total_months',                     // The total months to pay off the debt

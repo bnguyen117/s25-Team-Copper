@@ -48,7 +48,7 @@ class WhatIfReportFormatterTest extends TestCase
         $report = WhatIfReport::create([
             'user_id' => $this->user->id,
             'debt_id' => $this->debt->id,
-            'what_if_scenario' => 'interest-rate-change',
+            'what_if_scenario' => 'debt-interest-rate-change',
             'original_debt_amount' => 8000.00,
             'original_interest_rate' => 5.00,
             'original_monthly_debt_payment' => 500.00,
@@ -73,7 +73,7 @@ class WhatIfReportFormatterTest extends TestCase
         $this->assertStringContainsString('  - Original Interest Rate: 5.00%', $summary);
         $this->assertStringContainsString('  - Original Minimum Monthly Payment: $100.00', $summary);
 
-        $this->assertStringContainsString('What-If Scenario Results (Algorithm: interest-rate-change):', $summary);
+        $this->assertStringContainsString('What-If Scenario Results (Algorithm: debt-interest-rate-change):', $summary);
         $this->assertStringContainsString('  - Total Months Until Full Repayment: 18', $summary);
         $this->assertStringContainsString('  - Total Interest Paid: $1,000.25', $summary);
         $this->assertStringContainsString('  - New Interest Rate: 6.00%', $summary);
@@ -115,7 +115,7 @@ class WhatIfReportFormatterTest extends TestCase
             'user_id' => $this->user->id,
             'debt_id' => $this->debt->id,
             'financial_goal_id' => $financialGoal->id,
-            'what_if_scenario' => 'payment-change',
+            'what_if_scenario' => 'debt-payment-change',
             'original_debt_amount' => 8000.00,
             'original_interest_rate' => 5.00,
             'original_monthly_debt_payment' => 500.00,
@@ -131,7 +131,7 @@ class WhatIfReportFormatterTest extends TestCase
         $summary = $this->formatter->generateSummary($report);
 
         // Assert expected output
-        $this->assertStringContainsString('What-If Scenario Results (Algorithm: payment-change):', $summary);
+        $this->assertStringContainsString('What-If Scenario Results (Algorithm: debt-payment-change):', $summary);
         $this->assertStringContainsString('  - New Monthly Payment: $600.00', $summary);
 
         $this->assertStringContainsString('Goal Impact:', $summary);
@@ -163,7 +163,7 @@ class WhatIfReportFormatterTest extends TestCase
         $report = WhatIfReport::create([
             'user_id' => $this->user->id,
             'debt_id' => $this->debt->id,
-            'what_if_scenario' => 'interest-rate-change',
+            'what_if_scenario' => 'debt-interest-rate-change',
             'original_debt_amount' => 8000.00,
             'original_interest_rate' => 5.00,
             'original_monthly_debt_payment' => 500.00,
