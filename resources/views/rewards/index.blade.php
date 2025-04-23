@@ -26,8 +26,8 @@
                 <!-- DB part -->
                     @foreach (auth()->user()->badges as $badge)
                         <div class="p-2 rounded-full shadow-md hover:opacity-80">
-                        <img src="{{ asset('images/badges/ ' . $badge->icon  ) }}" 
-                        alt="{{ $badge->name }}" 
+                        <img src="{{ asset('images/badges/' . $badge->icon ) }}" 
+                                alt="{{ $badge->name }}" 
                                 class="w-full h-auto rounded-full">
                           <p class="text-center text-sm mt-2 text-white">{{ $badge->name }}</p>
                         </div>

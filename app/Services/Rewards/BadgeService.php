@@ -20,7 +20,11 @@ class BadgeService
         }
             */
     
+            /* DebtBuilder badge, didn't work
             $user = Auth::user();
             $user->givePoint(new DebtCreated($user));
+            */
+
+        
     }
 }
