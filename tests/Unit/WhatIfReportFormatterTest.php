@@ -73,7 +73,7 @@ class WhatIfReportFormatterTest extends TestCase
         $this->assertStringContainsString('  - Original Interest Rate: 5.00%', $summary);
         $this->assertStringContainsString('  - Original Minimum Monthly Payment: $100.00', $summary);
 
-        $this->assertStringContainsString('What-If Scenario Results (Algorithm: interest-rate-change):', $summary);
+        $this->assertStringContainsString('What-If Scenario Results (Algorithm: debt-interest-rate-change):', $summary);
         $this->assertStringContainsString('  - Total Months Until Full Repayment: 18', $summary);
         $this->assertStringContainsString('  - Total Interest Paid: $1,000.25', $summary);
         $this->assertStringContainsString('  - New Interest Rate: 6.00%', $summary);
@@ -131,7 +131,7 @@ class WhatIfReportFormatterTest extends TestCase
         $summary = $this->formatter->generateSummary($report);
 
         // Assert expected output
-        $this->assertStringContainsString('What-If Scenario Results (Algorithm: payment-change):', $summary);
+        $this->assertStringContainsString('What-If Scenario Results (Algorithm: debt-payment-change):', $summary);
         $this->assertStringContainsString('  - New Monthly Payment: $600.00', $summary);
 
         $this->assertStringContainsString('Goal Impact:', $summary);
