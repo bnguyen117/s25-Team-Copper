@@ -19,10 +19,12 @@
 
                 <!-- Badge Grid -->
                 <div class="grid grid-cols-3 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    <button class="p-2 rounded-full shadow-md hover:opacity-80">  <!--stand-in-->
-                        <img src="{{ asset('img/rewards/default.png') }}" alt="Badge" class="w-full h-auto rounded-full">
-                    </button>
-                    
+                @if(auth()->user()->badges->isEmpty())
+                <div class="col-span-3 text-center text-gray-500 dark:text-gray-400 italic">
+                    You have no badges yet. Explore the app!
+                </div>
+                
+                @else
                 <!-- DB part -->
                     @foreach (auth()->user()->badges as $badge)
                         <div class="p-2 rounded-full shadow-md hover:opacity-80">
@@ -32,6 +34,7 @@
                           <p class="text-center text-sm mt-2 text-white">{{ $badge->name }}</p>
                         </div>
                     @endforeach
+                @endif
                 </div>
 
             <!-- Current Goals Section -->
