@@ -11,7 +11,7 @@ class Friendly extends BadgeType
      *
      * @var string
      */
-    protected $description = 'Visited the community page for the first time!';
+    protected $description = 'You visited the community page for the first time!';
     protected $icon = 'friendly.png';
 
     /**
