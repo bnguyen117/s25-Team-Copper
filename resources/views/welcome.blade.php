@@ -28,13 +28,13 @@
 
                         <!-- Light Mode Logo -->
                         <div class="dark:hidden flex lg:justify-center lg:col-start-2">
-                            <img src="{{ asset('images/welcome/logo.svg') }}" alt="CreditTrax logo" class="h-40 w-auto" />
+                            <img src="{{ asset('images/welcome/main-logo.svg') }}" alt="CreditTrax logo" class="h-40 w-auto" />
                         </div>
 
                         <!-- Dark Mode Logo -->
                         <div class="hidden dark:flex lg:justify-center lg:col-start-2">
                             <img src="{{ asset('images/welcome/logo-white.svg') }}" alt="CreditTrax logo" class="lg:hidden h-40 w-auto" />
-                            <img src="{{ asset('images/welcome/logo.svg') }}" alt="CreditTrax logo" class="hidden lg:block h-40 w-auto" />
+                            <img src="{{ asset('images/welcome/main-logo.svg') }}" alt="CreditTrax logo" class="hidden lg:block h-40 w-auto" />
                         </div>
 
                         <!-- Conditional Navigation Links -->
