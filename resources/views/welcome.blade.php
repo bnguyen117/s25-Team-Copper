@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CreditTrax</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -21,6 +21,17 @@
     </head>
     <body class="font-sans antialiased dark:bg-black dark:text-white/50">
         <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
+
+            <!-- Toggle Dark/Light Theme -->
+            <button 
+                id="toggle-mode" 
+                class="absolute md:fixed top-4 right-4 p-2 rounded-md transition hover:bg-gray-100 dark:hover:bg-gray-700 z-10" 
+                aria-label="Toggle dark mode"
+            >
+                <img src="{{ asset('images/welcome/sun.png') }}" alt="Light mode" class="size-8 dark:hidden"/>
+                <img src="{{ asset('images/welcome/moon.png') }}" alt="Dark mode" class="size-7 hidden dark:block"/>
+            </button>
+
             <img id="background" class="absolute -left-20 top-0 max-w-[877px]" src="{{ asset('images/welcome/background.svg') }}" alt="CreditTrax background" />
             <div class="relative min-h-screen flex flex-col items-center justify-center selection:bg-[#24B6AB] selection:text-white">
                 <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
@@ -346,7 +357,8 @@
                     </main>
 
                     <footer class="py-16 text-center text-sm text-black dark:text-white/70">
-                        Team Copper - 2025 - icons by <a href="https://icons8.com/" target="_blank">icons8</a>
+                        <p class="">Team Copper - Spring 2025</p>
+                        <p>Icons by <a href="https://icons8.com/" target="_blank">icons8</a></p>
                     </footer>
                 </div>
             </div>
