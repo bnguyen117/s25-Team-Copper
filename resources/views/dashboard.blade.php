@@ -107,7 +107,7 @@
             <h3 class="text-lg font-se  mibold text-gray-900 dark:text-gray-100 border-b pb-2" id="debtTitle">Debt Payment History</h3>
             
             <!-- Chart.js Canvas for the Line Graph -->
-            <canvas id="debtLineChart" class="mx-auto" style="width:40%; height:200px;"></canvas>
+            <canvas id="debtLineChart" class="mx-auto max-w-full" style="width:350px; height:200px;"></canvas>
             
             <!-- Button to Switch to the Next Debt -->
             <button id="nextDebt" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">Next Debt</button>
