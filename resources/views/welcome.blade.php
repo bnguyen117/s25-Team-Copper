@@ -24,8 +24,7 @@
 
             <!-- Toggle Dark/Light Theme -->
             <button 
-                id="toggle-mode" 
-                class="absolute md:fixed top-4 right-4 p-2 rounded-md transition hover:bg-gray-100 dark:hover:bg-gray-700 z-10" 
+                class="toggle-mode absolute md:fixed top-4 right-4 p-2 rounded-md transition hover:bg-gray-100 dark:hover:bg-gray-700 z-10" 
                 aria-label="Toggle dark mode"
             >
                 <img src="{{ asset('images/welcome/sun.png') }}" alt="Light mode" class="size-8 dark:hidden"/>
