@@ -76,7 +76,8 @@ Route::middleware('auth')->group(function () {
 
     // Create Message in Group
     Route::post('/groups/{group}/messages', [App\Http\Controllers\MessageController::class, 'store'])->name('messages.store');
-
+    Route::put('/groups/{group}/messages/{message}', [MessageController::class, 'update'])->name('messages.update');
+    Route::delete('/groups/{group}/messages/{message}', [MessageController::class, 'destroy'])->name('messages.destroy');
     // Delete Message in Group
     Route::delete('/groups/{group}/messages/{message}', [App\Http\Controllers\MessageController::class, 'destroy'])->name('messages.destroy');
 
@@ -86,6 +87,8 @@ Route::middleware('auth')->group(function () {
     //Delete Group
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
     Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
+    //In group menu
+    Route::post('/groups/{group}/add-member', [GroupController::class, 'addMember'])->name('groups.addMember');
 
 
 
