@@ -52,18 +52,18 @@
                 </button>
 
                 <button
-                    wire:click="askQuestion('Based on my financial state, how would you recommend I adjust my budget?')"
+                    wire:click="askQuestion('What\'s the best way to save $500 dollars in 3 months?')"
                     type="button"
                     class="shimmer-btn p-2 w-full text-left"
                 >
-                    Based on my financial state, how would you recommend I adjust my budget?
+                    What's the best way to save $500 dollars in 3 months?
                 </button>
                 <button
-                    wire:click="askQuestion('Will I be able to acheive all of my financial goals on time?')"
+                    wire:click="askQuestion('How should I prioritize my expenses?')"
                     type="button"
                     class="shimmer-btn mb-2 p-2 w-full text-left"
                 >
-                    Will I be able to acheive all of my financial goals on time?
+                    How should I prioritize my expenses?
                 </button>
             </div>
         @endif

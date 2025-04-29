@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BudgetChart extends Component
 {
-    public $income, $needs, $wants, $savings, $remaining_balance;
+    public $income, $expenses, $savings, $remaining_balance;
 
     public function mount()
     {
@@ -16,22 +16,15 @@ class BudgetChart extends Component
 
         if ($budget) {
             $this->income = $budget->income;
-            $this->needs = $this->income * $budget->needs_percentage;
-            $this->wants = $this->income * $budget->wants_percentage;
-            $this->savings = $this->income * $budget->savings_percentage;
-            $this->remaining_balance = $this->calculateRemainingBalance();
+            $this->expenses = $budget->budgeted_needs + $budget->budgeted_wants; // Needs + Wants = Expenses
+            $this->savings = $budget->budgeted_savings;
+            $this->remaining_balance = $budget->remaining_balance;
         } else {
             $this->income = 0;
-            $this->needs = 0;
-            $this->wants = 0;
+            $this->expenses = 0;
             $this->savings = 0;
             $this->remaining_balance = 0;
         }
-    }
-
-    public function calculateRemainingBalance()
-    {
-        $this->remaining_balance = $this->income - ($this->needs + $this->wants + $this->savings);
     }
 
     public function render()

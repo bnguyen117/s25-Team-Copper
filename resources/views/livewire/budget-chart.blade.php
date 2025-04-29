@@ -12,15 +12,14 @@
             var chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Income', 'Needs', 'Wants', 'Savings'],
+                    labels: ['Income', 'Expenses', 'Savings', 'Remaining Balance'],
                     datasets: [{
                         label: 'Amount ($)',
                         data: [
                             {{ $income }},
-                            {{ $needs }},
-                            {{ $wants }},
+                            {{ $expenses }},
                             {{ $savings }},
-                            // {{ $remaining_balance }}
+                            {{ $remaining_balance }}
                         ],
                         backgroundColor: ['#36a2eb', '#ff6384', '#ffcd56', '#4bc0c0'],
                         borderColor: ['#2b7bb9', '#d62828', '#e3b505', '#1d7874'],

@@ -12,40 +12,25 @@
     </div>
 
     <!-- Expenses -->
-    <!-- <div class="mt-4">
+    <div class="mt-4">
         <label class="block text-gray-700 dark:text-gray-300">Expenses ($)</label>
-        <input type="number" wire:model="needs" class="w-full p-2 border rounded" wire:change="calculateRemainingBalance">
-    </div> -->
+        <input type="number" wire:model="expenses" class="w-full p-2 border rounded" wire:change="calculateRemainingBalance">
+    </div>
 
     <!-- Savings -->
-    <!-- <div class="mt-4">
+    <div class="mt-4">
         <label class="block text-gray-700 dark:text-gray-300">Savings ($)</label>
         <input type="number" wire:model="savings" class="w-full p-2 border rounded" wire:change="calculateRemainingBalance">
-    </div> -->
+    </div>
 
     <!-- Remaining Balance -->
-    <!-- <div class="mt-4">
+    <div class="mt-4">
         <label class="block text-gray-700 dark:text-gray-300">Remaining Balance ($)</label>
         <input type="number" wire:model="remaining_balance" class="w-full p-2 border rounded bg-gray-200" readonly>
-    </div> -->
+    </div>
 
-    <!-- Default Budget Button -->
-    <button wire:click="defaultBudget" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
-        Default Budget
-    </button>
-
-    <!-- Prioritize Debt Payoff Button-->
-    <button wire:click="prioritizeDebts" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
-        Priotitize Debt Payoff
-    </button>
-
-    <!-- Prioritize Savings Button-->
-    <button wire:click="prioritizeSavings" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
-        Priotitize Savings
-    </button>
-
-    <!-- Prioritize Wants Button-->
-    <button wire:click="prioritizeWants" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
-        Priotitize Wants
+    <!-- Save Budget Button -->
+    <button wire:click="saveBudget" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">
+        Save Budget
     </button>
 </div>

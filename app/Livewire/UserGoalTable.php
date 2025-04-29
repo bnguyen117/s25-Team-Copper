@@ -59,9 +59,6 @@ class UserGoalTable extends Component implements HasForms, HasTable
                     ->mutateFormDataUsing(function (array $data): array {
                         $data['user_id'] = Auth::id();
                         return $data;
-                    })
-                    ->after(function () {
-                        $this->dispatch('refreshBudgetingChat');
                     }),
             ])
             ->actions([
@@ -69,16 +66,10 @@ class UserGoalTable extends Component implements HasForms, HasTable
                 EditAction::make()
                     ->button()
                     ->slideOver()
-                    ->form($this->getFormFields(true))
-                    ->after(function () {
-                        $this->dispatch('refreshBudgetingChat');
-                    }),
+                    ->form($this->getFormFields(true)),
                 // Delete button for deleting a record.
                 DeleteAction::make()
                     ->button()
-                    ->after(function () {
-                        $this->dispatch('refreshBudgetingChat');
-                    }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
@@ -86,9 +77,6 @@ class UserGoalTable extends Component implements HasForms, HasTable
                     BulkAction::make('delete')
                         ->requiresConfirmation()
                         ->action(fn (Collection $records) => $records->each->delete())
-                        ->after(function () {
-                            $this->dispatch('refreshBudgetingChat');
-                        }),
                 ]),
             ]);
     }
