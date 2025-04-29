@@ -32,7 +32,7 @@
                         </x-slot>
                         <x-slot name="content">
                             <div class="p-4 text-gray-700 dark:text-gray-300 font-semibold">Pending Friend Requests</div>
-                            <div id="friendRequestsList" class="min-w-[30rem] max-w-[50rem]">
+                            <div id="friendRequestsList">
                                 @forelse(Auth::user()->receivedFriendRequests as $request)
                                     <div class="flex items-center justify-between px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                                         <img src="{{ asset('storage/' . $request->sender->avatar) }}" class="w-12 h-12 rounded-full mr-3" alt="Avatar">
