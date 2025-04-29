@@ -12,15 +12,15 @@
             <p class="font-semibold text-gray-900 dark:text-white">{{ $message->user->display_name }}</p>
             <p class="text-sm text-gray-500">{{ $message->created_at->diffForHumans() }}</p>
 
-            @if (request('edit') == $message->id)
-                <!-- Edit form -->
+            <!-- Inline Edit -->
+            @if (request('edit') == $message->id && $message->user_id === auth()->id())
                 <form method="POST" action="{{ route('messages.update', [$group->id, $message->id]) }}" class="mt-2">
                     @csrf
                     @method('PUT')
                     <textarea name="body" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white" required>{{ $message->body }}</textarea>
                     <div class="flex gap-2 mt-2">
                         <x-primary-button>Save</x-primary-button>
-                        <a href="{{ route('groups.show', $group->id) }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
+                        <a href="{{ route('groups.show', $group->id) }}" class="text-sm text-gray-400 hover:text-gray-200">Cancel</a>
                     </div>
                 </form>
             @else
@@ -31,17 +31,19 @@
                 <p class="text-xs text-gray-400 italic">↪ replying to {{ $message->parent->user->display_name ?? 'message' }}</p>
             @endif
 
-            <!-- Reply form -->
-            <form method="POST" action="{{ route('messages.store', $group->id) }}" class="mt-2">
-                @csrf
-                <input type="hidden" name="parent_id" value="{{ $message->id }}">
-                <textarea name="body" rows="2" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white" placeholder="Reply..." required></textarea>
-                <div class="flex justify-end mt-2">
-                    <x-primary-button>Reply</x-primary-button>
-                </div>
-            </form>
+            <!-- Reply Form second try -->
+            @if (!(request('edit') == $message->id && $message->user_id === auth()->id()))
+                <form method="POST" action="{{ route('messages.store', $group->id) }}" class="mt-2">
+                    @csrf
+                    <input type="hidden" name="parent_id" value="{{ $message->id }}">
+                    <textarea name="body" rows="2" class="w-full p-2 rounded border dark:bg-gray-700 dark:text-white" placeholder="Reply..." required></textarea>
+                    <div class="flex justify-end mt-2">
+                        <x-primary-button>Reply</x-primary-button>
+                    </div>
+                </form>
+            @endif
 
-            <!-- Edit/Delete buttons -->
+            <!-- Edit/Delete -->
             @if($message->user_id === auth()->id() && request('edit') !== $message->id)
                 <div class="flex gap-4 mt-2 text-sm text-gray-500">
                     <a href="{{ route('groups.show', ['group' => $group->id, 'edit' => $message->id]) }}" class="text-blue-500 hover:underline">✏️ Edit</a>
