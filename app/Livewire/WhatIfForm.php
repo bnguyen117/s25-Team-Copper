@@ -412,7 +412,7 @@ class WhatIfForm extends Component implements HasForms
         return SavingsWhatIfReport::create([
             //Identifiers and scenario choice
             'user_id' => Auth::id(),
-            'financial_goal_id' => $state['financial_goal_id'],
+            'financial_goal_id' => $state['financial_goal_id'] ?? null,
             'what_if_scenario' => $state['what_if_scenario'],
 
             // Original savings state
