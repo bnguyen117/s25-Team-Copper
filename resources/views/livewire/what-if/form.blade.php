@@ -54,13 +54,23 @@
                 <!-- Includes the scenario specific header and summary cards from $report->what_if_scenario -->
                 @include('livewire.what-if.scenarios.'.$report->what_if_scenario)
 
-                <!-- Includes the timeline table with monthly repayment details -->
-                @include('livewire.what-if.partials.timeline-table')
+                @if($report->what_if_scenario == 'debt-payment-change' || $report->what_if_scenario == 'debt-interest-rate-change')
+                    <!-- Includes the timeline table with monthly payment details -->
+                    @include('livewire.what-if.partials.timeline-table')
+                @else
+                    <!-- Includes the timeline table with monthly savings details -->
+                    @include('livewire.what-if.partials.savings-timeline-table')
+                @endif
 
                 <!-- Filament chart showing debt repayment trends over time with $report data passed as 'chartData' -->
                 <div class="mt-4">
+                    @if($report->what_if_scenario == 'debt-payment-change' || $report->what_if_scenario == 'debt-interest-rate-change')
                         @livewire(\App\Filament\Widgets\DebtRepaymentChart::class, ['chartData' => $report], key('chart-' . $report->id))
                         <style>canvas { height: 50vh !important; }</style>
+                    @else
+                        @livewire(\App\Filament\Widgets\SavingsChart::class, ['chartData' => $report], key('chart-' . $report->id))
+                        <style>canvas { height: 50vh !important; }</style>
+                    @endif
                 </div>
 
                 <!-- Include the goal impact section if a goal was provided -->
