@@ -18,24 +18,53 @@
                 </h3>
 
                 <!-- Badge Grid -->
-                <div class="grid grid-cols-3 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    @if(auth()->user()->badges->isEmpty())
-                    <div class="col-span-3 text-center text-gray-500 dark:text-gray-400 italic">
-                        You have no badges yet. Explore the app!
+            <div x-data="{ selectedBadge: null }" class="grid grid-cols-3 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                @if(auth()->user()->badges->isEmpty())
+                <div class="col-span-3 text-center text-gray-500 dark:text-gray-400 italic">
+                    You have no badges yet. Explore the app!
+            </div>
+
+                @else
+                    @foreach (auth()->user()->badges as $badge)
+                        <div 
+                            @click="selectedBadge = { 
+                                name: '{{ addslashes($badge->name) }}', 
+                                description: '{{ addslashes($badge->description) }}'
+                            }"
+                            class="p-2 rounded-full shadow-md hover:opacity-80 cursor-pointer transition-opacity"
+                        >
+                            <img 
+                                src="{{ asset('images/badges/' . $badge->icon ) }}" 
+                                alt="{{ $badge->name }}" 
+                                class="w-full h-auto rounded-full"
+                            >
+                        </div>
+                    @endforeach
+                @endif
+
+                <!-- Centered Modal -->
+                <div 
+                    x-show="selectedBadge" 
+                    x-cloak
+                    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50"
+                    @click.away="selectedBadge = null"
+                    @keydown.escape.window="selectedBadge = null"
+                >
+                    <div class="bg-white rounded-lg w-full max-w-xs md:max-w-sm relative">
+                        <button 
+                            @click="selectedBadge = null"
+                            class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 p-1"
+                        >
+                            X
+                        </button>
+                        <div class="p-6 pt-8 text-center">
+                        <h3 class="text-xl font-semibold mb-2 text-green-500" x-text="selectedBadge?.name"></h3>
+                            <p class="text-gray-600 text-sm" x-text="selectedBadge?.description"></p>
+                        </div>
                     </div>
-                    
-                    @else
-                    <!-- DB part -->
-                        @foreach (auth()->user()->badges as $badge)
-                            <div class="p-2 rounded-full shadow-md hover:opacity-80">
-                            <img src="{{ asset('images/badges/' . $badge->icon ) }}" 
-                                    alt="{{ $badge->name }}" 
-                                    class="w-full h-auto rounded-full">
-                            <p class="text-center text-sm mt-2 text-white">{{ $badge->name }}</p>
-                            </div>
-                        @endforeach
-                    @endif
                 </div>
+            </div>
+
 
             <!-- Current Goals Section -->
             <div class="bg-[#A9DFFF] shadow-sm sm:rounded-lg p-6 mt-8">
