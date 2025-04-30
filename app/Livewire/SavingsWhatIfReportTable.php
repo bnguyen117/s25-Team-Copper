@@ -67,6 +67,6 @@ class SavingsWhatIfReportTable extends Component implements HasForms, HasTable
 
     // Renders the component's view
     public function render(): View {
-        return view('livewire.what-if.report-table');
+        return view('livewire.what-if.savings-report-table');
     }
 }
