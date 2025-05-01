@@ -59,7 +59,10 @@ class BudgetForm extends Component
 
     public function calculateRemainingBalance()
     {
-        $this->remaining_balance = $this->income - ($this->needs + $this->wants + $this->savings);
+        if (!$this->income) return 0;
+        $budget = Budget::where('user_id', Auth::id()) ->first();
+        if(!$budget) return $this->income;
+        return $this->income - $budget->needs_progress ?? 0 + $budget->wants_progress ?? 0 + $budget->savings_progress ?? 0;
     }
 
     public function useAIRecommendations()
@@ -93,7 +96,6 @@ class BudgetForm extends Component
         $this->dispatch('refreshBudgetTable');
         $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
-        $this->dispatch('refreshPercentTable');
     }
 
     public function defaultBudget()
@@ -118,7 +120,6 @@ class BudgetForm extends Component
         $this->dispatch('refreshBudgetTable');
         $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
-        $this->dispatch('refreshPercentTable');
     }
 
     public function prioritizeDebts()
@@ -143,7 +144,6 @@ class BudgetForm extends Component
         $this->dispatch('refreshBudgetTable');
         $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
-        $this->dispatch('refreshPercentTable');
     }
 
     public function prioritizeSavings()
@@ -168,7 +168,6 @@ class BudgetForm extends Component
         $this->dispatch('refreshBudgetTable');
         $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
-        $this->dispatch('refreshPercentTable');
     }
 
     public function prioritizeWants()
@@ -193,7 +192,6 @@ class BudgetForm extends Component
         $this->dispatch('refreshBudgetTable');
         $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
-        $this->dispatch('refreshPercentTable');
     }
 
     public function render()
