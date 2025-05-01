@@ -20,22 +20,15 @@
         <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center p-2">Create Your Budget</h2>
             @livewire('budget-form')
-            @livewire('budget-table')
-            @livewire('percentage-table')
+            <div class="mt-8 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
+                @livewire('transaction-table')
+            </div>
         </div>
     </div>
 
     <!-- Debt Table -->
     <div class="mt-16 mb-16 m-auto max-w-7xl lg:px-8">
         @livewire('user-debt-table')
-    </div>
-
-    <div class="mt-16 mb-16 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
-        @livewire('debt-transaction-table')
-    </div>
-   <!-- User Goals Table Section -->
-    <div id="goals" class="mb-16 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
-    @livewire('user-goal-table')
     </div>
 
     <!-- AI Budget Chat Section -->
