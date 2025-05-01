@@ -111,7 +111,7 @@
 
             //Following Const being called from the dashboard controller pulling from the debt table
             const income = {{ $debt2  ?? 0 }}; //debt2 being called from the controller
-            const budget = {{ $user->budget ?? 8000 }}; //Pulling from the User Profile budget
+            const budget = {{ $user->budget ?? 5000 }}; //Pulling from the User Profile budget
             const remaining = budget - income; //Formula for the remaining amount
             const underBudget = remaining >= 0 ? `${remaining.toLocaleString()} under` : `${Math.abs(remaining).toLocaleString()} over`; //Making the text green or red if they are over or under budget
             const chartData = remaining >= 0 ? [income, remaining] : [income, 0]; // If it is negative, the circle will be all red
