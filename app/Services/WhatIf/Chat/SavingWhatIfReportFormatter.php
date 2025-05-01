@@ -29,7 +29,8 @@ class SavingWhatIfReportFormatter {
     // General Savings Details
     private function formatSavingOverview(SavingsWhatIfReport $report): array {
         return [
-            "Saving Overview"
+            "Saving Overview",
+            sprintf("  - Savings Name: %s", $report->savings_name)
         ];
     }
 

@@ -36,15 +36,34 @@ class SavingsWhatIfReportTable extends Component implements HasForms, HasTable
                     Tables\Actions\Action::make('View Report')
                         ->icon('heroicon-o-eye')
                         ->label('View Report')
-                        ->slideOver(),
+                        ->slideOver()
+                        ->modalHeading(fn ($record) => "{$record->create_at} - " . ucfirst($record->what_if_scenario) . " Report")
+                        ->modalContent(function ($record) {
+                            return view('livewire.what-if.savings-report-modal', ['report' => $record]);
+                        })
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Close'),
                         
                     // An action for opening an AI chatbot modal to discuss a SavingsWhatIfReport.
                     Tables\Actions\Action::make('chat')
                         ->icon('heroicon-o-chat-bubble-left-right')
                         ->label('Chat with AI')
-                        ->slideOver(),
+                        ->slideOver()
+                        ->modalheading(fn ($record) => "AI Advisor for {$record->create_at} - " . ucfirst($record->what_if_scenario))
+                        ->modalContent(function ($record) {
+                            return view('livewire.what-if.savings-chat-modal', ['report' => $record]);
+                        })
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Close'),
+                    
+                    // A delete action for deleting individual SavingsWhatIfReports.
+                    Tables\Actions\DeleteAction::make()
+                    ->icon('heroicon-o-trash')
 
                 ])
+                ->button()
+                ->label('Actions')
+                ->icon('heroicon-m-ellipsis-vertical')
             ])
 
             // Enable bulk actions like deleting multiple reports at once.
@@ -59,9 +78,24 @@ class SavingsWhatIfReportTable extends Component implements HasForms, HasTable
 
     private function getReportTableColumns(): array {
         return [
-            //To do:  Add column for savings report name
+            // Column for savings report name
+            Tables\Columns\TextColumn::make('savings_name')
+                ->label('Savings Name')
+                ->searchable()
+                ->size('md')
+                ->weight(FontWeight::Bold)
+                ->formatStateUsing(fn ($record) => "{$record->savings_name} - " . ucfirst(str_replace('-', ' ', $record->what_if_scenario))),
 
-            //To do:  Add collapsible panel to hold created_at date column.
+            // Collapsible panel to hold created_at date column.
+            Tables\Columns\Layout\Panel::make([
+                Tables\Columns\Layout\Split::make([
+                    Tables\Columns\TextColumn::make('created_at')
+                        ->label('Time Created')
+                        ->description('Time Created', position: 'above')
+                        ->sortable()
+                        ->weight(FontWeight::Medium),
+                ])->from('lg'),
+            ])->collapsible(),
         ];
     }
 

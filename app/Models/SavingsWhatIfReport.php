@@ -10,6 +10,7 @@ class SavingsWhatIfReport extends Model
         //Identifiers
         'user_id',                          // Links a report to a user
         'financial_goal_id',                // Links a report to a goal
+        'savings_name',
 
         // Snapshot values at the time of report generation
         'original_savings',                 // The savings amount

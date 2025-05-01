@@ -5,7 +5,7 @@
 
 <!-- Header displaying the savings name and scenario type -->
  <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-    {{ $report->created_at }} - Savings Rate Impact
+    {{ $report->savings_name }} - Savings Rate Impact
 </h2>
 
 <!-- Summary Section with current savings details and new rate impact -->
