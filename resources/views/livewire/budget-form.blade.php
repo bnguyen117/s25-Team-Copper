@@ -3,6 +3,11 @@
         <div class="text-green-600">{{ session('success') }}</div>
     @endif
 
+    <!-- Error Message -->
+    @if (session()->has('error'))
+        <div class="text-red-600 dark:text-red-400 mb-4">{{ session('error') }}</div>
+    @endif
+
     <!-- Income -->
     <div class="mt-4">
         <label class="block text-gray-700 dark:text-gray-300">Income ($)</label>
