@@ -10,6 +10,20 @@
         </div>
     </x-slot>
 
+        <!--notification for Friendly badge-->
+        @if (session('badge_awarded'))
+    <div 
+        x-data="{ show: true }" 
+        x-show="show" 
+        x-init="setTimeout(() => show = false, 4000)"
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6"
+        role="alert"
+    >
+        <strong class="font-bold">🎉 {{ session('badge_awarded') }}</strong>
+    </div>
+        @endif
+        <!--end-->
+
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6 space-y-6">
@@ -107,4 +121,5 @@
             </div>
         </div>
     </div>
+
 </x-app-layout>

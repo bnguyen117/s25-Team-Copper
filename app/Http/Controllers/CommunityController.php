@@ -15,13 +15,16 @@ class CommunityController extends Controller
     {
         $user = Auth::user();
 
+        /**Friendly Badge stuff */
         // Award visit point only once
         $alreadyGiven = $user->reputations()->where('name', 'community_visited')->exists();
 
         if (!$alreadyGiven) {
             $user->givePoint(new CommunityVisited($user));
+            session()->flash('badge_awarded', 'You got a new badge!');
         }
-        
+        /** end */
+
         return view('community.index', [
             'userGroups' => $user->groups()->get(),
             'publicGroups' => Group::withCount('members')->where('is_private', false)->orderByDesc('members_count')->get(),
