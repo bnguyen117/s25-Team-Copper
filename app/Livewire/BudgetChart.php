@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class BudgetChart extends Component
 {
-    public $income, $expenses, $savings, $remaining_balance;
+    public $income, $needs, $wants, $savings, $remaining_balance;
+
+    //protected $listeners =['refreshBudgetChart'  => '$refresh']; This breaks everything
 
     public function mount()
     {
@@ -16,9 +18,10 @@ class BudgetChart extends Component
 
         if ($budget) {
             $this->income = $budget->income;
-            $this->expenses = $budget->budgeted_needs + $budget->budgeted_wants; // Needs + Wants = Expenses
-            $this->savings = $budget->budgeted_savings;
-            $this->remaining_balance = $budget->remaining_balance;
+            $this->needs = $this->income * ($budget->needs_percentage / 100);
+            $this->wants = $this->income * ($budget->wants_percentage / 100);
+            $this->savings = $this->income * ($budget->savings_percentage / 100);
+            $this->remaining_balance = $this->calculateRemainingBalance();
         } else {
             $this->income = 0;
             $this->expenses = 0;

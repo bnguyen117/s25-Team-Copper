@@ -29,58 +29,29 @@ class GroupController extends Controller
      * Store a newly created group and add creator as member.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string|max:1000',
-        'is_private' => 'boolean',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        'members' => 'nullable|string', // New field!
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'is_private' => 'boolean',
+        ]);
 
-    $group = new Group([
-        'name' => $request->name,
-        'description' => $request->description,
-        'creator_id' => Auth::id(),
-        'is_private' => $request->has('is_private'),
-    ]);
+        $group = Group::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'creator_id' => Auth::id(),
+            'is_private' => $request->is_private ?? false,
+        ]);
 
-    if ($request->hasFile('image')) {
-        $group->image = $request->file('image')->store('group_images', 'public');
+        GroupMember::create([
+            'group_id' => $group->id,
+            'user_id' => Auth::id(),
+        ]);
+
+        return redirect()->route('groups.show', $group->id)->with('success', 'Group created successfully.');
     }
 
-    $group->save();
-
-    // Add creator as member
-    GroupMember::create([
-        'group_id' => $group->id,
-        'user_id' => Auth::id(),
-    ]);
-
-    // Add invite
-    if ($request->filled('members')) {
-        $identifiers = array_map('trim', explode(',', $request->members));
-
-        $users = User::whereIn('email', $identifiers)
-                     ->orWhereIn('id', $identifiers)
-                     ->get();
-
-        foreach ($users as $user) {
-            if ($user->id !== Auth::id()) {
-                GroupMember::firstOrCreate([
-                    'group_id' => $group->id,
-                    'user_id' => $user->id,
-                ]);
-            }
-        }
-    }
-
-    return redirect()->route('groups.show', $group->id)->with([
-        'success' => 'Group created successfully.',
-        'just_created' => true,
-    ]);
-}
-     /**
+    /**
      * Show a specific group and its messages.
      */
     public function show(Group $group)

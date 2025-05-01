@@ -12,15 +12,15 @@ class WhatIfMessageBuilder
     public function buildInitialMessage(WhatIfReport $report): string
     {
         $message = 
-            "Hello! I'm here to help with your financial planning based on your What-If Report " .
-            "for **{$report->debt->debt_name}** using the **{$report->what_if_scenario}** scenario. " .
-            "\nHere's your report summary:";
+        "Hello! I'm here to help with your financial planning based on your What-If Report " .
+        "for **{$report->debt->debt_name}** using the **{$report->what_if_scenario}** scenario. " .
+        "\nHere's your report summary:";
 
-        if ($report->what_if_scenario === 'payment-change') {
+        if ($report->what_if_scenario === 'debt-payment-change') {
             $message .= $this->buildPaymentChangeMessage($report) . "\n";
         } 
         
-        elseif ($report->what_if_scenario === 'interest-rate-change') {
+        elseif ($report->what_if_scenario === 'debt-interest-rate-change') {
             $message .= $this->buildInterestRateChangeMessage($report) . "\n";
         }
 
@@ -49,7 +49,8 @@ class WhatIfMessageBuilder
      */
     private function buildInterestRateChangeMessage(WhatIfReport $report): string
     {
-        return 
+       
+        $result =  
         "\n\n**Original Debt Details**\n" .
         "- **Interest Rate**: " . number_format($report->original_interest_rate ?? 0, 2) . "%\n" .
         "- **Monthly Payment**: $" . number_format($report->original_monthly_debt_payment, 2) . "/month\n" .
@@ -58,5 +59,7 @@ class WhatIfMessageBuilder
         "- **New Interest Rate**: " . number_format($report->new_interest_rate, 2) . "%\n" .
         "- **Total Months to Pay Off**: {$report->total_months}\n" .
         "- **Total Interest Paid**: $" . number_format($report->total_interest_paid, 2);
+        
+        return $result;
     }
 }

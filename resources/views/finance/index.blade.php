@@ -18,8 +18,10 @@
         
         <!-- Budget Form (Manual or AI) -->
         <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-            <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center">Create Your Budget</h2>
+            <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center p-2">Create Your Budget</h2>
             @livewire('budget-form')
+            @livewire('budget-table')
+            @livewire('percentage-table')
         </div>
     </div>
 
@@ -37,7 +39,7 @@
     </div>
 
     <!-- AI Budget Chat Section -->
-    <div class="mt-16 mb-16 m-auto max-w-7xl lg:px-8">
+    <div id="chatbot" class="mt-16 mb-16 m-auto max-w-7xl lg:px-8">
         <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center">Chat with Your AI Budgeting Assistant</h2>
             @livewire('budgeting-chat')

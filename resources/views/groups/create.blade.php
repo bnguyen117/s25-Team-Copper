@@ -27,12 +27,6 @@
                             <x-text-input id="description" name="description" type="text" class="mt-1 block w-full" required />
                             <x-input-error class="mt-2" :messages="$errors->get('description')" />
                         </div>
-                        <!--Invite Group Members-->
-                        <div>
-                            <x-input-label for="members" :value="__('Invite Members (IDs/Eamail)')" />
-                            <textarea id="members" name="members" rows="2" class="w-half mt-1 p-2 rounded border dark:bg-gray-800 dark:text-white" placeholder="e.g. 2, 2, user@email.com"></textarea>
-                            <x-input-error class="mt-2" :messages="$errors->get('members')" />
-                        </div>
             
                         <!--Group Image-->
                         <div>

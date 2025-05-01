@@ -17,7 +17,7 @@ class WhatIfReportFormatter
     public function generateSummary(WhatIfReport $report): string
     {
         $summary = array_merge(
-            $this->formatDebtOverview($report),
+    $this->formatDebtOverview($report),
             $this->formatOriginalDebtDetails($report),
             $this->formatScenarioResults($report),
             $this->formatGoalImpact($report) ?? [], //empty if null
@@ -26,8 +26,8 @@ class WhatIfReportFormatter
         );
 
         $output = implode("\n", $summary);
-        Log::info('WhatIfReport Summary:', ['summary' => $output]);
-        return $output;
+            Log::info('WhatIfReport Summary:', ['summary' => $output]);
+            return $output;
     }
 
     /** General Debt details */
@@ -55,19 +55,19 @@ class WhatIfReportFormatter
     /** Details that relate to the debt after analysis. */
     private function formatScenarioResults(WhatIfReport $report): array
     {
-        $lines = [
-            sprintf("What-If Scenario Results (Algorithm: %s):", $report->what_if_scenario),
-            sprintf("  - Total Months Until Full Repayment: %d", $report->total_months),
-            sprintf("  - Total Interest Paid: $%s", number_format($report->total_interest_paid, 2)),
-            sprintf("  - Timeline (Monthly Breakdown): %s", json_encode($report->timeline)),
-        ];
-        
-        // Scenario specific lines
-        if ($report->new_interest_rate)
-            $lines[] = sprintf("  - New Interest Rate: %s%%", number_format($report->new_interest_rate, 2));
-        if ($report->new_monthly_debt_payment)
-            $lines[] = sprintf("  - New Monthly Payment: $%s", number_format($report->new_monthly_debt_payment, 2));
-    
+            $lines = [
+                sprintf("What-If Scenario Results (Algorithm: %s):", $report->what_if_scenario),
+                sprintf("  - Total Months Until Full Repayment: %d", $report->total_months),
+                sprintf("  - Total Interest Paid: $%s", number_format($report->total_interest_paid, 2)),
+                sprintf("  - Timeline (Monthly Breakdown): %s", json_encode($report->timeline)),
+            ];
+            
+            // Scenario specific lines
+            if ($report->new_interest_rate)
+                $lines[] = sprintf("  - New Interest Rate: %s%%", number_format($report->new_interest_rate, 2));
+            if ($report->new_monthly_debt_payment)
+                $lines[] = sprintf("  - New Monthly Payment: $%s", number_format($report->new_monthly_debt_payment, 2));
+       
         return $lines;
     }
 

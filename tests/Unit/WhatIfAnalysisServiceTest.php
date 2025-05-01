@@ -40,7 +40,7 @@ class WhatIfAnalysisServiceTest extends TestCase
         $monthlyIncome = 5000.00;
         $totalMonthlyExpenses = 2000.00;
 
-        $result = $this->service->interestRateChangeScenario(
+        $result = $this->service->debtInterestRateChangeScenario(
             $this->debt->id,
             $newInterestRate,
             $monthlyIncome,
@@ -65,7 +65,7 @@ class WhatIfAnalysisServiceTest extends TestCase
         $monthlyIncome = 5000.00;
         $totalMonthlyExpenses = 2000.00;
 
-        $result = $this->service->interestRateChangeScenario(
+        $result = $this->service->debtInterestRateChangeScenario(
             $this->debt->id,
             $newInterestRate,
             $monthlyIncome,
@@ -90,7 +90,7 @@ class WhatIfAnalysisServiceTest extends TestCase
         $monthlyIncome = 5000.00;
         $totalMonthlyExpenses = 2000.00;
 
-        $result = $this->service->interestRateChangeScenario(
+        $result = $this->service->debtInterestRateChangeScenario(
             $this->debt->id,
             $newInterestRate,
             $monthlyIncome,

@@ -18,10 +18,6 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Panel;
 
@@ -39,141 +35,34 @@ class BudgetTable extends Component implements HasForms, HasTable
     {
         return $table
             ->query(Budget::where('user_id', Auth::id()))
-            ->heading('Budgets')
-            ->paginated(false)
-            ->columns([
-                Tables\Columns\TextColumn::make('income')
+            ->columns(
+                [
+                TextColumn::make('income')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('needs_percentage')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('wants_percentage')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('savings_percentage')   
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('budgeted_needs')       // 50
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('budgeted_wants')       // 30
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('budgeted_savings')     // 20
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('needs_progress')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('wants_progress')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('savings_progress')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('remaining_balance')
-                    ->numeric()
-                    ->sortable(),
-            ])
-            ->filters([
-                //
-            ])
-            ->headerActions([
-                CreateAction::make()
-                    ->button()
-                    ->slideOver()
-                    ->form($this->getFormFields())
-                    ->mutateFormDataUsing(function (array $data): array {
-                        $data['user_id'] = Auth::id();
-                        $data['remaining_balance'] = $data['income'] - $data['expenses'] - $data['savings'];
-                        return $data;
-                    }),
-            ])
-            ->actions([
-                EditAction::make()
-                    ->button()
-                    ->slideOver()
-                    ->form($this->getFormFields()),
-                DeleteAction::make()
-                    ->button(),
-            ])
-            ->bulkActions([
-            //
-            ]);
-    }
+                    ->label('Monthly Income')
+                    ->money('usd')
+                    ->weight(FontWeight::Medium),
 
-    /**
-     * Defines and returns the table's columns as an array.
-     * Note: (Thank you Darrick!)
-     */
-    private function getBudgetTableColumns(): array 
-    {
-        return
-        [
-            Panel::make([
-                Split::make([
-                    TextColumn::make('income')
-                        ->numeric()
-                        ->description('Monthly Income', position: 'above')
-                        ->money('usd')
-                        ->sortable()
-                        ->weight(FontWeight::Medium),
+                TextColumn::make('budgeted_needs')
+                    ->numeric()
+                    ->label('Budgeted Needs')
+                    ->money('usd')
+                    ->weight(FontWeight::Medium),
 
-                    TextColumn::make('expenses')
-                        ->numeric()
-                        ->description('Monthly Expenses', position: 'above')
-                        ->money('usd')
-                        ->sortable()
-                        ->weight(FontWeight::Medium),
+                TextColumn::make('budgeted_wants')
+                    ->numeric()
+                    ->label('Budgeted Wants')
+                    ->money('usd')
+                    ->weight(FontWeight::Medium),
 
-                    TextColumn::make('savings')
-                        ->numeric()
-                        ->description('Monthly Savings', position: 'above')
-                        ->money('usd')
-                        ->sortable()
-                        ->weight(FontWeight::Medium),
-
-                    // Note: Will not be user-entered after testing
-                    TextColumn::make('remaining_balance')
-                        ->numeric()
-                        ->description('Remaining Balance', position: 'above')
-                        ->money('usd')
-                        ->sortable()
-                        ->weight(FontWeight::Medium),
-
-                ])->from('lg'),
-            ])->collapsible(),
-        ];
-    }
-
-    /**
-     * Defines and returns the form fields for creating and editing debts.
-     * Note: (Thank you Darrick!)
-     */
-    private function getFormFields(): array
-    {
-        return
-        [
-            TextInput::make('income')
-                ->required()
-                ->numeric()
-                ->minValue(0)
-                ->prefix('$'),
-
-            TextInput::make('expenses')
-                ->required()
-                ->numeric()
-                ->minValue(0)
-                ->prefix('$'),
-
-            TextInput::make('savings')
-                ->required()
-                ->numeric()
-                ->minValue(0)
-                ->prefix('$'),
-            
-        ];
+                TextColumn::make('budgeted_savings')
+                    ->numeric()
+                    ->label('Budgeted Savings')
+                    ->money('usd')
+                    ->weight(FontWeight::Medium),
+                ]
+            )
+            ->paginated(false);
     }
 
     public function render(): View
