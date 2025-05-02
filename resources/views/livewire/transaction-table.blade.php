@@ -1,7 +1,7 @@
 <div class="max-w-7xl mx-auto p-4">
  
      <!-- Percentage Summary -->
-     <div class="mb-6 bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+     <div class="mb-6 bg-white dark:bg-gray-900 shadow rounded-lg p-4">
          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Budget Allocation</h2>
          @if($percentageSummary['needs']['percentage'] )
              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -37,7 +37,7 @@
      </div>
  
      <!-- Spending Summary -->
-     <div class="mb-6 bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+     <div class="mb-6 bg-white dark:bg-gray-900 shadow rounded-lg p-4">
          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Spending Summary</h2>
          @if($spendingSummary['needs']['budget'] > 0)
              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
