@@ -25,8 +25,21 @@ class SavingsWhatIfChatModal extends Component {
         return view('livewire.what-if.savings-chat-interface', ['report' => $this->report]); 
     }
 
+    // Handles sending a request to OpenAI when the user sends a message
     public function sendMessage(): void {
+        // Ensures the user's input is not empty; Appends their meessages to the chat history.
+        if (empty(trim($this->userInput))) return;
+        $this->messages[] = ['role' => 'user', 'content' => $this->userInput];
 
+        // Sends a request to OpenAI, appending response to chat history and clearing user input.
+        $response = OpenAI::chat()->create([
+            'model' => 'gpt-4o', 
+            'messages' => $this->prepareMessagesForOpenAI()
+        ]);
+        this->messages[] = [
+            'role' => 'assistant',
+            'content' => $this
+        ]
     }
 
     public function askQuestions(string $question): void {
