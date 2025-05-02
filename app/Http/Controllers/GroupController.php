@@ -70,27 +70,31 @@ class GroupController extends Controller
     ]);
 }
      // Show a specific group and its messages.
-    public function show(Group $group)
-    {
-        if ($group->is_private && !$group->members->contains(Auth::id())) {
-            return redirect()->route('community.index')->with('error', 'You do not have access to this private group.');
-        }
-
-        $messages = $group->messages()
-            ->with([
-                'user',
-                'replies' => function ($q) {
-                    $q->orderBy('created_at');
-                },
-                'replies.user',
-                'parent.user'
-            ])
-            ->whereNull('parent_id')
-            ->orderBy('created_at')
-            ->paginate(10);
-
-        return view('groups.show', compact('group', 'messages'));
-    }
+     public function show(Group $group)
+     {
+         if ($group->is_private && !$group->members->contains(Auth::id())) {
+             return redirect()->route('community.index')->with('error', 'You do not have access to this private group.');
+         }
+     
+         $messages = $group->messages()
+             ->with([
+                 'user',
+                 'replies' => function ($q) {
+                     $q->orderBy('created_at');
+                 },
+                 'replies.user',
+                 'parent.user'
+             ])
+             ->whereNull('parent_id')
+             ->orderBy('created_at')
+             ->paginate(10);
+     
+         $friends = Auth::user()->friends()->get();  //i think hold on 
+         $userGroups = Auth::user()->groups()->get();
+     
+         return view('groups.show', compact('group', 'messages', 'friends', 'userGroups'));
+     }
+     
 
      // Show the form to edit a group.
     public function edit(Group $group)
@@ -99,7 +103,7 @@ class GroupController extends Controller
             return redirect()->route('community')->with('error', 'You do not have permission to edit this group.');
         }
 
-        return view('groups.edit', compact('group'));
+        return view('groups.show', compact('group', 'messages', 'friends', 'userGroups'));
     }
 
      // Update group details.
