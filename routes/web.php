@@ -70,7 +70,7 @@ Route::middleware('auth')->group(function () {
     // Accept or decline friend requests
     Route::post('/friends/accept/{friendRequest}', [FriendRequestController::class, 'acceptRequest'])->name('friends.accept');
     Route::post('/friends/decline/{friendRequest}', [FriendRequestController::class, 'declineRequest'])->name('friends.decline');
-
+    
     // Search for Friends
     Route::get('/friends/search', [FriendRequestController::class, 'search'])->name('friends.search');
 

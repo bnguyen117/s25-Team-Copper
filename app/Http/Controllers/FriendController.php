@@ -53,4 +53,12 @@ class FriendController extends Controller
 
         return back()->with('success', 'Friend removed successfully.');
     }
+    public function showFriends()
+    {
+        $authUser = Auth::user();
+        $friends = $authUser->friends()->get();
+        return view('friends', compact('friends'));
+    
+        
+}
 }
