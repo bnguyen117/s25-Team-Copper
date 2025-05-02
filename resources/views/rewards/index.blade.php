@@ -72,12 +72,17 @@
                 <div class="p-4 border border-gray-600 rounded-md">
                     <p class="text-gray-700">You have no active goals.</p>
                 </div>
-                <a href="http://s25-team-copper.test/finance#goals" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-center block">
+                <a href="https://prod.s25-team-copper.stspreview.com/finance#goals" class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-center block">
                 + Add or Edit Goals
                 </a>
             </div>
             </div>
         </div>
     </div>
+
+    <!-- User Goals Table Section -->
+    <div id="goals" class="mb-16 m-auto max-w-[21rem] sm:max-w-sm md:max-w-2xl lg:max-w-7xl lg:px-8">
+        @livewire('user-goal-table')
+     </div>
 
 </x-app-layout>
