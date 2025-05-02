@@ -89,11 +89,6 @@ Route::middleware('auth')->group(function () {
 
 
 
-    //In group menu
-    Route::post('/groups/{group}/add-member', [GroupController::class, 'addMember'])->name('groups.addMember');
-    //user search
-    Route::get('/users/search',[ProfileController::class, 'search'])->name('users.search');
-    
 });
 
 require __DIR__.'/auth.php';

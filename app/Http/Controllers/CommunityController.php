@@ -28,7 +28,7 @@ class CommunityController extends Controller
         return view('community.index', [
             'userGroups' => $user->groups()->get(),
             'publicGroups' => Group::withCount('members')->where('is_private', false)->orderByDesc('members_count')->get(),
-            'friends' => Friend::where('user_id', $user->id)->with(['user.badges'])->get(),
+            'friends' => Friend::where('user_id', $user->id)->with('user')->get(),
         ]);
     }
 }
