@@ -44,7 +44,7 @@ class SavingsWhatIfChatModal extends Component {
     }
 
     // Handles asking predefined questions on click
-    public function askQuestions(string $question): void {
+    public function askQuestion(string $question): void {
         $this->userInput = $question;
         $this->sendMessage();
         $this->showQuestions=false;

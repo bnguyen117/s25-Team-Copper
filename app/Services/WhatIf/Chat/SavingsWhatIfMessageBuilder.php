@@ -9,12 +9,12 @@ class SavingsWhatIfMessageBuilder {
     public function buildInitialMessage(SavingsWhatIfReport $report): string {
         $message = 
         "Hello! I'm here to help with your financial planning based on your What-If Report " .
-        "for **{$report->savings->savings_name}** using the **{$report->what_if_scenario}** scenario. " .
+        "for **{$report->savings_name}** using the **{$report->what_if_scenario}** scenario. " .
         "\nHere's your report summary:";
 
-        if ($report->what_if_scenario === 'savings-contribution-change') {
+        if ($report->what_if_scenario === 'savings-change') {
             $message .= $this->buildSavingsChangeMessage($report) . "\n";
-        } elseif ($report->what_if_scenario === 'savings-interest-rate-change') {
+        } elseif ($report->what_if_scenario === 'saving-interest-rate-change') {
             $message .= $this->buildSavingsInterestRateChangeMessage($report) . "\n";
         }
 
