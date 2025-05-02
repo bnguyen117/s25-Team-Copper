@@ -44,10 +44,8 @@ class BudgetForm extends Component
 
     public function calculateRemainingBalance()
     {
-        if (!$this->income) return 0;
         $budget = Budget::where('user_id', Auth::id()) ->first();
-        if(!$budget) return $this->income;
-        return $this->income - $budget->needs_progress ?? 0 + $budget->wants_progress ?? 0 + $budget->savings_progress ?? 0;
+        return $this->income - $budget->needs_progress - $budget->wants_progress - $budget->savings_progress;
     }
 
     protected function validateBudgetAmounts()
@@ -91,6 +89,7 @@ class BudgetForm extends Component
         $this->savings = $this->income * 0.20;
         if (!$this->validateBudgetAmounts()) return;
 
+        $existingBudget = Budget::where('user_id', Auth::id())->first();
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
@@ -98,6 +97,9 @@ class BudgetForm extends Component
                 'budgeted_needs' => $this->needs,
                 'budgeted_wants' => $this->wants,
                 'budgeted_savings' => $this->savings,
+                'needs_progress' => $existingBudget->needs_progress,
+                'wants_progress' => $existingBudget->wants_progress,
+                'savings_progress' => $existingBudget->savings_progress,
                 'needs_percentage' => 50,
                 'wants_percentage' => 30,
                 'savings_percentage' => 20,
@@ -120,9 +122,9 @@ class BudgetForm extends Component
         $this->needs = $this->income * 0.80;
         $this->wants = $this->income * 0.10;
         $this->savings = $this->income * 0.10;
-
         if (!$this->validateBudgetAmounts()) return;
 
+        $existingBudget = Budget::where('user_id', Auth::id())->first();
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
@@ -130,6 +132,9 @@ class BudgetForm extends Component
                 'budgeted_needs' => $this->needs,
                 'budgeted_wants' => $this->wants,
                 'budgeted_savings' => $this->savings,
+                'needs_progress' => $existingBudget->needs_progress,
+                'wants_progress' => $existingBudget->wants_progress,
+                'savings_progress' => $existingBudget->savings_progress,
                 'needs_percentage' => 80,
                 'wants_percentage' => 10,
                 'savings_percentage' => 10,
@@ -152,10 +157,9 @@ class BudgetForm extends Component
         $this->needs = $this->income * 0.50;
         $this->wants = $this->income * 0.10;
         $this->savings = $this->income * 0.40;
-
         if (!$this->validateBudgetAmounts()) return;
-        
 
+        $existingBudget = Budget::where('user_id', Auth::id())->first();
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
@@ -163,6 +167,9 @@ class BudgetForm extends Component
                 'budgeted_needs' => $this->needs,
                 'budgeted_wants' => $this->wants,
                 'budgeted_savings' => $this->savings,
+                'needs_progress' => $existingBudget->needs_progress,
+                'wants_progress' => $existingBudget->wants_progress,
+                'savings_progress' => $existingBudget->savings_progress,
                 'needs_percentage' => 50,
                 'wants_percentage' => 10,
                 'savings_percentage' => 40,
@@ -184,9 +191,9 @@ class BudgetForm extends Component
         $this->needs = $this->income * 0.50;
         $this->wants = $this->income * 0.40;
         $this->savings = $this->income * 0.10;
-
         if (!$this->validateBudgetAmounts()) return;
 
+        $existingBudget = Budget::where('user_id', Auth::id())->first();
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
@@ -194,6 +201,9 @@ class BudgetForm extends Component
                 'budgeted_needs' => $this->needs,
                 'budgeted_wants' => $this->wants,
                 'budgeted_savings' => $this->savings,
+                'needs_progress' => $existingBudget->needs_progress,
+                'wants_progress' => $existingBudget->wants_progress,
+                'savings_progress' => $existingBudget->savings_progress,
                 'needs_percentage' => 50,
                 'wants_percentage' => 40,
                 'savings_percentage' => 10,
