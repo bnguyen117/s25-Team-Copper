@@ -59,7 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy'); // Delete a group
 
     // Search for users
-    Route::get('/friends/search', [FriendRequestController::class, 'search'])->name('friends.search');
+    Route::get('/user-search', [ProfileController::class, 'search'])->name('user.search');
+
 
     // Send a friend request
     Route::post('/friends/request/{user}', [FriendRequestController::class, 'sendRequest'])->name('friends.sendRequest');
