@@ -1,7 +1,8 @@
 # CreditTrax
->Team Copper - Spring 2025
+Team Copper - CS411W Spring 2025  
+Old Dominion University
 
-# Team Members:  
+## Team Members:  
 Name | Email | GitHub Username
 --- | --- | ---
 Darrick Allen | dalle039@odu.edu | [dalleODU](https://github.com/dalleODU)
@@ -12,7 +13,7 @@ Joshua Martin | jmart137@odu.edu | [jryanm](https://github.com/jryanm)
 Indumathi Monson | imonse001@odu.edu | [imons001](https://github.com/imons001)
 Brian Nguyen | bnguy004@odu.edu | [bnguyen117](https://github.com/bnguyen117)
 
-# Required Software
+## Required Software
 This application was designed for development and testing on the following OSes:
 * Windows 10
 * Windows 11
@@ -32,8 +33,8 @@ Installation instructions for each can be found at the following locations:
 * [Filament Forms](https://filamentphp.com/docs/3.x/forms/installation)
 * [Filament Tables](https://filamentphp.com/docs/3.x/tables/installation)
 
-# Operating Instructions
-## Initial Setup
+## Operating Instructions
+### Initial Setup
 Initial setup of the application can be started with the following commands:
 ```
 composer install
@@ -46,7 +47,7 @@ Each command will output a confirmation message whenever they have completed.
 Once the final command has been executed, click the link in the terminal to open
 the application locally in your default web browser.
 
-## After Initial Setup
+### After Initial Setup
 After initial setup, the application can be run using the following commands:
 ```
 composer install
