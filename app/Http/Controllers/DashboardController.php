@@ -82,8 +82,24 @@ class DashboardController extends Controller
         return $group->sum('amount');
         });
 
-        // Retrieve the user's budget.
+        // Retrieve or create the user's budget with a default income of 5000.
         $budget = Budget::where('user_id', $user->id)->first();
+        if (!$budget) {
+            $budget = Budget::Create([
+                    'user_id' => $user->id,
+                    'income' => 5000,
+                    'needs_percentage' => 50,
+                    'wants_percentage' => 30,
+                    'savings_percentage' => 20,
+                    'budgeted_needs' => 5000 * 0.50,
+                    'budgeted_wants' => 5000 * 0.30,
+                    'budgeted_savings' => 5000 * 0.20,
+                    'needs_progress' => 0,
+                    'wants_progress' => 0,
+                    'savings_progress' => 0,
+                    'remaining_balance' => 5000,
+            ]);
+    }
 
         $goalName = $financeGoal ? $financeGoal->goal_name : 'No Goal Set';
         $targetAmount = $financeGoal ? $financeGoal->target_amount : 1; // Prevent division by zero
@@ -100,7 +116,8 @@ class DashboardController extends Controller
             'goalProgress' => $goalProgress,
             'categories' => $debtByCategory->keys(),        // aggregated categories
             'debtAmounts' => $debtByCategory->values(),       // aggregated sums per category
-            'budget' => $budget ? $budget->income : 5000,
+            'budget' => $budget->income,
+            'remaining_balance' => $budget->remaining_balance
         ]);
     }
 }
