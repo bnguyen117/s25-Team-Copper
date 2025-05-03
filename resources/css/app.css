@@ -102,9 +102,16 @@
     text-red-600;
 }
 
-.fi-color-danger{
+.fi-color-warning {
     @apply 
-    text-red-500;
+    text-red-600 
+    dark:text-red-400;
+}
+
+.fi-color-success {
+    @apply 
+    text-green-600 
+    dark:text-green-400;
 }
 
 .fi-badge{

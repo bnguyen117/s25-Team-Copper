@@ -65,6 +65,7 @@ class UserDebtTable extends Component implements HasForms, HasTable
                     })
                     ->after(function () {
                         $this->dispatch('refreshBudgetingChat');
+                        session(['debt_action_occurred' => true]);
                     }),
 
             ])
@@ -76,6 +77,7 @@ class UserDebtTable extends Component implements HasForms, HasTable
                     ->form($this->getFormFields())
                     ->after(function () {
                         $this->dispatch('refreshBudgetingChat');
+                        session(['debt_action_occurred' => true]);
                     }),
                 // Delete button for deleting a record.
                 DeleteAction::make()
