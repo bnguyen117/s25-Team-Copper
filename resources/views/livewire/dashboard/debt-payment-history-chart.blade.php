@@ -51,7 +51,7 @@
                 labels: labels,
                 datasets: [{
                     label: currentDebt.debt_name + ' Payment History',
-                    data: data,
+                    data: [], // Placeholder for data
                     borderColor: '#36A2EB',
                     fill: false,
                     tension: 0.1

@@ -25,7 +25,7 @@
 
         //Following data is being called from the dashboard controller pulling from the debt table and budget table
         const income = {{ $debt2 ?? 0 }};   //debt2 being called from the controller
-        const budget = {{ $budget ?? 5000 }};   //Pulling from the User Profile budget
+        const budget = {{ $budget ?? 5000 }};   //Pulling from the User budget income
         const remaining = budget - income;  //Formula for the remaining amount
         //Making the text green or red if they are over or under budget
         const underBudget = remaining >= 0 ? `${remaining.toLocaleString()} under`: `${Math.abs(remaining).toLocaleString()} over`;
