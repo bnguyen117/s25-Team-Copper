@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 class BudgetForm extends Component
 {
     public $income, $needs, $wants, $savings, $remaining_balance;
-    public $useAI = false; // Toggle AI recommendation
 
     public function mount()
     {
@@ -23,23 +22,26 @@ class BudgetForm extends Component
             $this->remaining_balance = $this->calculateRemainingBalance();
         }
         else{
-            $this->income = 0;
-            $this->needs = 0;
-            $this->wants = 0;
-            $this->savings = 0;
-            $this->remaining_balance = 0;
+            $budget = Budget::Create([
+                    'user_id' => Auth::id(),
+                    'income' => 5000,
+                    'needs_percentage' => 50,
+                    'wants_percentage' => 30,
+                    'savings_percentage' => 20,
+                    'budgeted_needs' => 5000 * 0.50,
+                    'budgeted_wants' => 5000 * 0.30,
+                    'budgeted_savings' => 5000 * 0.20,
+                    'needs_progress' => 0,
+                    'wants_progress' => 0,
+                    'savings_progress' => 0,
+                    'remaining_balance' => 5000,
+            ]);
+             $this->income = $budget->income;
+             $this->needs = $budget->budgeted_needs;
+             $this->wants = $budget->budgeted_wants;
+             $this->savings = $budget->budgeted_savings;
+             $this->remaining_balance = $budget->remaining_balance;
         }
-        
-        Budget::updateOrCreate(
-            ['user_id' => Auth::id()],
-            [
-                'income' => $this->income,
-                'budgeted_needs' => $this->needs,
-                'budgeted_wants' => $this->wants,
-                'budgeted_savings' => $this->savings,
-                'remaining_balance' => $this->remaining_balance,
-            ]
-        );
     }
 
     public function calculateRemainingBalance()

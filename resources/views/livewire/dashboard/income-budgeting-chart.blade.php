@@ -24,9 +24,9 @@
         const ctxIncome = document.getElementById('incomeChart').getContext('2d');
 
         //Following data is being called from the dashboard controller pulling from the debt table and budget table
-        const income = {{ $debt2 ?? 0 }};   //debt2 being called from the controller
-        const budget = {{ $budget ?? 5000 }};   //Pulling from the User budget income
-        const remaining = budget - income;  //Formula for the remaining amount
+        const income = {{ $debt2  ?? 0 }}; //debt2 being called from the controller
+        const budget = {{ $budget ?? 5000 }}; //The user's budgeted income
+        const remaining = {{ $remaining_balance }}; // Pulls from the remaining balance value of the current user's budget
         //Making the text green or red if they are over or under budget
         const underBudget = remaining >= 0 ? `${remaining.toLocaleString()} under`: `${Math.abs(remaining).toLocaleString()} over`;
         // If it is negative, the circle will be all red

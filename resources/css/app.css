@@ -102,6 +102,11 @@
     text-red-600;
 }
 
+.fi-color-danger{
+    @apply 
+    text-red-500;
+}
+
 .fi-color-warning {
     @apply 
     text-red-600 
