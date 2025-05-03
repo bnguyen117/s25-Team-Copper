@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Debt;
 use App\Models\FinancialGoal;
+use App\Models\Budget;
 
 
 class DashboardController extends Controller
@@ -52,6 +53,9 @@ class DashboardController extends Controller
         return $group->sum('amount');
         });
 
+        // Retrieve the user's budget.
+        $budget = Budget::where('user_id', $user->id)->first();
+
         $goalName = $financeGoal ? $financeGoal->goal_name : 'No Goal Set';
         $targetAmount = $financeGoal ? $financeGoal->target_amount : 1; // Prevent division by zero
         $currentAmount = $financeGoal ? $financeGoal->current_amount : 0;
@@ -67,6 +71,7 @@ class DashboardController extends Controller
             'goalProgress' => $goalProgress,
             'categories' => $debtByCategory->keys(),        // aggregated categories
             'debtAmounts' => $debtByCategory->values(),       // aggregated sums per category
+            'budget' => $budget ? $budget->income : 5000,
         ]);
     }
 }
