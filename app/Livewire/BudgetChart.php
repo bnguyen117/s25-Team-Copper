@@ -24,10 +24,16 @@ class BudgetChart extends Component
             $this->remaining_balance = $this->calculateRemainingBalance();
         } else {
             $this->income = 0;
-            $this->expenses = 0;
+            $this->needs = 0;
+            $this->wants = 0;
             $this->savings = 0;
             $this->remaining_balance = 0;
         }
+    }
+
+    public function calculateRemainingBalance()
+    {
+        $this->remaining_balance = $this->income - ($this->needs + $this->wants + $this->savings);
     }
 
     public function render()

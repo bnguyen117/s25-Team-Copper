@@ -26,14 +26,20 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
+// Filament Support
+use Filament\Support\Enums\FontWeight;
+
 class BudgetTable extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
 
+    protected $listeners =['refreshBudgetTable'  => '$refresh'];
+
     public function table(Table $table): Table
     {
         return $table
+            // Filter Budget to only values belonging to current user.
             ->query(Budget::where('user_id', Auth::id()))
             ->columns(
                 [

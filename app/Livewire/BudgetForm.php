@@ -8,8 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BudgetForm extends Component
 {
-    public $income, $expenses, $savings, $remaining_balance;
-    public $useAI = false; // Toggle AI recommendation
+    public $income, $needs, $wants, $savings, $remaining_balance;
 
     public function mount()
     {
@@ -23,80 +22,62 @@ class BudgetForm extends Component
             $this->remaining_balance = $this->calculateRemainingBalance();
         }
         else{
-            $this->income = 0;
-            $this->needs = 0;
-            $this->wants = 0;
-            $this->savings = 0;
-            $this->remaining_balance = 0;
+            $budget = Budget::Create([
+                    'user_id' => Auth::id(),
+                    'income' => 5000,
+                    'needs_percentage' => 50,
+                    'wants_percentage' => 30,
+                    'savings_percentage' => 20,
+                    'budgeted_needs' => 5000 * 0.50,
+                    'budgeted_wants' => 5000 * 0.30,
+                    'budgeted_savings' => 5000 * 0.20,
+                    'needs_progress' => 0,
+                    'wants_progress' => 0,
+                    'savings_progress' => 0,
+                    'remaining_balance' => 5000,
+            ]);
+             $this->income = $budget->income;
+             $this->needs = $budget->budgeted_needs;
+             $this->wants = $budget->budgeted_wants;
+             $this->savings = $budget->budgeted_savings;
+             $this->remaining_balance = $budget->remaining_balance;
         }
-        
-        Budget::updateOrCreate(
-            ['user_id' => Auth::id()],
-            [
-                'income' => $this->income,
-                'budgeted_needs' => $this->needs,
-                'budgeted_wants' => $this->wants,
-                'budgeted_savings' => $this->savings,
-                'remaining_balance' => $this->remaining_balance,
-            ]
-        );
-    }
-
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema(
-                [
-                    TextInput::make('income')
-                        ->label('Monthly Income')
-                        ->type('number')
-                        ->numeric()
-                        ->prefix('$')
-                        ->minValue(0)
-                ]
-                );
     }
 
     public function calculateRemainingBalance()
     {
-        $this->remaining_balance = $this->income - ($this->expenses + $this->savings);
+        $budget = Budget::where('user_id', Auth::id()) ->first();
+        return $this->income - $budget->needs_progress - $budget->wants_progress - $budget->savings_progress;
     }
 
-    public function useAIRecommendations()
+    protected function validateBudgetAmounts()
     {
-        $this->useAI = true;
+        $budget = Budget::where('user_id', Auth::id())->first();
 
-        // AI Budget Suggestions (Basic Algorithm)
-        $this->expenses = $this->income * 0.50; // 50% Needs
-        $this->savings = $this->income * 0.20; // 20% Savings
-        $this->remaining_balance = $this->income - ($this->expenses + $this->savings);
+        // Check each category
+        if ($this->needs < ($budget->needs_progress ?? 0)) {
+            session()->flash('error',
+             "Cannot set Needs budget to $" . number_format($this->needs, 2) . 
+             ". Already spent $" . number_format($budget->needs_progress, 2) . ".");
+            return false;
+        }
+        if ($this->wants < ($budget->wants_progress ?? 0)) {
+            session()->flash('error', 
+            "Cannot set Wants budget to $" . number_format($this->wants, 2) . 
+            ". Already spent $" . number_format($budget->wants_progress, 2) . ".");
+            return false;
+        }
+        if ($this->savings < ($budget->savings_progress ?? 0)) {
+            session()->flash('error', 
+            "Cannot set Savings budget to $" . number_format($this->savings, 2) . 
+            ". Already spent $" . number_format($budget->savings_progress, 2) . ".");
+            return false;
+        }
+
+        return true;
     }
 
-    public function saveBudget()
-    {
-        $this->validate([
-            'income' => 'required|numeric|min:0',
-            'expenses' => 'required|numeric|min:0',
-            'savings' => 'required|numeric|min:0',
-        ]);
 
-        Budget::updateOrCreate(
-            ['user_id' => Auth::id()],
-            [
-                'income' => $this->income,
-                'budgeted_needs' => $this->expenses * 0.70, // 70% of expenses are needs
-                'budgeted_wants' => $this->expenses * 0.30, // 30% of expenses are wants
-                'budgeted_savings' => $this->savings,
-                'remaining_balance' => $this->remaining_balance,
-            ]
-        );
-
-        session()->flash('success', 'Generating New Budget...');
-        $this->dispatch('refreshBudgetTable');
-        $this->dispatch('refreshBudgetChart');
-        $this->dispatch('refreshBudgetingChat');
-        $this->dispatch('refreshPercentTable');
-    }
 
     public function defaultBudget()
     {
@@ -104,23 +85,34 @@ class BudgetForm extends Component
             'income' => 'required|numeric|min:0',
         ]);
 
+        // 50/30/20 rule
+        $this->needs = $this->income * 0.50;
+        $this->wants = $this->income * 0.30;
+        $this->savings = $this->income * 0.20;
+        if (!$this->validateBudgetAmounts()) return;
+
+        $existingBudget = Budget::where('user_id', Auth::id())->first();
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
                 'income' => $this->income,
+                'budgeted_needs' => $this->needs,
+                'budgeted_wants' => $this->wants,
+                'budgeted_savings' => $this->savings,
+                'needs_progress' => $existingBudget->needs_progress,
+                'wants_progress' => $existingBudget->wants_progress,
+                'savings_progress' => $existingBudget->savings_progress,
                 'needs_percentage' => 50,
                 'wants_percentage' => 30,
                 'savings_percentage' => 20,
+                'remaining_balance' => $this->calculateRemainingBalance(),
             ]
         );
 
         session()->flash('success', 'Default Budget Created');
-        $this->mount();
-
         $this->dispatch('refreshBudgetTable');
         $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
-        $this->dispatch('refreshPercentTable');
     }
 
     public function prioritizeDebts()
@@ -129,23 +121,33 @@ class BudgetForm extends Component
             'income' => 'required|numeric|min:0',
         ]);
 
+        $this->needs = $this->income * 0.80;
+        $this->wants = $this->income * 0.10;
+        $this->savings = $this->income * 0.10;
+        if (!$this->validateBudgetAmounts()) return;
+
+        $existingBudget = Budget::where('user_id', Auth::id())->first();
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
                 'income' => $this->income,
+                'budgeted_needs' => $this->needs,
+                'budgeted_wants' => $this->wants,
+                'budgeted_savings' => $this->savings,
+                'needs_progress' => $existingBudget->needs_progress,
+                'wants_progress' => $existingBudget->wants_progress,
+                'savings_progress' => $existingBudget->savings_progress,
                 'needs_percentage' => 80,
                 'wants_percentage' => 10,
                 'savings_percentage' => 10,
+                'remaining_balance' => $this->calculateRemainingBalance(),
             ]
         );
 
         session()->flash('success', 'Debt-Prioritized Budget Created');
-        $this->mount();
-
         $this->dispatch('refreshBudgetTable');
         $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
-        $this->dispatch('refreshPercentTable');
     }
 
     public function prioritizeSavings()
@@ -154,23 +156,33 @@ class BudgetForm extends Component
             'income' => 'required|numeric|min:0',
         ]);
 
+        $this->needs = $this->income * 0.50;
+        $this->wants = $this->income * 0.10;
+        $this->savings = $this->income * 0.40;
+        if (!$this->validateBudgetAmounts()) return;
+
+        $existingBudget = Budget::where('user_id', Auth::id())->first();
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
                 'income' => $this->income,
+                'budgeted_needs' => $this->needs,
+                'budgeted_wants' => $this->wants,
+                'budgeted_savings' => $this->savings,
+                'needs_progress' => $existingBudget->needs_progress,
+                'wants_progress' => $existingBudget->wants_progress,
+                'savings_progress' => $existingBudget->savings_progress,
                 'needs_percentage' => 50,
                 'wants_percentage' => 10,
                 'savings_percentage' => 40,
+                'remaining_balance' => $this->calculateRemainingBalance(),
             ]
         );
 
         session()->flash('success', 'Savings-Prioritized Budget Created');
-        $this->mount();
-
         $this->dispatch('refreshBudgetTable');
         $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
-        $this->dispatch('refreshPercentTable');
     }
 
     public function prioritizeWants()
@@ -178,24 +190,33 @@ class BudgetForm extends Component
         $this->validate([
             'income' => 'required|numeric|min:0',
         ]);
+        $this->needs = $this->income * 0.50;
+        $this->wants = $this->income * 0.40;
+        $this->savings = $this->income * 0.10;
+        if (!$this->validateBudgetAmounts()) return;
 
+        $existingBudget = Budget::where('user_id', Auth::id())->first();
         Budget::updateOrCreate(
             ['user_id' => Auth::id()],
             [
                 'income' => $this->income,
+                'budgeted_needs' => $this->needs,
+                'budgeted_wants' => $this->wants,
+                'budgeted_savings' => $this->savings,
+                'needs_progress' => $existingBudget->needs_progress,
+                'wants_progress' => $existingBudget->wants_progress,
+                'savings_progress' => $existingBudget->savings_progress,
                 'needs_percentage' => 50,
                 'wants_percentage' => 40,
                 'savings_percentage' => 10,
+                'remaining_balance' => $this->calculateRemainingBalance(),
             ]
         );
 
         session()->flash('success', 'Wants-Prioritized Budget Created');
-        $this->mount();
-
         $this->dispatch('refreshBudgetTable');
         $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
-        $this->dispatch('refreshPercentTable');
     }
 
     public function render()

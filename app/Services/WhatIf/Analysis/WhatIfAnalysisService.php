@@ -197,32 +197,44 @@ class WhatIfAnalysisService {
     /**
      * Algo 5 - 'goal-savings-interest-rate-change'
      */
-    public function goalSavingsInterestRateChangeScenario($financialGoalId, $currentInterestRate, $newInterestRate, $monthlyIncome, $totalMonthlyExpenses)
+    public function goalSavingsInterestRateChangeScenario($financialGoalId, $currentMonthlySavings, $currentInterestRate, $newInterestRate, $monthlyIncome, $totalMonthlyExpenses)
     {
         // Grab goal record
         $goal = FinancialGoal::find($financialGoalId);
 
         // Set up timeline variables
         $balance = $goal->current_amount;
-        $MonthlyRate = $newInterestRate / 100 / 12;
+        $monthlyRate = $newInterestRate / 100 / 12;
         $timeline = [];
         $month = 0;
-        $monthlySavings = $goal->monthly_savings;
+        $totalMonths = 0;
+
+        // The user's goal target in months
+        $targetMonthsRaw = now()->diffInMonths($goal->achieve_by);
+        $targetMonths = max(1, ceil($targetMonthsRaw));
 
         // Build timeline until the goal is reached.
-        while ($balance < $goal->target_amount) {
-            $balance += $monthlySavings;
-            $interestEarned = $balance * ($MonthlyRate);
-            $balance += $interestEarned;
-            if ($monthlySavings > $goal->target_amount - $balance) {
-                $monthlySavings = $goal->target_amount - $balance;
+        while ($balance < $goal->target_amount && $month < $targetMonths) {
+            if ($currentMonthlySavings > $goal->target_amount - $balance) {
+                $tempCurrentMonthlySavings = $goal->target_amount - $balance;
+                $balance += $tempCurrentMonthlySavings;
+                $interestEarned = $balance * $monthlyRate;
+                $balance += $interestEarned;
+                $currentMonthlySavings = $tempCurrentMonthlySavings;
+                
+            }
+            else {
+                $balance += $currentMonthlySavings;
+                $interestEarned = $balance * $monthlyRate;
+                $balance += $interestEarned;
             }
             $timeline[] = [
                 'month' => $month,
                 'balance' => max(0, $balance),
                 'interest_earned' => $interestEarned,
-                'monthly_savings' => $monthlySavings
+                'monthly_savings' => $currentMonthlySavings
             ];
+            $totalMonths++;
             if ($month++ > 360) break; // Prevent infinite loop
         }
 
@@ -230,10 +242,10 @@ class WhatIfAnalysisService {
         $result = [
             'original_savings_amount' => $goal->current_amount,
             'original_interest_rate' => $currentInterestRate,
-            'original_monthly_savings' => $goal->monthly_savings,
+            'original_monthly_savings' => $currentMonthlySavings,
             'total_saved' => $balance,
             'timeline' => $timeline,
-            'total_months' => $month,
+            'total_months' => $totalMonths,
             'total_interest_earned' => array_sum(array_column($timeline, 'interest_earned')),
         ];
 
@@ -245,7 +257,7 @@ class WhatIfAnalysisService {
     /**
      * Algo 6 - 'goal-monthly-savings-change'
      */
-    public function goalMonthlySavingsChangeScenario($financialGoalId, $currentInterestRate, $newMonthlySavings, $monthlyIncome, $totalMonthlyExpenses) {
+    public function goalMonthlySavingsChangeScenario($financialGoalId, $currentMonthlySavings, $currentInterestRate, $newMonthlySavings, $monthlyIncome, $totalMonthlyExpenses) {
         // Grab goal record
         $goal = FinancialGoal::find($financialGoalId);
 
@@ -254,11 +266,16 @@ class WhatIfAnalysisService {
         $monthlyRate = $currentInterestRate / 100 / 12;
         $timeline = [];
         $month = 0;
+        $totalMonths = 0;
 
-        // Build timeline until the goal is reached.
-        while ($balance < $goal->target_amount) {
+         // The user's goal target in months
+         $targetMonthsRaw = now()->diffInMonths($goal->achieve_by);
+         $targetMonths = max(1, ceil($targetMonthsRaw));
+
+        // Build timeline until the goal is reached or number of months has ended.
+        while ($balance < $goal->target_amount && $month < $targetMonths) {
             $balance += $newMonthlySavings;
-            $interestEarned = $balance * ($monthlyRate);
+            $interestEarned = $balance * $monthlyRate;
             $balance += $interestEarned;
             if ($newMonthlySavings > $goal->target_amount - $balance) {
                 $newMonthlySavings = $goal->target_amount - $balance;
@@ -269,6 +286,7 @@ class WhatIfAnalysisService {
                 'interest_earned' => $interestEarned,
                 'monthly_savings' => $newMonthlySavings
             ];
+            $totalMonths++;
             if ($month++ > 360) break; // Prevent infinite loop
         }
 
@@ -276,10 +294,10 @@ class WhatIfAnalysisService {
         $result = [
             'original_savings_amount' => $goal->current_amount,
             'original_interest_rate' => $currentInterestRate,
-            'original_monthly_savings' => $goal->monthly_savings,
+            'original_monthly_savings' => $currentMonthlySavings,
             'total_saved' => $balance,
             'timeline' => $timeline,
-            'total_months' => $month,
+            'total_months' => $totalMonths,
             'total_interest_earned' => array_sum(array_column($timeline, 'interest_earned')),
         ];
 
