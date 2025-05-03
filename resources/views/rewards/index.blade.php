@@ -65,14 +65,7 @@
                 </div>
             </div>
 
-
-            <!-- Current Goals Section -->
-            <div class="bg-[#A9DFFF] shadow-sm sm:rounded-lg p-6 mt-8">
-                <h3 class="text-lg font-bold text-gray-900 mb-4">Your Goal(s) Progress</h3>
-                <div class="p-4 border border-gray-600 rounded-md">
-                    <p class="text-gray-700">You have no active goals.</p>
-                </div>
-            </div>
+            
             </div>
         </div>
     </div>
