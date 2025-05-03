@@ -17,11 +17,15 @@
          @include('livewire.dashboard.debt-stats-bar-chart')
     </div>
 
-        <!-- Rewards & Inspiration and Goal Progress Side by Side -->
-        <div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
-            @include('livewire.dashboard.rewards-inspiration')
+    <!-- Rewards & Inspiration and Goal Progress Side by Side -->
+    <div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4">
+        @include('livewire.dashboard.rewards-inspiration')
 
-            @include('livewire.dashboard.goal-progress')
-        </div>
+        @include('livewire.dashboard.goal-progress')
+    </div>
+
+    <div>
+        @include('livewire.dashboard.debt-payment-history-chart')
+    </div>
     
 </x-app-layout>
