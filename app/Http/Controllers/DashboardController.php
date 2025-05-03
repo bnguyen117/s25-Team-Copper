@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Debt;
 use App\Models\FinancialGoal;
 use App\Models\Budget;
+use Filament\Notifications\Notification;
+use Carbon\Carbon;
 
 
 class DashboardController extends Controller
@@ -19,8 +21,35 @@ class DashboardController extends Controller
         // Get the authenticated user
         $user = Auth::user();
 
+        // Reset session flags if user has modified their debts.
+        if (session('debt_action_occurred')) {
+            session()->forget('debt_notification_shown');
+            session()->forget('debt_action_occurred');
+        }
+
         // Retrieve debts belonging to the logged-in user
         $debts = Debt::where('user_id', $user->id)->get();
+
+        // Check for debts with due dates within 3 days from today
+        $today = Carbon::today();
+        $debtsDueSoon = $debts->filter(function ($debt) use ($today) {
+            if ($debt->due_date) {
+                $dueDate = Carbon::parse($debt->due_date);
+                return $dueDate->isBetween($today, $today->copy()->addDays(3));
+            }
+            return false;
+        });
+
+        // Show a Filament notification for debts due within 3 days, once per session, or until the user modifies their debts.
+        if ($debtsDueSoon->isNotEmpty() && !session('debt_notification_shown')) {
+            $debtNames = $debtsDueSoon->pluck('debt_name')->implode(', ');
+            Notification::make()
+                ->title('Upcoming Debt Due Dates')
+                ->warning()
+                ->body("The following debts are due within 3 days: {$debtNames}.")
+                ->send();
+            session(['debt_notification_shown' => true]);
+        }
 
         // Calculate the total sum of minimum payments
         $totalMinimumPayments = $debts->sum('monthly_payment');
