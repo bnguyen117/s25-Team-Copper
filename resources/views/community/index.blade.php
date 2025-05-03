@@ -4,9 +4,31 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Community') }}
             </h2>
-        </div>
-        <div class="flex items-center justify-between w-full">
-            <a href="{{ route('groups.create') }}" class="text-blue-500 hover:text-blue-700 ml-4">Create Group</a>
+
+            <!-- Menu Dropdown -->
+            <div x-data="{ open: false }" class="relative">
+                <button @click="open = !open" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">
+                    Menu ▾
+                </button>
+                <div x-show="open" @click.away="open = false"
+                    class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded shadow-md z-50">
+                    <a href="{{ route('friends.search') }}"
+                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        🔍 Search for Friends
+                    </a>
+                    <a href="{{ route('friends.requests') }}"
+                        class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        👥 Friend Requests
+                        <span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                            {{ Auth::user()->receivedFriendRequests->count() }}
+                        </span>
+                    </a>
+                    <a href="{{ route('groups.create') }}"
+                        class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        🧩 Create Group
+                    </a>
+                </div>
+            </div>
         </div>
     </x-slot>
 
