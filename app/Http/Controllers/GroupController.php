@@ -48,33 +48,55 @@ class GroupController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route('groups.show', $group->id)->with('success', 'Group created successfully.');
-    }
+    // Add invite
+    if ($request->filled('members')) {
+        $identifiers = array_map('trim', explode(',', $request->members));
 
-    /**
-     * Show a specific group and its messages.
-     */
-    public function show(Group $group)
-    {
-        if ($group->is_private && !$group->members->contains(Auth::id())) {
-            return redirect()->route('community.index')->with('error', 'You do not have access to this private group.');
+        $users = User::whereIn('email', $identifiers)
+                     ->orWhereIn('id', $identifiers)
+                     ->get();
+
+        foreach ($users as $user) {
+            if ($user->id !== Auth::id()) {
+                GroupMember::firstOrCreate([
+                    'group_id' => $group->id,
+                    'user_id' => $user->id,
+                ]);
+            }
         }
-
-        $messages = $group->messages()
-            ->with([
-                'user',
-                'replies' => function ($q) {
-                    $q->orderBy('created_at');
-                },
-                'replies.user',
-                'parent.user'
-            ])
-            ->whereNull('parent_id')
-            ->orderBy('created_at')
-            ->paginate(10);
-
-        return view('groups.show', compact('group', 'messages'));
     }
+
+    return redirect()->route('groups.show', $group->id)->with([
+        'success' => 'Group created successfully.',
+        'just_created' => true,
+    ]);
+}
+     // Show a specific group and its messages.
+     public function show(Group $group)
+     {
+         if ($group->is_private && !$group->members->contains(Auth::id())) {
+             return redirect()->route('community.index')->with('error', 'You do not have access to this private group.');
+         }
+     
+         $messages = $group->messages()
+             ->with([
+                 'user',
+                 'replies' => function ($q) {
+                     $q->orderBy('created_at');
+                 },
+                 'replies.user',
+                 'parent.user'
+             ])
+             ->whereNull('parent_id')
+             ->orderBy('created_at')
+             ->paginate(10);
+     
+         $friends = Auth::user()->friends()->get();  //i think hold on 
+         $userGroups = Auth::user()->groups()->get();
+     
+         return view('groups.show', compact('group', 'messages', 'friends', 'userGroups'));
+     }
+     
 
     /**
      * Show the form to edit a group.
@@ -85,7 +107,7 @@ class GroupController extends Controller
             return redirect()->route('community')->with('error', 'You do not have permission to edit this group.');
         }
 
-        return view('groups.edit', compact('group'));
+        return view('groups.show', compact('group', 'messages', 'friends', 'userGroups'));
     }
 
     /**

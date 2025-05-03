@@ -79,4 +79,14 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+    public function search(Request $request)
+    {   
+        $query = $request->input('query');
+         $users = \App\Models\User::where('name', 'like', "%{$query}%")
+        ->orWhere('email', 'like', "%{$query}%")
+        ->limit(5)
+        ->get(['id', 'name', 'email']);
+
+    return response()->json($users);
+}
 }
