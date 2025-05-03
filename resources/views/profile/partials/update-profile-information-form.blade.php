@@ -68,14 +68,6 @@
             <x-input-error class="mt-2" :messages="$errors->get('birthdate')" />
         </div>
 
-        <!-- Budget Input Field -->
-        <div>
-            <x-input-label for="budget" :value="__('Budget')" />
-            <x-text-input id="budget" name="budget" type="number" step="0.01" class="mt-1 block w-full"
-                :value="old('budget', $user->budget)" required />
-            <x-input-error class="mt-2" :messages="$errors->get('budget')" />
-        </div>
-
 
         <!-- Avatar Upload -->
         <div>
