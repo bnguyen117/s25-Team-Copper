@@ -88,7 +88,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
     Route::get('/community', [CommunityController::class, 'index'])->name('community.index');
 
-
+    //Public Group
+    Route::post('/groups/{group}/add-member', [GroupController::class, 'addMember'])->name('groups.addMember');
 
 });
 
