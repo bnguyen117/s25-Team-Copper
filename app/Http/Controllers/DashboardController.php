@@ -9,6 +9,7 @@ use App\Models\FinancialGoal;
 use App\Models\Budget;
 use Filament\Notifications\Notification;
 use Carbon\Carbon;
+use App\Models\Transaction;
 
 
 class DashboardController extends Controller
@@ -105,6 +106,10 @@ class DashboardController extends Controller
         $targetAmount = $financeGoal ? $financeGoal->target_amount : 1; // Prevent division by zero
         $currentAmount = $financeGoal ? $financeGoal->current_amount : 0;
         $goalProgress = $targetAmount > 0 ? round(($currentAmount / $targetAmount) * 100) : 0;
+
+        $debtTransactions = Transaction::where('user_id', $user->id)
+            ->where('transaction_type', 'debt')
+            ->get();
 
         return view('dashboard', [
             'user' => $user,

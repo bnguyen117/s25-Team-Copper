@@ -1,3 +1,5 @@
+
+
 <!-- Line Graph for Debt Payment History & Payment Confirmation -->
 <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center mt-8">
     <!-- Title that will update with the current debt -->
