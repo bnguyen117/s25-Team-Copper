@@ -53,13 +53,13 @@
                 <!-- Friends Search -->
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Find Friends</h3>
-                    <div class="w-1/3">
-                    <a href="{{ route('friends.search') }}" class="block text-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-4 py-2 border rounded-lg w-1/3">🔍 Search for Friends</a>
+                    <div class="md:w-1/3">
+                    <a href="{{ route('friends.search') }}" class="block text-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 px-4 py-2 border rounded-lg md:w-1/3">🔍 Search for Friends</a>
                     </div>
                     <!-- Friend Requests -->
                     <x-dropdown align="left">
                         <x-slot name="trigger">
-                            <button class="relative flex items-center justify-between w-1/3 px-4 py-2 border rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none">
+                            <button class="relative flex items-center justify-between md:w-1/3 px-4 py-2 border rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none">
                                 Friend Requests
                                 <span id="friendRequestsCount" class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                                     {{ Auth::user()->receivedFriendRequests->count() }}
@@ -96,7 +96,7 @@
                 <!-- Friends List -->
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Your Friends</h3>
-                    <input type="text" id="searchFriends" placeholder="Search friends..." class="w-1/3 px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white">
+                    <input type="text" id="searchFriends" placeholder="Search friends..." class="md:w-1/3 px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white">
                     <ul id="friendsList" class="space-y-2">
                         @foreach($friends as $friend)
                             <li class="flex items-center space-x-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
@@ -117,7 +117,7 @@
                 <!-- Groups Search -->
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Your Groups</h3>
-                    <input type="text" id="searchGroups" placeholder="Search your groups..." class="w-1/3 px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white">
+                    <input type="text" id="searchGroups" placeholder="Search your groups..." class="md:w-1/3 px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white">
                     <ul id="personalGroupsList" class="space-y-2">
                         @foreach($userGroups as $group)
                             <li class="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
@@ -130,7 +130,7 @@
                 <!-- Public Groups -->
                 <div class="space-y-4">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Public Groups</h3>
-                    <input type="text" id="searchPublicGroups" placeholder="Search public groups..." class="w-1/3 px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white">
+                    <input type="text" id="searchPublicGroups" placeholder="Search public groups..." class="md:w-1/3 px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white">
                     <ul id="publicGroupsList" class="space-y-2">
                         @foreach($publicGroups as $group)
                             <li class="p-3 bg-gray-100 dark:bg-gray-700 rounded-lg flex justify-between">

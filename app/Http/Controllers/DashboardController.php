@@ -42,11 +42,15 @@ class DashboardController extends Controller
 
         // Show a Filament notification for debts due within 3 days, once per session, or until the user modifies their debts.
         if ($debtsDueSoon->isNotEmpty() && !session('debt_notification_shown')) {
-            $debtNames = $debtsDueSoon->pluck('debt_name')->implode(', ');
+            $debtDetails = $debtsDueSoon->map(function ($debt) {
+                $dueDate = Carbon::parse($debt->due_date)->format('M j, Y');
+                return "{$debt->debt_name} ({$dueDate})";
+            })->implode('<br>');
+
             Notification::make()
                 ->title('Upcoming Debt Due Dates')
                 ->warning()
-                ->body("The following debts are due within 3 days: {$debtNames}.")
+                ->body("The following debts are due within 3 days:<br>{$debtDetails}")
                 ->send();
             session(['debt_notification_shown' => true]);
         }

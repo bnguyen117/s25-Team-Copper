@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"> <!-- Centered & Limited Width -->
 
-        <h2 class="text-xl font-bold mb-4 text-center">Search for Friends</h2>
+        <h2 class="text-xl font-bold mt-4 mb-4 text-center dark:text-white">Search for Friends</h2>
 
         <!-- Search Form -->
         <form method="GET" action="{{ route('friends.search') }}" class="mb-4 flex justify-center">

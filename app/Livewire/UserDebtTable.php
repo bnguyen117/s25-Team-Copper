@@ -106,9 +106,12 @@ class UserDebtTable extends Component implements HasForms, HasTable
         return
         [
             TextColumn::make('debt_name')
-            ->searchable()
-            ->size('md')
-            ->weight(FontWeight::Bold),
+                ->searchable()
+                ->size('md')
+                ->weight(FontWeight::Bold),
+            TextColumn::make('category')
+                ->sortable()
+                ->weight(FontWeight::Medium),
 
             // Group additional columns in a collapsible panel.
             Panel::make([
@@ -145,11 +148,6 @@ class UserDebtTable extends Component implements HasForms, HasTable
                     TextColumn::make('due_date')
                         ->date()
                         ->description('Due Date', position: 'above')
-                        ->sortable()
-                        ->weight(FontWeight::Medium),
-
-                    TextColumn::make('category')
-                        ->description('Category', position: 'above')
                         ->sortable()
                         ->weight(FontWeight::Medium),
                 ])->from('lg'),

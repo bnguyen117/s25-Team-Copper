@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto p-4">
+<div class="max-w-7xl mx-auto">
  
      <!-- Percentage Summary -->
      <div class="mb-6 bg-white dark:bg-gray-900 shadow rounded-lg p-4">
