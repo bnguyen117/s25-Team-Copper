@@ -13,6 +13,8 @@
  use Filament\Tables\Concerns\InteractsWithTable;
  use Filament\Tables\Contracts\HasTable;
  use Filament\Tables\Table;
+ use Filament\Tables\Columns\Layout\Split;
+ use Filament\Tables\Columns\Layout\Panel;
  use Filament\Support\Enums\FontWeight;
  use Filament\Notifications\Notification;
  use Livewire\Component;
@@ -159,44 +161,47 @@
      protected function getTableFields(): array
      {
          return [
-             Tables\Columns\TextColumn::make('transaction_type')
-                 ->label('Type')
-                 ->formatStateUsing(fn ($state) => $state === 'debt' ? 'Debt Payment' : 'Other Expense')
-                 ->searchable()
-                 ->sortable()
-                 ->weight(FontWeight::Medium),
-             Tables\Columns\TextColumn::make('name')
-                 ->label('Name')
-                 ->searchable()
-                 ->sortable()
-                 ->weight(FontWeight::Medium),
-             Tables\Columns\TextColumn::make('category')
-                 ->label('Category')
-                 ->formatStateUsing(fn ($state) => ucfirst($state))
-                 ->badge()
-                 ->searchable()
-                 ->sortable()
-                 ->weight(FontWeight::Medium),
-             Tables\Columns\TextColumn::make('amount')
-                 ->money('usd')
-                 ->sortable()
-                 ->weight(FontWeight::Medium)
-                 ->description('Amount', position: 'above'),
-             Tables\Columns\TextColumn::make('interest_paid')
-                 ->money('usd')
-                 ->sortable()
-                 ->weight(FontWeight::Medium)
-                 ->description('Interest Paid', position: 'above'),
-             Tables\Columns\TextColumn::make('principal_paid')
-                 ->money('usd')
-                 ->sortable()
-                 ->weight(FontWeight::Medium)
-                 ->description('Principal Paid', position: 'above'),
-             Tables\Columns\TextColumn::make('transaction_date')
-                 ->date('Y-m-d')
-                 ->sortable()
-                 ->weight(FontWeight::Medium)
-                 ->description('Transaction Date', position: 'above'),
+            Tables\Columns\TextColumn::make('name')
+                ->label('Name')
+                ->searchable()
+                ->sortable()
+                ->weight(FontWeight::Bold)
+                ->formatStateUsing(fn ($record) => "{$record->name} - $" . number_format($record->amount ?? 0, 2)),
+            Tables\Columns\TextColumn::make('transaction_date')
+                ->date('F j, Y')
+                ->sortable()
+                ->weight(FontWeight::Medium),
+                Panel::make([
+                    Split::make([
+                        Tables\Columns\TextColumn::make('transaction_type')
+                            ->label('Type')
+                            ->formatStateUsing(fn ($state) => $state === 'debt' ? 'Debt Payment' : 'Other Expense')
+                            ->searchable()
+                            ->sortable()
+                            ->weight(FontWeight::Medium)
+                            ->description('Transaction Type', position: 'above'),
+                        Tables\Columns\TextColumn::make('category')
+                            ->label('Category')
+                            ->formatStateUsing(fn ($state) => ucfirst($state))
+                            ->badge()
+                            ->searchable()
+                            ->sortable()
+                            ->weight(FontWeight::Medium)
+                            ->description('Category', position: 'above'),
+                        Tables\Columns\TextColumn::make('interest_paid')
+                            ->money('usd')
+                            ->sortable()
+                            ->weight(FontWeight::Medium)
+                            ->description('Interest Paid', position: 'above')
+                            ->default(0),
+                        Tables\Columns\TextColumn::make('principal_paid')
+                            ->money('usd')
+                            ->sortable()
+                            ->weight(FontWeight::Medium)
+                            ->description('Principal Paid', position: 'above')
+                            ->default(0),
+                ])->from('lg'),
+            ])->collapsible(),
          ];
      }
  
