@@ -31,6 +31,17 @@ class DashboardController extends Controller
         // Retrieve debts belonging to the logged-in user
         $debts = Debt::where('user_id', $user->id)->get();
 
+        $debtTransactions = Transaction::where('user_id', $user->id)
+            ->whereNotNull('debt_id')->get();
+
+        $debtTransactionsData = $debtTransactions->map(function ($transaction) {
+            return [
+                'debt_id' => $transaction->debt_id,
+                'debt_name' => $transaction->debt->debt_name,
+                'principal_paid' => $transaction->principal_paid,
+            ];
+        });
+
         // Check for debts with due dates within 3 days from today
         $today = Carbon::today();
         $debtsDueSoon = $debts->filter(function ($debt) use ($today) {
@@ -107,10 +118,6 @@ class DashboardController extends Controller
         $currentAmount = $financeGoal ? $financeGoal->current_amount : 0;
         $goalProgress = $targetAmount > 0 ? round(($currentAmount / $targetAmount) * 100) : 0;
 
-        $debtTransactions = Transaction::where('user_id', $user->id)
-            ->where('transaction_type', 'debt')
-            ->get();
-
         return view('dashboard', [
             'user' => $user,
             'debts' => $debts,
@@ -122,7 +129,8 @@ class DashboardController extends Controller
             'categories' => $debtByCategory->keys(),        // aggregated categories
             'debtAmounts' => $debtByCategory->values(),       // aggregated sums per category
             'budget' => $budget->income,
-            'remaining_balance' => $budget->remaining_balance
+            'remaining_balance' => $budget->remaining_balance,
+            'debtTransactions' => $debtTransactions
         ]);
     }
 }

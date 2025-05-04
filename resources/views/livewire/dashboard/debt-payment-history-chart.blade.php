@@ -14,80 +14,76 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Line Graph for Debt Payment History 
-    let rawDebts = {!! json_encode($debts) !!};
-    let currentDebtIndex = 0;
- 
-    // Check if there are no debts and assign default data if needed
-    if (!rawDebts || rawDebts.length === 0) {
-    rawDebts = [{
-        debt_name: 'No Debt',
-        amount: 0,
-        monthly_payment: 0
-    }];
-    }
- 
-    // Get the canvas context for the debt line chart
+    
+    debts = {!! json_encode($debts) !!}; // Array of debts
+    debtTransactions = {!! json_encode($debtTransactions) !!}; // Array of debt transactions
+    currentDebtIndex = 0; // Index to track the current debt
     const ctxDebtLine = document.getElementById('debtLineChart').getContext('2d');
-     
-    // Function to initialize the chart for the current debt
-    function initDebtChart() {
-        let currentDebt = rawDebts[currentDebtIndex];
-        // Parse numeric values (ensure amount and monthly_payment are numbers)
-        let totalDebt = parseFloat(currentDebt.amount);
-        let monthlyPayment = parseFloat(currentDebt.monthly_payment);
-         
-        // Set initial labels and data (only the starting point is shown)
-        let labels = ["Start"];
-        let data = [totalDebt];
-         
-        // Destroy the existing chart if it exists
-        if (window.lineChart) {
-            window.lineChart.destroy();
+
+    // Function to update the chart with the current debt's payment history
+    function updateDebtChart() {
+        const currentDebt = debts[currentDebtIndex];
+        const transactions = debtTransactions.filter(transaction => transaction.debt_id === currentDebt.id);
+
+        const dates = transactions.map(transaction => new Date(transaction.created_at).toLocaleDateString());
+        const principal_paid = transactions.map(transaction => transaction.principal_paid);
+
+        const newAmounts = currentDebt.amounts - principal_paid[currentDebtIndex];
+
+        const ctxDebtLine = document.getElementById('debtLineChart').getContext('2d');
+
+        // Destroy the previous chart instance if it exists
+        if (window.debtLineChart) {
+            window.debtLineChart.destroy();
         }
-         
+
         // Create a new chart instance
-        window.lineChart = new Chart(ctxDebtLine, {
+        window.debtLineChart = new Chart(ctxDebtLine, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: dates,
                 datasets: [{
-                    label: currentDebt.debt_name + ' Payment History',
-                    data: [], // Placeholder for data
-                    borderColor: '#36A2EB',
+                    label: 'Principal Paid ($)',
+                    data: principal_paid,
+                    backgroundColor: '#4CAF50',
+                    borderColor: '#4CAF50',
                     fill: false,
                     tension: 0.1
                 }]
             },
             options: {
-                responsive: false,
+                responsive: true,
                 maintainAspectRatio: false,
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Remaining Debt ($)' }
+                        title: {
+                            display: true,
+                            text: 'Amount ($)'
+                        }
                     },
                     x: {
-                        title: { display: true, text: 'Payment Cycle' }
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
                     }
                 }
             }
         });
-         
-        // Reset the cycle counter and store the monthly payment value globally for updates
-        window.currentCycle = 0;
-        window.currentMonthlyPayment = monthlyPayment;
-        // Update the debt title with the current debt name
-        document.getElementById('debtTitle').innerText = currentDebt.debt_name + ' Payment History';
     }
-     
-    // Initialize the chart for the first debt on page load
-    initDebtChart();
-     
-    // Next Debt Button: Cycle through available debts
-    document.getElementById('nextDebt').addEventListener('click', function() {
-        currentDebtIndex = (currentDebtIndex + 1) % rawDebts.length;
-        initDebtChart();
+
+    document.addEventListener('DOMContentLoaded', function () {
+        updateDebtChart(); // Initial chart update
+
+        // Event listener for the "Next Debt" button
+        document.getElementById('nextDebt').addEventListener('click', function () {
+            currentDebtIndex = (currentDebtIndex + 1) % debts.length; // Cycle through debts
+            const currentDebt = debts[currentDebtIndex];
+            document.getElementById('debtTitle').innerText = `Payment History for ${currentDebt.name}`;
+            updateDebtChart(); // Update the chart with the new debt
+        });
     });
+        
 </script>
 
