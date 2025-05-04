@@ -4,27 +4,13 @@ namespace App\Services\Rewards;
 
 use App\Gamify\Badges\DebtBuilder;
 use App\Gamify\Points\DebtCreated;
+use QCod\Gamify\Gamify;
 
 class BadgeService
 {
-    public function syncDebtRelatedBadges($user)
+    public function awardDebtPoints($user = null)
     {
-        /*
-        if ((new DebtBuilder())->qualifier($user)) {   
-            //$user->attachBadge(new DebtBuilder());
-            $user->givePoint(new DebtCreated($debt));
-        } 
-        /*else {
-            //$user->detachBadge(DebtBuilder::class);
-            return;
-        }
-            */
-    
-            /* DebtBuilder badge, didn't work
-            $user = Auth::user();
+            $user = $user ?? Auth::user();
             $user->givePoint(new DebtCreated($user));
-            */
-
-        
     }
 }

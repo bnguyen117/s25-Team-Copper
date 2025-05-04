@@ -22,7 +22,6 @@ class DebtBuilder extends BadgeType
      */
     public function qualifier($user)
     {
-        return $user->debts()->count() >= 2 && $user->getPoints() >= 100;  //returns true if user has at least 2 debts, probably wrong logic
-       // $user->getPoints() >= 100;
+        return $user->debts()->count() >= 2 && $user->getPoints() >= 100;  //returns true if user has at least 2 debts
     }
 }

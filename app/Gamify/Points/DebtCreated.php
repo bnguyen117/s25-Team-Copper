@@ -11,7 +11,7 @@ class DebtCreated extends PointType
      *
      * @var int
      */
-    public $points = 100;
+    public $points = 100;  //arbitrary # of points
 
     /**
      * Point constructor
@@ -30,7 +30,6 @@ class DebtCreated extends PointType
      */
     public function payee()
     {
-        return $this->getSubject()->user;
-       // return $this->subject;
+        return $this->subject;
     }
 }

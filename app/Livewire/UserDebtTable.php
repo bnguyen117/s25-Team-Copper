@@ -32,6 +32,8 @@ use Filament\Forms\Components\Select;
 // Filament Support
 use Filament\Support\Enums\FontWeight;
 
+// Badge Service
+use App\Services\Rewards\BadgeService;
 
 class UserDebtTable extends Component implements HasForms, HasTable
 {
@@ -63,7 +65,9 @@ class UserDebtTable extends Component implements HasForms, HasTable
                         $data['user_id'] = Auth::id();
                         return $data;
                     })
-                    ->after(function () {
+                    ->after(function (array $data, Debt $record) {
+                        //after a debt is created, call badge service to see if the action qualifies for a badge
+                        app(BadgeService::class)->awardDebtPoints($record->user);
                         $this->dispatch('refreshBudgetingChat');
                         session(['debt_action_occurred' => true]);
                     }),

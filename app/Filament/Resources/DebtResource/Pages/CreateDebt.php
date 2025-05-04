@@ -16,17 +16,5 @@ class CreateDebt extends CreateRecord
 {
     protected static string $resource = DebtResource::class;
 
-    protected function afterCreate(): void  //triggers after a debt is created
-    {
-        $debt = $this->record;
-        $user = $debt->user;
-
-        // Check and sync debt-related badge
-       // app(BadgeService::class)->syncDebtRelatedBadges($user);
-
-       app(\App\Services\Rewards\BadgeService::class)->syncDebtRelatedBadges($user);
-
-       
-    }
 }
 
