@@ -11,14 +11,14 @@
     <!-- Budgeting Section -->
     <div class="mt-16 mb-16 m-auto max-w-7xl lg:px-8">
         <!-- Budget Chart -->
-        <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-            <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center">Budget Breakdown</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+            <h2 class="mt-8 p-6 text-lg font-bold text-gray-800 dark:text-gray-200 text-center">Budget Breakdown</h2>
             @livewire('budget-chart')
         </div>
         
         <!-- Budget Form (Manual or AI) -->
         <div class="mt-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-            <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center p-2">Create Your Budget</h2>
+            <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200 text-center p-2">Enter Your Monthly Income</h2>
                 @livewire('budget-form')
             
             <!-- Transaction Table-->

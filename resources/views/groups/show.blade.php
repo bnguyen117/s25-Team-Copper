@@ -28,6 +28,8 @@
                         <button @click="showAdd = !showAdd"
                             class="w-full min-w-[180px] whitespace-nowrap text-left px-3 py-2 text-sm text-green-600 hover:bg-green-100 dark:hover:bg-green-800 rounded">
                              Add Members
+                             <form action="{{ route('groups.addMember', $group->id) }}" method="POST">
+
                         </button>
                     @endif
 

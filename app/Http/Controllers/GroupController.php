@@ -180,4 +180,36 @@ class GroupController extends Controller
 
         return redirect()->route('community.index')->with('success', 'Group deleted successfully.');
     }
+    //adding to existing group
+    public function addMember(Request $request, Group $group)
+    {
+        if ($group->creator_id !== Auth::id()) {
+            return back()->with('error', 'Only the group creator can add members.');
+        }
+
+        $request->validate([
+            'identifier' => 'required|string',
+        ]);
+
+        $identifiers = array_map('trim', explode(',', $request->identifier));
+
+        $users = User::whereIn('email', $identifiers)
+                    ->orWhereIn('id', $identifiers)
+                    ->get();
+
+        if ($users->isEmpty()) {
+            return back()->with('error', 'No matching users found.');
+        }
+
+        foreach ($users as $user) {
+            if ($user->id !== Auth::id()) {
+                GroupMember::firstOrCreate([
+                    'group_id' => $group->id,
+                    'user_id' => $user->id,
+                ]);
+            }
+        }
+
+        return back()->with('success', 'User(s) added to the group.');
+    }
 }
