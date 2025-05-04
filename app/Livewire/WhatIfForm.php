@@ -424,7 +424,7 @@ class WhatIfForm extends Component implements HasForms
             //Identifiers and scenario choice
             'user_id' => Auth::id(),
             'financial_goal_id' => $state['financial_goal_id'] ?? null,
-            'savings_name' => $state['savings_name'] ?? $state['financial_goal_id']->goal_name,
+            'savings_name' => $state['savings_name'] ?? $result['savings_name'],
             'what_if_scenario' => $state['what_if_scenario'],
 
             // Original savings state

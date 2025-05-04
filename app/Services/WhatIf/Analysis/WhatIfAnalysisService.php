@@ -202,6 +202,8 @@ class WhatIfAnalysisService {
         // Grab goal record
         $goal = FinancialGoal::find($financialGoalId);
 
+        $savings_name = $goal->goal_name;
+
         // Set up timeline variables
         $balance = $goal->current_amount;
         $monthlyRate = $newInterestRate / 100 / 12;
@@ -247,6 +249,7 @@ class WhatIfAnalysisService {
             'timeline' => $timeline,
             'total_months' => $totalMonths,
             'total_interest_earned' => array_sum(array_column($timeline, 'interest_earned')),
+            'savings_name' => $savings_name
         ];
 
         // Add goal impact
@@ -260,6 +263,8 @@ class WhatIfAnalysisService {
     public function goalMonthlySavingsChangeScenario($financialGoalId, $currentMonthlySavings, $currentInterestRate, $newMonthlySavings, $monthlyIncome, $totalMonthlyExpenses) {
         // Grab goal record
         $goal = FinancialGoal::find($financialGoalId);
+
+        $savings_name = $goal->goal_name;
 
         // Set up timeline variables
         $balance = $goal->current_amount;
@@ -299,6 +304,7 @@ class WhatIfAnalysisService {
             'timeline' => $timeline,
             'total_months' => $totalMonths,
             'total_interest_earned' => array_sum(array_column($timeline, 'interest_earned')),
+            'savings_name' => $savings_name
         ];
 
         // Add goal impact
