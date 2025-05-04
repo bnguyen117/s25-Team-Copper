@@ -77,8 +77,6 @@ class BudgetForm extends Component
         return true;
     }
 
-
-
     public function defaultBudget()
     {
         $this->validate([
@@ -217,6 +215,11 @@ class BudgetForm extends Component
         $this->dispatch('refreshBudgetTable');
         $this->dispatch('refreshBudgetChart');
         $this->dispatch('refreshBudgetingChat');
+    }
+
+    public function customizeBudget()
+    {
+        // Placeholder
     }
 
     public function render()

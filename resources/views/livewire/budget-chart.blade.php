@@ -1,7 +1,7 @@
 <div class="mt-8">
     <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 text-center">Budget Overview</h3>
 
-    <div class="flex justify-center">
+    <div class="p-6 flex justify-center">
         <canvas id="budgetChart" width="400" height="400"></canvas>
     </div>
 
@@ -22,8 +22,8 @@
                             {{ $savings }},
                             // {{ $remaining_balance }}
                         ],
-                        backgroundColor: ['#36a2eb', '#ff6384', '#ffcd56', '#4bc0c0'],
-                        borderColor: ['#2b7bb9', '#d62828', '#e3b505', '#1d7874'],
+                        backgroundColor: ['#00d8ff', '#00bfff', '#00a5ff', '#0081ff'],
+                        borderColor: ['#00c8ef', '#00afef', '#0095ef', '#0071ef'],
                         borderWidth: 1
                     }]
                 },

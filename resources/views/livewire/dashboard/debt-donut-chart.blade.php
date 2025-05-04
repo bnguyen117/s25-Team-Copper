@@ -1,5 +1,5 @@
 <!-- Debt Breakdown Chart -->
-<div class="w-1/2 md:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center" style="height:280px;">
+<div class="w-full md:w-1/2 bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center" style="height:280px;">
     <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 border-b pb-2">Debt Breakdown</h3>
     <canvas id="debtBreakdownChart" class="mx-auto" style="width:270px; height:270px;"></canvas>
 </div>
