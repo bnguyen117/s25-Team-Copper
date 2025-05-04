@@ -72,7 +72,7 @@
                     ctx.textAlign = "center";
 
                     let text1 = `$${remaining.toLocaleString()}`;
-                    ctx.fillStyle = "#ffffff";
+                    ctx.fillStyle = "#9ca3af";
                     ctx.fillText(text1, width / 2, height / 2 - 15);
 
                     ctx.font = `normal ${(height / 16).toFixed(2)}px sans-serif`;
