@@ -6,6 +6,8 @@ use Livewire\Component;
 use App\Models\Budget;
 use Illuminate\Support\Facades\Auth;
 
+use App\Services\Rewards\BadgeService;
+
 class BudgetForm extends Component
 {
     public $income, $needs, $wants, $savings, $remaining_balance;
@@ -106,6 +108,9 @@ class BudgetForm extends Component
                 'remaining_balance' => $this->calculateRemainingBalance(),
             ]
         );
+
+        //call badge service
+        app(BadgeService::class)->awardBudgetBadge(Auth::user());
 
         session()->flash('success', 'Default Budget Created');
         $this->dispatch('refreshBudgetTable');
