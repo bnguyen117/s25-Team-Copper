@@ -14,18 +14,18 @@
                     class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded shadow-md z-50">
                     <a href="{{ route('friends.search') }}"
                         class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        🔍 Search for Friends
+                        🔍 Search for Friends 🔎
                     </a>
                     <a href="{{ route('friends.requests') }}"
                         class="flex items-center justify-between px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        👥 Friend Requests
+                        👥 Friend Requests 👥
                         <span class="ml-2 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
                             {{ Auth::user()->receivedFriendRequests->count() }}
                         </span>
                     </a>
                     <a href="{{ route('groups.create') }}"
                         class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        🧩 Create Group
+                        🧩 Create Group 🧩
                     </a>
                 </div>
             </div>
@@ -45,9 +45,11 @@
     </div>
         @endif
         <!--end-->
+        <!--Left Side--> 
 
                 <!-- Friends List -->
                 <div class="space-y-4">
+                    
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Your Friends</h3>
                     <ul id="friendsList" class="space-y-2">
                         @foreach($friends as $friend)
