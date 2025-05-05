@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Debt;
 use App\Models\FinancialGoal;
 use App\Models\Budget;
-use App\Models\transaction;
+use App\Models\Transaction;
 use Filament\Notifications\Notification;
 use Carbon\Carbon;
 
