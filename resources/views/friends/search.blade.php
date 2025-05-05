@@ -29,7 +29,15 @@
                             <p class="text-sm text-gray-600 dark:text-gray-400">{{ $user->email }}</p>
                         </div>
                     </div>
+                    <!--Unfriend Button-->
+                    @if(Auth::user()->friends->contains($user->id))
+                        <form method="POST" action="{{ route('friends.unfriend', $user->id) }}">
+                            @csrf
+                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg">Unfriend</button>
+                        </form>
+                    @endif
 
+                
                     <!-- Friend Request Button -->
                     @php
                         $isFriend = Auth::user()->friends->contains($user->id);

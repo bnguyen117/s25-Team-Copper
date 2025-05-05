@@ -90,6 +90,8 @@ Route::middleware('auth')->group(function () {
 
     //Public Group
     Route::post('/groups/{group}/add-member', [GroupController::class, 'addMember'])->name('groups.addMember');
+    //Unfriend button
+    Route::post('/friends/unfriend/{user}', [FriendController::class, 'removeFriend'])->name('friends.unfriend');
 
 });
 
