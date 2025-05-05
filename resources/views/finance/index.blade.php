@@ -8,12 +8,6 @@
         </h2>
     </x-slot>
 
-    @if (session('badge_awarded'))
-    <div class="mb-4 max-w-xl mx-auto bg-green-100 text-green-800 border border-green-300 px-4 py-2 rounded shadow">
-        {{ session('badge_awarded') }}
-    </div>
-    @endif
-    
     <!-- Budgeting Section -->
     <div class="mt-16 mb-16 m-auto max-w-7xl lg:px-8">
         <!-- Budget Chart -->
