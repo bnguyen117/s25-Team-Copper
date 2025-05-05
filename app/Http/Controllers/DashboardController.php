@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Debt;
 use App\Models\FinancialGoal;
 use App\Models\Budget;
+use App\Models\Transaction;
 use Filament\Notifications\Notification;
 use Carbon\Carbon;
 
@@ -29,6 +30,11 @@ class DashboardController extends Controller
 
         // Retrieve debts belonging to the logged-in user
         $debts = Debt::where('user_id', $user->id)->get();
+
+        // Retrieve debt transactions
+        $debtTransactions = Transaction::where('user_id', $user->id)
+            ->whereNotNull('debt_id')
+            ->get(['debt_id', 'principal_paid', 'transaction_date']);
 
         // Check for debts with due dates within 3 days from today
         $today = Carbon::today();
@@ -62,10 +68,13 @@ class DashboardController extends Controller
         $totalDebt = $debts->sum('amount');
 
         // Prepare data for the chart
-        $debtChartData = $debts->map(function ($debt) {
+        $debtChartData = $debts->map(function ($debt) use ($debtTransactions) {
+            $totalPaid = $debtTransactions->where('debt_id', $debt->id)->sum('principal_paid');
             return [
+                'id' => $debt->id,
                 'name' => $debt->debt_name,
                 'amount' => $debt->amount,
+                'initial_amount' => $debt->amount + $totalPaid, // Adding back the amount paid to get the debt's initial amount.
                 'monthly_payment' => $debt->monthly_payment,
             ];
         });
@@ -121,7 +130,8 @@ class DashboardController extends Controller
             'categories' => $debtByCategory->keys(),        // aggregated categories
             'debtAmounts' => $debtByCategory->values(),       // aggregated sums per category
             'budget' => $budget->income,
-            'remaining_balance' => $budget->remaining_balance
+            'remaining_balance' => $budget->remaining_balance,
+            'debtTransactions' => $debtTransactions,
         ]);
     }
 }
