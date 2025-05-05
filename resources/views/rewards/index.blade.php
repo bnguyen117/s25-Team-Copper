@@ -20,7 +20,7 @@
                 <!-- Badge Grid -->
             <div x-data="{ selectedBadge: null }" class="grid grid-cols-3 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 @if(auth()->user()->badges->isEmpty())
-                <div class="col-span-3 text-center text-gray-500 dark:text-gray-400 italic">
+                <div class="col-span-10 text-center text-gray-500 dark:text-gray-400 italic">
                     You have no badges yet. Explore the app!
             </div>
 
